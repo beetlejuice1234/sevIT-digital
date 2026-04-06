@@ -208,8 +208,8 @@ function ChatSection() {
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState<'ai' | 'user' | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
+  const hasStartedRef = useRef(false);
   const navigate = useNavigate();
-  
   const scrollTweenRef = useRef<gsap.core.Tween | null>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
@@ -236,7 +236,8 @@ function ChatSection() {
   }, []);
 
   const playConversation = useCallback(() => {
-    if (hasStarted) return;
+    if (hasStartedRef.current) return;
+    hasStartedRef.current = true;
     setHasStarted(true);
 
     const tl = gsap.timeline();
@@ -293,7 +294,7 @@ function ChatSection() {
         tl.to({}, { duration: msg.delayAfter / 1000 });
       }
     });
-  }, [hasStarted, scrollToBottom]);
+  }, [scrollToBottom]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -337,6 +338,11 @@ function ChatSection() {
       ctx.revert();
       if (scrollTweenRef.current) scrollTweenRef.current.kill();
       if (timelineRef.current) timelineRef.current.kill();
+      // Reset when component unmounts so chat plays again on return
+      hasStartedRef.current = false;
+      setHasStarted(false);
+      setMessages([]);
+      setIsTyping(null);
     };
   }, [playConversation]);
 

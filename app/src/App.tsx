@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense, lazy } from 'react';
+import { useState, useEffect, Suspense, lazy, useRef } from 'react';
 import { HashRouter, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -24,53 +24,60 @@ const AISolutionsPage = lazy(() => import('./pages/services/AISolutionsPage'));
 /**
  * Scroll Restoration Component
  * 
- * - Navigating TO service page: Scroll to top
+ * - Navigating TO any page (service, home via link): Scroll to top
  * - Navigating BACK to home: Restore saved position
- * - Navigating FORWARD to home: Scroll to top
  */
 function ScrollRestoration() {
   const { pathname } = useLocation();
   const navigationType = useNavigationType();
-
-  useEffect(() => {
-    const isHomePage = pathname === '/';
-    const isServicePage = pathname.startsWith('/services/');
-
-    if (isHomePage) {
-      // NAVIGATING TO HOME PAGE
-      if (navigationType === 'POP') {
-        // BACK/FORWARD button - restore position
-        const savedPosition = sessionStorage.getItem('homeScrollPosition');
-        const scrollY = savedPosition ? parseInt(savedPosition, 10) : 0;
-        
-        // Use setTimeout to ensure DOM is ready
-        setTimeout(() => {
-          window.scrollTo(0, scrollY);
-          ScrollTrigger.refresh();
-        }, 50);
-      } else {
-        // PUSH (direct navigation to home) - scroll to top
-        window.scrollTo(0, 0);
-        ScrollTrigger.refresh();
-      }
-    } else if (isServicePage) {
-      // NAVIGATING TO SERVICE PAGE - always scroll to top
-      window.scrollTo(0, 0);
-      ScrollTrigger.refresh();
+  const [savedPositions] = useState<Record<string, number>>(() => {
+    // Load saved positions from sessionStorage on mount
+    try {
+      const saved = sessionStorage.getItem('scrollPositions');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
     }
-  }, [pathname, navigationType]);
+  });
 
-  // Save scroll position when on home page
+  // Handle scroll restoration on route change
   useEffect(() => {
     const isHomePage = pathname === '/';
-    
-    if (!isHomePage) return;
+    const isPopNavigation = navigationType === 'POP';
 
+    if (isHomePage && isPopNavigation) {
+      // BACK button to home - restore position
+      const savedY = savedPositions['/'] || 0;
+      // Delay to ensure React has rendered
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          window.scrollTo(0, savedY);
+        });
+      });
+    } else {
+      // All other navigation (forward, direct link click) - go to top
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, navigationType, savedPositions]);
+
+  // Save scroll position before navigating away
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      try {
+        sessionStorage.setItem('scrollPositions', JSON.stringify(savedPositions));
+      } catch {}
+    };
+
+    const saveCurrentPosition = () => {
+      savedPositions[pathname] = window.scrollY;
+    };
+
+    // Save position when user scrolls (throttled)
     let ticking = false;
     const handleScroll = () => {
       if (!ticking) {
-        window.requestAnimationFrame(() => {
-          sessionStorage.setItem('homeScrollPosition', window.scrollY.toString());
+        requestAnimationFrame(() => {
+          saveCurrentPosition();
           ticking = false;
         });
         ticking = true;
@@ -78,11 +85,15 @@ function ScrollRestoration() {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('beforeunload', handleBeforeUnload);
     
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      // Save position when leaving this route
+      saveCurrentPosition();
     };
-  }, [pathname]);
+  }, [pathname, savedPositions]);
 
   return null;
 }
