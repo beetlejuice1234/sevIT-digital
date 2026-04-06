@@ -338,11 +338,8 @@ function ChatSection() {
       ctx.revert();
       if (scrollTweenRef.current) scrollTweenRef.current.kill();
       if (timelineRef.current) timelineRef.current.kill();
-      // Reset when component unmounts so chat plays again on return
+      // Reset ref when component unmounts so chat plays again on return
       hasStartedRef.current = false;
-      setHasStarted(false);
-      setMessages([]);
-      setIsTyping(null);
     };
   }, [playConversation]);
 

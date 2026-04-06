@@ -30,15 +30,17 @@ const AISolutionsPage = lazy(() => import('./pages/services/AISolutionsPage'));
 function ScrollRestoration() {
   const { pathname } = useLocation();
   const navigationType = useNavigationType();
-  const [savedPositions] = useState<Record<string, number>>(() => {
-    // Load saved positions from sessionStorage on mount
+  const savedPositionsRef = useRef<Record<string, number>>({});
+
+  // Load saved position from sessionStorage on mount
+  useEffect(() => {
     try {
-      const saved = sessionStorage.getItem('scrollPositions');
-      return saved ? JSON.parse(saved) : {};
-    } catch {
-      return {};
-    }
-  });
+      const saved = sessionStorage.getItem('homeScrollPosition');
+      if (saved) {
+        savedPositionsRef.current['/'] = parseInt(saved, 10);
+      }
+    } catch {}
+  }, []);
 
   // Handle scroll restoration on route change
   useEffect(() => {
@@ -47,53 +49,28 @@ function ScrollRestoration() {
 
     if (isHomePage && isPopNavigation) {
       // BACK button to home - restore position
-      const savedY = savedPositions['/'] || 0;
-      // Delay to ensure React has rendered
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          window.scrollTo(0, savedY);
-        });
-      });
+      const savedY = savedPositionsRef.current['/'] || 0;
+      window.scrollTo(0, savedY);
     } else {
       // All other navigation (forward, direct link click) - go to top
       window.scrollTo(0, 0);
     }
-  }, [pathname, navigationType, savedPositions]);
+  }, [pathname, navigationType]);
 
-  // Save scroll position before navigating away
+  // Save scroll position when on home page
   useEffect(() => {
-    const handleBeforeUnload = () => {
+    if (pathname !== '/') return;
+
+    const handleScroll = () => {
+      savedPositionsRef.current['/'] = window.scrollY;
       try {
-        sessionStorage.setItem('scrollPositions', JSON.stringify(savedPositions));
+        sessionStorage.setItem('homeScrollPosition', window.scrollY.toString());
       } catch {}
     };
 
-    const saveCurrentPosition = () => {
-      savedPositions[pathname] = window.scrollY;
-    };
-
-    // Save position when user scrolls (throttled)
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          saveCurrentPosition();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      // Save position when leaving this route
-      saveCurrentPosition();
-    };
-  }, [pathname, savedPositions]);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [pathname]);
 
   return null;
 }
