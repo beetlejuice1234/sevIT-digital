@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -13,149 +13,116 @@ interface TextScrambleProps {
 const chars = '!<>-_\\/[]{}—=+*^?#________';
 
 /**
- * GPU-Optimized Text Scramble Effect
+ * Text Scramble Effect - Stable Version
  * 
- * Uses canvas-based rendering to avoid React state updates and layout thrashing.
- * All animations are computed on the GPU via canvas 2D context.
+ * Uses pre-sized container to prevent layout shift.
+ * Characters reveal with a cyberpunk scramble effect.
  */
 function TextScramble({ text, className = '', triggerPoint = 'top 80%' }: TextScrambleProps) {
   const containerRef = useRef<HTMLSpanElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<gsap.core.Tween | null>(null);
   const hasAnimated = useRef(false);
-  const frameRef = useRef<number | null>(null);
+  const [displayText, setDisplayText] = useState(text);
+  const [isScrambling, setIsScrambling] = useState(false);
 
-  // Memoized scramble render function - no React state, pure canvas
-  const renderScramble = useCallback((progress: number) => {
-    const canvas = canvasRef.current;
-    const container = containerRef.current;
-    if (!canvas || !container) return;
+  // Stable container size - prevents layout shift
+  const containerStyle: React.CSSProperties = {
+    display: 'inline-block',
+    minWidth: '100%',
+    // Use opacity to hide/show without affecting layout
+    opacity: isScrambling ? 1 : 0.99,
+  };
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+  const scramble = useCallback(() => {
+    if (hasAnimated.current) return;
+    hasAnimated.current = true;
+    setIsScrambling(true);
 
-    const length = text.length;
-    const revealedCount = Math.floor(progress * length);
+    const textLength = text.length;
+    const scrambleDuration = 2000; // 2 seconds total
+    const charRevealDelay = 40; // ms between each character
     
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Set text styling to match parent
-    const computedStyle = window.getComputedStyle(container);
-    const fontSize = computedStyle.fontSize || '48px';
-    const fontFamily = computedStyle.fontFamily || 'system-ui';
-    const fontWeight = computedStyle.fontWeight || '500';
-    const color = computedStyle.color || '#ffffff';
-    
-    ctx.font = `${fontWeight} ${fontSize} ${fontFamily}`;
-    ctx.fillStyle = color;
-    ctx.textBaseline = 'middle';
-    
-    // Measure and center text
-    const metrics = ctx.measureText(text);
-    const x = (canvas.width - metrics.width) / 2;
-    const y = canvas.height / 2;
-    
-    // Build scrambled text
-    let displayText = '';
-    for (let i = 0; i < length; i++) {
-      const char = text[i];
-      if (char === ' ') {
-        displayText += ' ';
-      } else if (i < revealedCount) {
-        displayText += char;
-      } else {
-        // Random scramble character
-        displayText += chars[Math.floor(Math.random() * chars.length)];
+    const startTime = Date.now();
+    const revealedChars = new Set<number>();
+
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / scrambleDuration, 1);
+      
+      // Determine how many characters should be revealed
+      const shouldBeRevealed = Math.floor((elapsed / charRevealDelay));
+      
+      let newText = '';
+      for (let i = 0; i < textLength; i++) {
+        const char = text[i];
+        
+        // Space always stays space
+        if (char === ' ') {
+          newText += ' ';
+          continue;
+        }
+        
+        // Reveal character if its time has come
+        if (i < shouldBeRevealed || Math.random() < progress) {
+          revealedChars.add(i);
+        }
+        
+        if (revealedChars.has(i)) {
+          newText += char;
+        } else {
+          // Random scramble character
+          newText += chars[Math.floor(Math.random() * chars.length)];
+        }
       }
-    }
-    
-    ctx.fillText(displayText, x, y);
+      
+      setDisplayText(newText);
+      
+      if (progress < 1 || revealedChars.size < textLength) {
+        requestAnimationFrame(animate);
+      } else {
+        // Ensure final text is correct
+        setDisplayText(text);
+        setIsScrambling(false);
+      }
+    };
+
+    requestAnimationFrame(animate);
   }, [text]);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
     const container = containerRef.current;
-    if (!canvas || !container) return;
+    if (!container) return;
 
-    // Set canvas size to match container
-    const resizeCanvas = () => {
-      const rect = container.getBoundingClientRect();
-      // Use higher resolution for crisp text
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      canvas.style.width = `${rect.width}px`;
-      canvas.style.height = `${rect.height}px`;
-      
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.scale(dpr, dpr);
-      }
-    };
-
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas, { passive: true });
-
-    // Initial render - show scrambled text
-    renderScramble(0);
-
-    // Create ScrollTrigger for animation
+    // Create ScrollTrigger
     const trigger = ScrollTrigger.create({
       trigger: container,
       start: triggerPoint,
-      onEnter: () => {
-        if (hasAnimated.current) return;
-        hasAnimated.current = true;
-
-        // Use GSAP to animate progress from 0 to 1
-        const progressObj = { value: 0 };
-        
-        animationRef.current = gsap.to(progressObj, {
-          value: 1,
-          duration: 1.5,
-          ease: 'power2.out',
-          onUpdate: () => {
-            // Render on RAF for smooth 60FPS
-            if (frameRef.current) cancelAnimationFrame(frameRef.current);
-            frameRef.current = requestAnimationFrame(() => {
-              renderScramble(progressObj.value);
-            });
-          },
-          onComplete: () => {
-            // Final render with complete text
-            renderScramble(1);
-          },
-        });
-      },
+      onEnter: scramble,
     });
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
       trigger.kill();
-      if (animationRef.current) animationRef.current.kill();
-      if (frameRef.current) cancelAnimationFrame(frameRef.current);
     };
-  }, [triggerPoint, renderScramble]);
+  }, [scramble, triggerPoint]);
 
   return (
     <span 
       ref={containerRef} 
       className={`relative inline-block ${className}`}
-      style={{ 
-        minHeight: '1.2em',
-        display: 'inline-block',
-      }}
+      style={containerStyle}
     >
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0"
-        style={{
-          display: 'block',
-          willChange: 'contents',
+      {/* The scrambled text */}
+      <span 
+        className="font-mono tracking-tight"
+        style={{ 
+          fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+          whiteSpace: 'pre-wrap',
         }}
-      />
-      {/* Hidden text for SEO and accessibility */}
+        aria-hidden="true"
+      >
+        {displayText}
+      </span>
+      
+      {/* Hidden real text for SEO/accessibility */}
       <span className="sr-only">{text}</span>
     </span>
   );

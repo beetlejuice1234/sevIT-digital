@@ -12,116 +12,188 @@ interface Message {
   id: number;
   type: 'ai' | 'user';
   text: string;
+  timestamp?: string;
 }
 
-const initialMessages: Omit<Message, 'id'>[] = [
+// Realistic chat conversation - SLOWED DOWN significantly
+const chatScenario: { type: 'ai' | 'user'; text: string; delayAfter?: number }[] = [
   {
     type: 'ai',
-    text: "🚀 Welcome to sevIT! I'm your AI guide to digital excellence. What brings you here today?",
+    text: "Hey there! Welcome to sevIT. I'm your AI assistant. What brings you here today?",
+    delayAfter: 2500, // User reads and thinks
   },
   {
     type: 'user',
-    text: 'I need help with my website and online presence.',
+    text: 'Hi! I need help with my website',
+    delayAfter: 3500, // AI "reads" and starts typing
   },
   {
     type: 'ai',
-    text: 'Great choice! A strong digital presence is essential. Are you looking to build a new website from scratch, or revamp an existing one?',
+    text: "Got it! Are you looking to build something brand new, or revamp an existing site?",
+    delayAfter: 2800,
   },
   {
     type: 'user',
-    text: 'I want a completely new, modern website.',
+    text: 'I want a completely new modern website',
+    delayAfter: 4000,
   },
   {
     type: 'ai',
-    text: 'Perfect! We specialize in creating stunning, high-converting websites with React & Next.js. What type of business are you in?',
+    text: "Perfect! We specialize in high-converting sites with React & Next.js. What's your business?",
+    delayAfter: 3200,
   },
   {
     type: 'user',
-    text: 'I run an e-commerce store selling fashion accessories.',
+    text: 'I run an e-commerce store selling fashion accessories',
+    delayAfter: 5000,
   },
   {
     type: 'ai',
-    text: 'Excellent! Fashion e-commerce is our forte. We can create a visually stunning site with 3D product showcases, smooth checkout flows, and integrated payment systems. Want to see how we can boost your sales?',
+    text: "Fashion e-commerce is our forte! We can create stunning 3D product showcases, smooth checkout flows, and integrated payments. Want to see how we can boost your sales?",
+    delayAfter: 0,
   },
 ];
 
-// AI response templates for different user inputs
+// MUCH slower typing - 40 WPM for AI, 30 WPM for user (slower than real life)
+const getTypingDuration = (text: string, isAI: boolean): number => {
+  const chars = text.length;
+  // AI: 40 WPM, User: 30 WPM (slower for dramatic effect)
+  const cpm = isAI ? 200 : 150; // characters per minute
+  const baseDuration = (chars / cpm) * 60 * 1000; // in ms
+  // Add more variance
+  const variance = baseDuration * 0.3;
+  return Math.max(1500, baseDuration + (Math.random() * variance * 2 - variance));
+};
+
+// AI response templates
 const getAIResponse = (userMessage: string): string => {
   const lowerMsg = userMessage.toLowerCase();
   
   if (lowerMsg.includes('price') || lowerMsg.includes('cost') || lowerMsg.includes('how much')) {
-    return "Our pricing varies based on project scope. Websites start at $3,500, full branding packages at $2,000, and 3D rendering projects at $1,500. Let's schedule a call to discuss your specific needs and get you a custom quote!";
+    return "Our pricing varies based on project scope. Websites start at $3,500, full branding packages at $2,000, and 3D rendering projects at $1,500. Let's schedule a call to discuss your specific needs!";
   }
   
-  if (lowerMsg.includes('time') || lowerMsg.includes('long') || lowerMsg.includes('duration')) {
-    return "Typical timelines: Website projects take 4-8 weeks, branding 2-4 weeks, and 3D rendering 1-3 weeks depending on complexity. Rush options available!";
+  if (lowerMsg.includes('time') || lowerMsg.includes('long')) {
+    return "Typical timelines: Website projects take 4-8 weeks, branding 2-4 weeks, and 3D rendering 1-3 weeks. Rush options available!";
   }
   
-  if (lowerMsg.includes('3d') || lowerMsg.includes('render') || lowerMsg.includes('visualization')) {
-    return "Our 3D team creates photorealistic product visualizations, architectural renders, and animations that make your products impossible to ignore. Perfect for e-commerce and marketing!";
+  if (lowerMsg.includes('3d') || lowerMsg.includes('render')) {
+    return "Our 3D team creates photorealistic product visualizations and animations that make your products impossible to ignore!";
   }
   
-  if (lowerMsg.includes('brand') || lowerMsg.includes('logo') || lowerMsg.includes('identity')) {
-    return "We craft complete brand identities - from logo design to color palettes, typography, and brand guidelines. Your brand will stand out in the crowded digital space.";
+  if (lowerMsg.includes('brand') || lowerMsg.includes('logo')) {
+    return "We craft complete brand identities - from logo design to color palettes, typography, and brand guidelines.";
   }
   
-  if (lowerMsg.includes('ad') || lowerMsg.includes('marketing') || lowerMsg.includes('traffic') || lowerMsg.includes('lead')) {
-    return "Our growth marketing team runs data-driven campaigns across Google Ads, Meta, and more. We focus on ROI - every dollar spent should bring measurable results.";
+  if (lowerMsg.includes('marketing') || lowerMsg.includes('ad')) {
+    return "Our growth marketing team runs data-driven campaigns across Google Ads, Meta, and more. We focus on ROI!";
   }
   
-  if (lowerMsg.includes('seo') || lowerMsg.includes('search') || lowerMsg.includes('rank')) {
-    return "SEO is built into everything we do. From technical optimization to content strategy, we'll help you climb the search rankings and get found by your ideal customers.";
+  if (lowerMsg.includes('seo')) {
+    return "SEO is built into everything we do. From technical optimization to content strategy, we'll help you climb the rankings!";
   }
   
-  if (lowerMsg.includes('hello') || lowerMsg.includes('hi') || lowerMsg.includes('hey')) {
-    return "Hey there! 👋 Ready to take your digital presence to the next level? Tell me about your project!";
-  }
-  
-  if (lowerMsg.includes('thank')) {
-    return "You're welcome! 🌟 I'm here to help. What else would you like to know about our services?";
-  }
-  
-  return "That's fascinating! I'd love to learn more about your specific needs. Would you like to schedule a free discovery call with our team?";
+  return "That's fascinating! I'd love to learn more. Would you like to schedule a free discovery call with our team?";
 };
 
-// GPU-optimized message component with hardware acceleration
-const ChatMessage = memo(({ message, index }: { message: Message; index: number }) => (
-  <div
-    className={`chat-message flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-    style={{
-      willChange: 'transform, opacity',
-      transform: 'translateZ(0)',
-    }}
-    data-message-index={index}
-  >
+// Chat Message Component
+const ChatMessage = memo(({ message }: { message: Message }) => {
+  const isAI = message.type === 'ai';
+  
+  return (
     <div
-      className={`max-w-[80%] px-4 py-3 rounded-2xl ${
-        message.type === 'user'
-          ? 'bg-foreground text-background rounded-br-md'
-          : 'bg-muted text-foreground rounded-bl-md'
-      }`}
+      className={`chat-message flex ${isAI ? 'justify-start' : 'justify-end'} group`}
+      style={{
+        willChange: 'transform, opacity',
+        transform: 'translateZ(0)',
+      }}
     >
-      <p className="text-sm leading-relaxed">{message.text}</p>
+      <div className={`flex ${isAI ? 'flex-row' : 'flex-row-reverse'} items-end gap-2 max-w-[85%]`}>
+        {/* Avatar */}
+        <div 
+          className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
+            isAI ? 'bg-accent/20' : 'bg-foreground/20'
+          }`}
+        >
+          {isAI ? (
+            <Bot className="w-4 h-4 text-accent" />
+          ) : (
+            <span className="text-xs font-medium text-foreground">You</span>
+          )}
+        </div>
+        
+        {/* Message Bubble */}
+        <div
+          className={`px-4 py-3 rounded-2xl ${
+            isAI
+              ? 'bg-muted text-foreground rounded-bl-md'
+              : 'bg-foreground text-background rounded-br-md'
+          }`}
+        >
+          <p className="text-sm leading-relaxed">{message.text}</p>
+          
+          {/* Timestamp */}
+          <div className={`flex items-center gap-1 mt-1 ${isAI ? '' : 'justify-end'}`}>
+            <span className={`text-[10px] ${isAI ? 'text-muted-foreground/60' : 'text-background/60'}`}>
+              {message.timestamp}
+            </span>
+            {!isAI && (
+              <svg className="w-3 h-3 text-accent" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 13a6 6 0 1 1 0-12 6 6 0 0 1 0 12z"/>
+                <path d="M10.97 6.97a.75.75 0 0 0-1.06-1.06L7 8.81 5.59 7.4a.75.75 0 0 0-1.06 1.06l2 2a.75.75 0 0 0 1.06 0l3.38-3.49z"/>
+              </svg>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-));
+  );
+});
 
 ChatMessage.displayName = 'ChatMessage';
 
-// GPU-optimized typing indicator
-const TypingIndicator = memo(() => (
+// Typing Indicator
+const TypingIndicator = memo(({ isAI }: { isAI: boolean }) => (
   <div 
-    className="flex justify-start"
+    className={`flex ${isAI ? 'justify-start' : 'justify-end'}`}
     style={{
       willChange: 'transform, opacity',
       transform: 'translateZ(0)',
     }}
   >
-    <div className="bg-muted px-4 py-3 rounded-2xl rounded-bl-md">
-      <div className="flex gap-1">
-        <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: '0ms' }} />
-        <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: '150ms' }} />
-        <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: '300ms' }} />
+    <div className={`flex ${isAI ? 'flex-row' : 'flex-row-reverse'} items-end gap-2`}>
+      <div 
+        className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
+          isAI ? 'bg-accent/20' : 'bg-foreground/20'
+        }`}
+      >
+        {isAI ? (
+          <Bot className="w-4 h-4 text-accent" />
+        ) : (
+          <span className="text-xs font-medium text-foreground">You</span>
+        )}
+      </div>
+      
+      <div className={`bg-muted px-4 py-3 rounded-2xl ${isAI ? 'rounded-bl-md' : 'rounded-br-md'}`}>
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1">
+            <span 
+              className="w-2 h-2 rounded-full bg-muted-foreground/50 animate-bounce" 
+              style={{ animationDelay: '0ms', animationDuration: '0.6s' }} 
+            />
+            <span 
+              className="w-2 h-2 rounded-full bg-muted-foreground/50 animate-bounce" 
+              style={{ animationDelay: '100ms', animationDuration: '0.6s' }} 
+            />
+            <span 
+              className="w-2 h-2 rounded-full bg-muted-foreground/50 animate-bounce" 
+              style={{ animationDelay: '200ms', animationDuration: '0.6s' }} 
+            />
+          </div>
+          <span className="text-[10px] text-muted-foreground/60">
+            {isAI ? 'sevIT AI is typing...' : 'You are typing...'}
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -129,12 +201,6 @@ const TypingIndicator = memo(() => (
 
 TypingIndicator.displayName = 'TypingIndicator';
 
-/**
- * GPU-Optimized Chat Section
- * 
- * Uses GSAP for smooth 60FPS animations with hardware acceleration.
- * Message animations use transform and opacity only - no layout thrashing.
- */
 function ChatSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -142,107 +208,97 @@ function ChatSection() {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState<'ai' | 'user' | null>(null);
+  const [hasStarted, setHasStarted] = useState(false);
   const navigate = useNavigate();
   
-  // Track animation state with refs to avoid re-renders
-  const hasAnimatedRef = useRef(false);
   const scrollTweenRef = useRef<gsap.core.Tween | null>(null);
+  const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
-  // GPU-accelerated scroll to bottom
+  const getTimestamp = () => {
+    const now = new Date();
+    return now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  };
+
   const scrollToBottom = useCallback(() => {
     if (!messagesContainerRef.current) return;
     
     const container = messagesContainerRef.current;
     const targetScroll = container.scrollHeight - container.clientHeight;
     
-    // Kill any existing scroll animation
     if (scrollTweenRef.current) {
       scrollTweenRef.current.kill();
     }
     
-    // Animate scroll with GSAP for smooth 60FPS
     scrollTweenRef.current = gsap.to(container, {
       scrollTop: targetScroll,
-      duration: 0.3,
+      duration: 0.4,
       ease: 'power2.out',
     });
   }, []);
 
-  // Play initial message animation sequence
-  const playMessageSequence = useCallback(() => {
-    if (hasAnimatedRef.current) return;
-    hasAnimatedRef.current = true;
+  const playConversation = useCallback(() => {
+    if (hasStarted) return;
+    setHasStarted(true);
 
     const tl = gsap.timeline();
-    
-    initialMessages.forEach((msg, index) => {
-      if (msg.type === 'ai') {
-        // Show typing indicator
-        tl.call(() => {
-          setIsTyping(true);
-          scrollToBottom();
-        });
-        
-        tl.to({}, { duration: 0.5 }); // Wait for typing effect
-        
-        // Hide typing and show message with GPU animation
-        tl.call(() => {
-          setIsTyping(false);
-          const newMessage: Message = { ...msg, id: Date.now() + index };
-          setMessages(prev => [...prev, newMessage]);
-        });
-        
-        // Animate the new message in
-        tl.add(() => {
-          const messageElements = document.querySelectorAll('.chat-message');
-          const lastMessage = messageElements[messageElements.length - 1];
-          if (lastMessage) {
-            gsap.fromTo(
-              lastMessage,
-              { opacity: 0, y: 20, scale: 0.95 },
-              { 
-                opacity: 1, 
-                y: 0, 
-                scale: 1, 
-                duration: 0.4, 
-                ease: 'power3.out',
-              }
-            );
-          }
-          scrollToBottom();
-        });
-      } else {
-        // User message - add immediately with animation
-        tl.call(() => {
-          const newMessage: Message = { ...msg, id: Date.now() + index };
-          setMessages(prev => [...prev, newMessage]);
-        });
-        
-        tl.add(() => {
-          const messageElements = document.querySelectorAll('.chat-message');
-          const lastMessage = messageElements[messageElements.length - 1];
-          if (lastMessage) {
-            gsap.fromTo(
-              lastMessage,
-              { opacity: 0, x: 30 },
-              { 
-                opacity: 1, 
-                x: 0, 
-                duration: 0.4, 
-                ease: 'power3.out',
-              }
-            );
-          }
-          scrollToBottom();
-        });
+    timelineRef.current = tl;
+
+    chatScenario.forEach((msg, index) => {
+      const isAI = msg.type === 'ai';
+      const typingDuration = getTypingDuration(msg.text, isAI) / 1000; // Convert to seconds
+      
+      // Show typing indicator
+      tl.call(() => {
+        setIsTyping(isAI ? 'ai' : 'user');
+        scrollToBottom();
+      });
+      
+      // Type for realistic duration (MIN 1.5s, MAX 5s for long messages)
+      const displayTypingDuration = Math.min(Math.max(typingDuration, 1.5), 5);
+      tl.to({}, { duration: displayTypingDuration });
+      
+      // Hide typing and show message
+      tl.call(() => {
+        setIsTyping(null);
+        const newMessage: Message = {
+          id: Date.now() + index,
+          type: msg.type,
+          text: msg.text,
+          timestamp: getTimestamp(),
+        };
+        setMessages(prev => [...prev, newMessage]);
+      });
+      
+      // Animate message entrance
+      tl.add(() => {
+        const messageElements = document.querySelectorAll('.chat-message');
+        const lastMessage = messageElements[messageElements.length - 1];
+        if (lastMessage) {
+          gsap.fromTo(
+            lastMessage,
+            { opacity: 0, y: 15, scale: 0.96 },
+            { 
+              opacity: 1, 
+              y: 0, 
+              scale: 1, 
+              duration: 0.4, 
+              ease: 'back.out(1.5)',
+            }
+          );
+        }
+        scrollToBottom();
+      });
+      
+      // Reading delay before next message (SLOW)
+      if (msg.delayAfter && msg.delayAfter > 0) {
+        tl.to({}, { duration: msg.delayAfter / 1000 });
       }
     });
-  }, [scrollToBottom]);
+  }, [hasStarted, scrollToBottom]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Content entrance animation - GPU accelerated
       gsap.fromTo(
         contentRef.current,
         { opacity: 0, x: -50 },
@@ -259,13 +315,13 @@ function ChatSection() {
         }
       );
 
-      // Chat window entrance animation - GPU accelerated
       gsap.fromTo(
         chatWindowRef.current,
-        { opacity: 0, x: 50 },
+        { opacity: 0, x: 50, scale: 0.98 },
         {
           opacity: 1,
           x: 0,
+          scale: 1,
           duration: 0.8,
           ease: 'power3.out',
           scrollTrigger: {
@@ -273,8 +329,8 @@ function ChatSection() {
             start: 'top 60%',
             once: true,
             onEnter: () => {
-              // Start message sequence after entrance animation
-              setTimeout(playMessageSequence, 300);
+              // Longer delay before starting conversation
+              setTimeout(playConversation, 800);
             },
           },
         }
@@ -283,80 +339,88 @@ function ChatSection() {
 
     return () => {
       ctx.revert();
-      if (scrollTweenRef.current) {
-        scrollTweenRef.current.kill();
-      }
+      if (scrollTweenRef.current) scrollTweenRef.current.kill();
+      if (timelineRef.current) timelineRef.current.kill();
     };
-  }, [playMessageSequence]);
+  }, [playConversation]);
 
-  // Handle sending a new message
   const handleSendMessage = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
 
-    const newMessage: Message = {
-      id: Date.now(),
-      type: 'user',
-      text: inputValue,
-    };
-
-    // Add user message with GPU animation
-    setMessages(prev => [...prev, newMessage]);
-    setInputValue('');
-    
-    // Animate in the new message
-    requestAnimationFrame(() => {
-      const messageElements = document.querySelectorAll('.chat-message');
-      const lastMessage = messageElements[messageElements.length - 1];
-      if (lastMessage) {
-        gsap.fromTo(
-          lastMessage,
-          { opacity: 0, x: 30 },
-          { 
-            opacity: 1, 
-            x: 0, 
-            duration: 0.4, 
-            ease: 'power3.out',
-          }
-        );
-      }
-      scrollToBottom();
-    });
-
-    // Simulate AI response
     const tl = gsap.timeline();
-    
+
+    // User types
     tl.call(() => {
-      setIsTyping(true);
+      setIsTyping('user');
       scrollToBottom();
     });
     
-    tl.to({}, { duration: 1 }); // Typing delay
-    
+    const userTypingDuration = Math.min(getTypingDuration(inputValue, false) / 1000, 2.5);
+    tl.to({}, { duration: userTypingDuration });
+
+    // User message appears
     tl.call(() => {
-      setIsTyping(false);
-      const aiResponse: Message = {
-        id: Date.now() + 1,
-        type: 'ai',
-        text: getAIResponse(newMessage.text),
+      setIsTyping(null);
+      const newMessage: Message = {
+        id: Date.now(),
+        type: 'user',
+        text: inputValue,
+        timestamp: getTimestamp(),
       };
-      setMessages(prev => [...prev, aiResponse]);
+      setMessages(prev => [...prev, newMessage]);
+      setInputValue('');
     });
-    
+
+    // Animate user message
     tl.add(() => {
       const messageElements = document.querySelectorAll('.chat-message');
       const lastMessage = messageElements[messageElements.length - 1];
       if (lastMessage) {
         gsap.fromTo(
           lastMessage,
-          { opacity: 0, y: 20, scale: 0.95 },
-          { 
-            opacity: 1, 
-            y: 0, 
-            scale: 1, 
-            duration: 0.4, 
-            ease: 'power3.out',
-          }
+          { opacity: 0, x: 20, scale: 0.96 },
+          { opacity: 1, x: 0, scale: 1, duration: 0.3, ease: 'power3.out' }
+        );
+      }
+      scrollToBottom();
+    });
+
+    // AI "reads" the message (longer delay)
+    const readingTime = Math.min(inputValue.length * 0.04, 2.5);
+    tl.to({}, { duration: readingTime });
+
+    // AI starts typing
+    tl.call(() => {
+      setIsTyping('ai');
+      scrollToBottom();
+    });
+
+    const aiResponse = getAIResponse(inputValue);
+    const aiTypingDuration = Math.min(getTypingDuration(aiResponse, true) / 1000, 5);
+    tl.to({}, { duration: aiTypingDuration });
+
+    // AI message appears
+    tl.call(() => {
+      setIsTyping(null);
+      const responseMessage: Message = {
+        id: Date.now() + 1,
+        type: 'ai',
+        text: aiResponse,
+        timestamp: getTimestamp(),
+      };
+      setMessages(prev => [...prev, responseMessage]);
+    });
+
+    // Animate AI response
+    tl.add(() => {
+      const messageElements = document.querySelectorAll('.chat-message');
+      const lastMessage = messageElements[messageElements.length - 1];
+      if (lastMessage) {
+        gsap.fromTo(
+          lastMessage,
+          { opacity: 0, y: 15, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: 'back.out(1.5)' }
         );
       }
       scrollToBottom();
@@ -373,7 +437,6 @@ function ChatSection() {
       id="chat"
       className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 z-50"
     >
-      {/* Space decorations - CSS animations only */}
       <div className="absolute top-20 right-20 text-accent/20">
         <Star className="w-6 h-6 animate-pulse" />
       </div>
@@ -383,7 +446,6 @@ function ChatSection() {
 
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Left Content */}
           <div 
             ref={contentRef}
             style={{
@@ -437,25 +499,18 @@ function ChatSection() {
               </div>
             </div>
 
-            {/* CTAs */}
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
               <a
                 href="#booking"
                 className="inline-flex items-center justify-center px-8 py-4 text-sm font-medium text-background bg-foreground rounded-full transition-all duration-300 hover:scale-105 hover:bg-accent"
-                style={{
-                  willChange: 'transform',
-                  transform: 'translateZ(0)',
-                }}
+                style={{ willChange: 'transform', transform: 'translateZ(0)' }}
               >
                 Book a Discovery Call
               </a>
               <button
                 onClick={handleTalkToAI}
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-medium text-foreground border border-border rounded-full transition-all duration-300 hover:bg-surface hover:border-foreground/20 group"
-                style={{
-                  willChange: 'transform',
-                  transform: 'translateZ(0)',
-                }}
+                style={{ willChange: 'transform', transform: 'translateZ(0)' }}
               >
                 <MessageSquare className="w-4 h-4 text-accent" />
                 <span>Talk to Real AI</span>
@@ -464,12 +519,11 @@ function ChatSection() {
             </div>
           </div>
 
-          {/* Chat Window - GPU accelerated */}
           <div
             ref={chatWindowRef}
             className="relative bg-surface rounded-3xl border border-border/50 overflow-hidden card-shadow"
             style={{
-              minHeight: '500px',
+              minHeight: '520px',
               willChange: 'transform, opacity',
               transform: 'translateZ(0)',
               backfaceVisibility: 'hidden',
@@ -478,14 +532,20 @@ function ChatSection() {
             {/* Chat Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-border/50 bg-surface/80 backdrop-blur-sm">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
-                  <Bot className="w-5 h-5 text-accent" />
+                <div className="relative">
+                  <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+                    <Bot className="w-5 h-5 text-accent" />
+                  </div>
+                  <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-surface" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-foreground text-sm">
                     sev<span className="text-red-500">IT</span> AI
                   </h4>
-                  <p className="text-xs text-muted-foreground">Demo Mode</p>
+                  <p className="text-xs text-green-500 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                    Online
+                  </p>
                 </div>
               </div>
               <div className="flex gap-2">
@@ -495,30 +555,27 @@ function ChatSection() {
               </div>
             </div>
 
-            {/* Messages - GPU accelerated container */}
+            {/* Messages */}
             <div
               ref={messagesContainerRef}
-              className="h-[350px] overflow-y-auto px-6 py-4 space-y-4 scrollbar-thin"
-              style={{
-                willChange: 'scroll-position',
-              }}
+              className="h-[360px] overflow-y-auto px-4 py-4 space-y-3 scrollbar-thin"
+              style={{ willChange: 'scroll-position' }}
             >
-              {messages.length === 0 && (
+              {messages.length === 0 && !hasStarted && (
                 <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
                   <Bot className="w-12 h-12 mb-3 opacity-50" />
-                  <p className="text-sm">Start a conversation...</p>
+                  <p className="text-sm">Starting conversation...</p>
                 </div>
               )}
               
-              {messages.map((message, index) => (
-                <ChatMessage key={message.id} message={message} index={index} />
+              {messages.map((message) => (
+                <ChatMessage key={message.id} message={message} />
               ))}
 
-              {/* Typing Indicator */}
-              {isTyping && <TypingIndicator />}
+              {isTyping && <TypingIndicator isAI={isTyping === 'ai'} />}
             </div>
 
-            {/* Input Area */}
+            {/* Input */}
             <form
               onSubmit={handleSendMessage}
               className="flex items-center gap-3 px-6 py-4 border-t border-border/50 bg-surface/80 backdrop-blur-sm"
@@ -528,15 +585,15 @@ function ChatSection() {
                 placeholder="Ask about pricing, services, timelines..."
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                className="flex-1 bg-background border-border/50 text-foreground placeholder:text-muted-foreground rounded-full px-4 py-2 text-sm focus-visible:ring-accent"
+                disabled={!hasStarted || isTyping !== null}
+                className="flex-1 bg-background border-border/50 text-foreground placeholder:text-muted-foreground rounded-full px-4 py-2 text-sm focus-visible:ring-accent disabled:opacity-50"
               />
               <Button
                 type="submit"
                 size="icon"
-                className="w-10 h-10 rounded-full bg-accent hover:bg-accent/90 flex-shrink-0 transition-transform duration-200 active:scale-95"
-                style={{
-                  willChange: 'transform',
-                }}
+                disabled={!inputValue.trim() || !hasStarted || isTyping !== null}
+                className="w-10 h-10 rounded-full bg-accent hover:bg-accent/90 flex-shrink-0 transition-transform duration-200 active:scale-95 disabled:opacity-50"
+                style={{ willChange: 'transform' }}
               >
                 <Send className="w-4 h-4" />
               </Button>
