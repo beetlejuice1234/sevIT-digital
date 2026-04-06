@@ -15,37 +15,37 @@ interface Message {
   timestamp?: string;
 }
 
-// Realistic chat conversation - SLOWED DOWN significantly
+// Chat conversation - FASTER timing so it actually shows
 const chatScenario: { type: 'ai' | 'user'; text: string; delayAfter?: number }[] = [
   {
     type: 'ai',
     text: "Hey there! Welcome to sevIT. I'm your AI assistant. What brings you here today?",
-    delayAfter: 2500, // User reads and thinks
+    delayAfter: 600, // User reads and thinks
   },
   {
     type: 'user',
     text: 'Hi! I need help with my website',
-    delayAfter: 3500, // AI "reads" and starts typing
+    delayAfter: 800, // AI "reads" and starts typing
   },
   {
     type: 'ai',
     text: "Got it! Are you looking to build something brand new, or revamp an existing site?",
-    delayAfter: 2800,
+    delayAfter: 600,
   },
   {
     type: 'user',
     text: 'I want a completely new modern website',
-    delayAfter: 4000,
+    delayAfter: 800,
   },
   {
     type: 'ai',
     text: "Perfect! We specialize in high-converting sites with React & Next.js. What's your business?",
-    delayAfter: 3200,
+    delayAfter: 600,
   },
   {
     type: 'user',
     text: 'I run an e-commerce store selling fashion accessories',
-    delayAfter: 5000,
+    delayAfter: 1000,
   },
   {
     type: 'ai',
@@ -54,15 +54,13 @@ const chatScenario: { type: 'ai' | 'user'; text: string; delayAfter?: number }[]
   },
 ];
 
-// MUCH slower typing - 40 WPM for AI, 30 WPM for user (slower than real life)
+// Reasonable typing speed - 60 WPM for AI, 50 WPM for user
 const getTypingDuration = (text: string, isAI: boolean): number => {
   const chars = text.length;
-  // AI: 40 WPM, User: 30 WPM (slower for dramatic effect)
-  const cpm = isAI ? 200 : 150; // characters per minute
+  const cpm = isAI ? 300 : 250; // characters per minute
   const baseDuration = (chars / cpm) * 60 * 1000; // in ms
-  // Add more variance
-  const variance = baseDuration * 0.3;
-  return Math.max(1500, baseDuration + (Math.random() * variance * 2 - variance));
+  const variance = baseDuration * 0.2;
+  return Math.max(600, baseDuration + (Math.random() * variance * 2 - variance));
 };
 
 // AI response templates
@@ -232,7 +230,7 @@ function ChatSection() {
     
     scrollTweenRef.current = gsap.to(container, {
       scrollTop: targetScroll,
-      duration: 0.4,
+      duration: 0.3,
       ease: 'power2.out',
     });
   }, []);
@@ -246,7 +244,7 @@ function ChatSection() {
 
     chatScenario.forEach((msg, index) => {
       const isAI = msg.type === 'ai';
-      const typingDuration = getTypingDuration(msg.text, isAI) / 1000; // Convert to seconds
+      const typingDuration = getTypingDuration(msg.text, isAI) / 1000;
       
       // Show typing indicator
       tl.call(() => {
@@ -254,8 +252,8 @@ function ChatSection() {
         scrollToBottom();
       });
       
-      // Type for realistic duration (MIN 1.5s, MAX 5s for long messages)
-      const displayTypingDuration = Math.min(Math.max(typingDuration, 1.5), 5);
+      // Type for realistic duration
+      const displayTypingDuration = Math.min(Math.max(typingDuration, 0.5), 2);
       tl.to({}, { duration: displayTypingDuration });
       
       // Hide typing and show message
@@ -277,20 +275,20 @@ function ChatSection() {
         if (lastMessage) {
           gsap.fromTo(
             lastMessage,
-            { opacity: 0, y: 15, scale: 0.96 },
+            { opacity: 0, y: 10, scale: 0.98 },
             { 
               opacity: 1, 
               y: 0, 
               scale: 1, 
-              duration: 0.4, 
-              ease: 'back.out(1.5)',
+              duration: 0.25, 
+              ease: 'power2.out',
             }
           );
         }
         scrollToBottom();
       });
       
-      // Reading delay before next message (SLOW)
+      // Reading delay before next message
       if (msg.delayAfter && msg.delayAfter > 0) {
         tl.to({}, { duration: msg.delayAfter / 1000 });
       }
@@ -301,15 +299,15 @@ function ChatSection() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         contentRef.current,
-        { opacity: 0, x: -50 },
+        { opacity: 0, x: -30 },
         {
           opacity: 1,
           x: 0,
-          duration: 0.8,
-          ease: 'power3.out',
+          duration: 0.6,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 70%',
+            start: 'top 75%',
             once: true,
           },
         }
@@ -317,20 +315,18 @@ function ChatSection() {
 
       gsap.fromTo(
         chatWindowRef.current,
-        { opacity: 0, x: 50, scale: 0.98 },
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
-          x: 0,
-          scale: 1,
-          duration: 0.8,
-          ease: 'power3.out',
+          y: 0,
+          duration: 0.6,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 60%',
+            start: 'top 70%',
             once: true,
             onEnter: () => {
-              // Longer delay before starting conversation
-              setTimeout(playConversation, 800);
+              setTimeout(playConversation, 400);
             },
           },
         }
@@ -356,7 +352,7 @@ function ChatSection() {
       scrollToBottom();
     });
     
-    const userTypingDuration = Math.min(getTypingDuration(inputValue, false) / 1000, 2.5);
+    const userTypingDuration = Math.min(getTypingDuration(inputValue, false) / 1000, 1.2);
     tl.to({}, { duration: userTypingDuration });
 
     // User message appears
@@ -379,15 +375,15 @@ function ChatSection() {
       if (lastMessage) {
         gsap.fromTo(
           lastMessage,
-          { opacity: 0, x: 20, scale: 0.96 },
-          { opacity: 1, x: 0, scale: 1, duration: 0.3, ease: 'power3.out' }
+          { opacity: 0, x: 15, scale: 0.98 },
+          { opacity: 1, x: 0, scale: 1, duration: 0.2, ease: 'power2.out' }
         );
       }
       scrollToBottom();
     });
 
-    // AI "reads" the message (longer delay)
-    const readingTime = Math.min(inputValue.length * 0.04, 2.5);
+    // AI "reads" the message
+    const readingTime = Math.min(inputValue.length * 0.015, 1);
     tl.to({}, { duration: readingTime });
 
     // AI starts typing
@@ -397,7 +393,7 @@ function ChatSection() {
     });
 
     const aiResponse = getAIResponse(inputValue);
-    const aiTypingDuration = Math.min(getTypingDuration(aiResponse, true) / 1000, 5);
+    const aiTypingDuration = Math.min(getTypingDuration(aiResponse, true) / 1000, 2);
     tl.to({}, { duration: aiTypingDuration });
 
     // AI message appears
@@ -419,8 +415,8 @@ function ChatSection() {
       if (lastMessage) {
         gsap.fromTo(
           lastMessage,
-          { opacity: 0, y: 15, scale: 0.96 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: 'back.out(1.5)' }
+          { opacity: 0, y: 10, scale: 0.98 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: 'power2.out' }
         );
       }
       scrollToBottom();
@@ -519,14 +515,15 @@ function ChatSection() {
             </div>
           </div>
 
+          {/* Chat Window with contain: layout to prevent jitter */}
           <div
             ref={chatWindowRef}
             className="relative bg-surface rounded-3xl border border-border/50 overflow-hidden card-shadow"
             style={{
               minHeight: '520px',
+              contain: 'layout', // Prevents layout jitter
               willChange: 'transform, opacity',
               transform: 'translateZ(0)',
-              backfaceVisibility: 'hidden',
             }}
           >
             {/* Chat Header */}

@@ -1,5 +1,5 @@
 import { useState, useEffect, Suspense, lazy } from 'react';
-import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -22,48 +22,63 @@ const MarketingPage = lazy(() => import('./pages/services/MarketingPage'));
 const AISolutionsPage = lazy(() => import('./pages/services/AISolutionsPage'));
 
 /**
- * Custom Scroll Restoration Component
+ * Scroll Restoration Component
  * 
- * STRICT BEHAVIOR:
- * - Navigating TO home page (/): Restores saved scroll position from sessionStorage
- * - Navigating TO any sub-page (/services/*): Forces scroll to top (0,0)
- * - Saves home page scroll position to sessionStorage on every scroll
+ * - Navigating TO service page: Scroll to top
+ * - Navigating BACK to home: Restore saved position
+ * - Navigating FORWARD to home: Scroll to top
  */
 function ScrollRestoration() {
   const { pathname } = useLocation();
+  const navigationType = useNavigationType();
 
   useEffect(() => {
     const isHomePage = pathname === '/';
-    const isSubPage = pathname.startsWith('/services/');
-
-    // Get saved scroll position from sessionStorage
-    const savedPosition = sessionStorage.getItem('homeScrollPosition');
-    const scrollY = savedPosition ? parseInt(savedPosition, 10) : 0;
+    const isServicePage = pathname.startsWith('/services/');
 
     if (isHomePage) {
-      // NAVIGATING TO HOME PAGE - Restore scroll position
-      requestAnimationFrame(() => {
-        window.scrollTo(0, scrollY);
+      // NAVIGATING TO HOME PAGE
+      if (navigationType === 'POP') {
+        // BACK/FORWARD button - restore position
+        const savedPosition = sessionStorage.getItem('homeScrollPosition');
+        const scrollY = savedPosition ? parseInt(savedPosition, 10) : 0;
+        
+        // Use setTimeout to ensure DOM is ready
+        setTimeout(() => {
+          window.scrollTo(0, scrollY);
+          ScrollTrigger.refresh();
+        }, 50);
+      } else {
+        // PUSH (direct navigation to home) - scroll to top
+        window.scrollTo(0, 0);
         ScrollTrigger.refresh();
-      });
-    } else if (isSubPage) {
-      // NAVIGATING TO SUB-PAGE - Force scroll to top
+      }
+    } else if (isServicePage) {
+      // NAVIGATING TO SERVICE PAGE - always scroll to top
       window.scrollTo(0, 0);
       ScrollTrigger.refresh();
     }
+  }, [pathname, navigationType]);
 
-    // Save scroll position when on home page
+  // Save scroll position when on home page
+  useEffect(() => {
+    const isHomePage = pathname === '/';
+    
+    if (!isHomePage) return;
+
+    let ticking = false;
     const handleScroll = () => {
-      if (pathname === '/') {
-        sessionStorage.setItem('homeScrollPosition', window.scrollY.toString());
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          sessionStorage.setItem('homeScrollPosition', window.scrollY.toString());
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
-    // Only attach scroll listener when on home page
-    if (isHomePage) {
-      window.addEventListener('scroll', handleScroll, { passive: true });
-    }
-
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -148,7 +163,7 @@ function App() {
 
         {/* Main Content */}
         <main className="relative z-10">
-          <Suspense fallback={<PageLoader />}>
+          <Suspense fallback={<PageLoader />}>  
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/services/web-design" element={<ServicePageWrapper><WebDesignPage /></ServicePageWrapper>} />

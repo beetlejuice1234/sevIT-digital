@@ -38,8 +38,8 @@ function TextScramble({ text, className = '', triggerPoint = 'top 80%' }: TextSc
     setIsScrambling(true);
 
     const textLength = text.length;
-    const scrambleDuration = 2000; // 2 seconds total
-    const charRevealDelay = 40; // ms between each character
+    const scrambleDuration = 5000; // 5 seconds total - MUCH SLOWER
+    const charRevealDelay = 80; // ms between each character - SLOWER
     
     const startTime = Date.now();
     const revealedChars = new Set<number>();
