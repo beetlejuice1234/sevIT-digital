@@ -61,9 +61,34 @@ const column1 = [testimonials[0], testimonials[3]];
 const column2 = [testimonials[1], testimonials[4]];
 const column3 = [testimonials[2], testimonials[5]];
 
+/**
+ * GPU-Optimized Testimonial Card
+ * 
+ * Hover effects use transform only for 60FPS.
+ */
 function TestimonialCard({ testimonial }: { testimonial: typeof testimonials[0] }) {
   return (
-    <div className="bg-surface rounded-3xl p-6 border border-border/50 mb-6 transition-all duration-300 hover:border-foreground/20 hover:scale-[1.02]">
+    <div 
+      className="testimonial-card bg-surface rounded-3xl p-6 border border-border/50 mb-6 transition-all duration-300 hover:border-foreground/20"
+      style={{
+        willChange: 'transform',
+        transform: 'translateZ(0)',
+      }}
+      onMouseEnter={(e) => {
+        gsap.to(e.currentTarget, {
+          scale: 1.02,
+          duration: 0.3,
+          ease: 'power2.out',
+        });
+      }}
+      onMouseLeave={(e) => {
+        gsap.to(e.currentTarget, {
+          scale: 1,
+          duration: 0.3,
+          ease: 'power2.out',
+        });
+      }}
+    >
       <div className="flex items-center gap-1 mb-4">
         {[...Array(testimonial.rating)].map((_, i) => (
           <Star key={i} className="w-4 h-4 fill-yellow-500 text-yellow-500" />
@@ -94,33 +119,45 @@ function TestimonialCard({ testimonial }: { testimonial: typeof testimonials[0] 
   );
 }
 
+/**
+ * GPU-Optimized Testimonials Section
+ * 
+ * Auto-scroll uses GSAP with transform only for smooth 60FPS.
+ * All animations are GPU accelerated.
+ */
 function Testimonials() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const column1Ref = useRef<HTMLDivElement>(null);
   const column2Ref = useRef<HTMLDivElement>(null);
   const column3Ref = useRef<HTMLDivElement>(null);
+  const tweensRef = useRef<gsap.core.Tween[]>([]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Header animation
+      // Header entrance - GPU accelerated
       gsap.fromTo(
         headerRef.current,
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
           duration: 0.8,
-          ease: 'power2.out',
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top 80%',
+            once: true,
           },
         }
       );
 
-      // Auto-scroll animations for all columns
-      const setupAutoScroll = (ref: React.RefObject<HTMLDivElement | null>, direction: 'up' | 'down', duration: number) => {
+      // Auto-scroll animations for all columns - GPU accelerated
+      const setupAutoScroll = (
+        ref: React.RefObject<HTMLDivElement | null>, 
+        direction: 'up' | 'down', 
+        duration: number
+      ) => {
         if (!ref.current) return;
         
         const content = ref.current;
@@ -130,14 +167,21 @@ function Testimonials() {
         
         const scrollHeight = content.scrollHeight / 2;
         
-        gsap.set(content, { y: direction === 'up' ? 0 : -scrollHeight });
+        // Set initial position
+        gsap.set(content, { 
+          y: direction === 'up' ? 0 : -scrollHeight,
+          willChange: 'transform',
+        });
         
-        gsap.to(content, {
+        // Create infinite scroll tween
+        const tween = gsap.to(content, {
           y: direction === 'up' ? -scrollHeight : 0,
           duration: duration,
           ease: 'none',
           repeat: -1,
         });
+        
+        tweensRef.current.push(tween);
       };
 
       // Setup all three columns with different directions and speeds
@@ -146,7 +190,12 @@ function Testimonials() {
       setupAutoScroll(column3Ref, 'down', 40);
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      // Kill all auto-scroll tweens
+      tweensRef.current.forEach(tween => tween.kill());
+      tweensRef.current = [];
+    };
   }, []);
 
   return (
@@ -155,7 +204,7 @@ function Testimonials() {
       id="testimonials"
       className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 z-40 overflow-hidden"
     >
-      {/* Space decorations */}
+      {/* Space decorations - CSS animations */}
       <div className="absolute top-20 left-20 text-accent/20">
         <Sparkles className="w-5 h-5 animate-pulse" />
       </div>
@@ -163,8 +212,15 @@ function Testimonials() {
         <Rocket className="w-6 h-6 animate-pulse" style={{ animationDelay: '0.5s' }} />
       </div>
 
-      {/* Section Header */}
-      <div ref={headerRef} className="max-w-7xl mx-auto mb-16 sm:mb-20 text-center">
+      {/* Section Header - GPU accelerated */}
+      <div 
+        ref={headerRef} 
+        className="max-w-7xl mx-auto mb-16 sm:mb-20 text-center"
+        style={{
+          willChange: 'transform, opacity',
+          transform: 'translateZ(0)',
+        }}
+      >
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-accent/10 rounded-full mb-4">
           <Sparkles className="w-3 h-3 text-accent" />
           <span className="text-xs font-medium text-accent uppercase tracking-wider">Testimonials</span>
@@ -181,13 +237,25 @@ function Testimonials() {
       {/* Testimonials Grid with Auto-scroll */}
       <div className="max-w-7xl mx-auto relative">
         {/* Gradient masks */}
-        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none" />
+        <div 
+          className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none"
+          style={{ willChange: 'opacity' }}
+        />
+        <div 
+          className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none"
+          style={{ willChange: 'opacity' }}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-[600px] overflow-hidden">
           {/* Column 1 - Scroll Down */}
           <div className="relative overflow-hidden">
-            <div ref={column1Ref} className="space-y-6">
+            <div 
+              ref={column1Ref} 
+              className="space-y-6"
+              style={{
+                willChange: 'transform',
+              }}
+            >
               {column1.map((testimonial) => (
                 <TestimonialCard key={`col1-${testimonial.id}`} testimonial={testimonial} />
               ))}
@@ -196,7 +264,13 @@ function Testimonials() {
 
           {/* Column 2 - Scroll Up */}
           <div className="relative overflow-hidden hidden md:block">
-            <div ref={column2Ref} className="space-y-6">
+            <div 
+              ref={column2Ref} 
+              className="space-y-6"
+              style={{
+                willChange: 'transform',
+              }}
+            >
               {column2.map((testimonial) => (
                 <TestimonialCard key={`col2-${testimonial.id}`} testimonial={testimonial} />
               ))}
@@ -205,7 +279,13 @@ function Testimonials() {
 
           {/* Column 3 - Scroll Down */}
           <div className="relative overflow-hidden hidden lg:block">
-            <div ref={column3Ref} className="space-y-6">
+            <div 
+              ref={column3Ref} 
+              className="space-y-6"
+              style={{
+                willChange: 'transform',
+              }}
+            >
               {column3.map((testimonial) => (
                 <TestimonialCard key={`col3-${testimonial.id}`} testimonial={testimonial} />
               ))}

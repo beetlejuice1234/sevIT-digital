@@ -5,15 +5,22 @@ import TextScramble from '../effects/TextScramble';
 
 gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * GPU-Optimized Manifesto Section
+ * 
+ * Uses canvas-based TextScramble for 60FPS text animation.
+ * All entrance animations use transform and opacity only.
+ */
 function Manifesto() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Content entrance with scrub - GPU accelerated
       gsap.fromTo(
         contentRef.current,
-        { opacity: 0.3, y: 30 },
+        { opacity: 0.3, y: 50 },
         {
           opacity: 1,
           y: 0,
@@ -41,6 +48,10 @@ function Manifesto() {
       <div
         ref={contentRef}
         className="max-w-4xl mx-auto text-center"
+        style={{
+          willChange: 'transform, opacity',
+          transform: 'translateZ(0)',
+        }}
       >
         <p className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-medium leading-tight text-foreground">
           <TextScramble 

@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback, memo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Send, Bot, Sparkles, Star, Rocket } from 'lucide-react';
+import { Send, Bot, Sparkles, Star, Rocket, MessageSquare, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -11,51 +12,36 @@ interface Message {
   id: number;
   type: 'ai' | 'user';
   text: string;
-  delay?: number;
 }
 
-const initialMessages: Message[] = [
+const initialMessages: Omit<Message, 'id'>[] = [
   {
-    id: 1,
     type: 'ai',
     text: "🚀 Welcome to sevIT! I'm your AI guide to digital excellence. What brings you here today?",
-    delay: 0,
   },
   {
-    id: 2,
     type: 'user',
     text: 'I need help with my website and online presence.',
-    delay: 1200,
   },
   {
-    id: 3,
     type: 'ai',
     text: 'Great choice! A strong digital presence is essential. Are you looking to build a new website from scratch, or revamp an existing one?',
-    delay: 2500,
   },
   {
-    id: 4,
     type: 'user',
     text: 'I want a completely new, modern website.',
-    delay: 4000,
   },
   {
-    id: 5,
     type: 'ai',
     text: 'Perfect! We specialize in creating stunning, high-converting websites with React & Next.js. What type of business are you in?',
-    delay: 5500,
   },
   {
-    id: 6,
     type: 'user',
     text: 'I run an e-commerce store selling fashion accessories.',
-    delay: 7500,
   },
   {
-    id: 7,
     type: 'ai',
     text: 'Excellent! Fashion e-commerce is our forte. We can create a visually stunning site with 3D product showcases, smooth checkout flows, and integrated payment systems. Want to see how we can boost your sales?',
-    delay: 9000,
   },
 ];
 
@@ -95,27 +81,168 @@ const getAIResponse = (userMessage: string): string => {
     return "You're welcome! 🌟 I'm here to help. What else would you like to know about our services?";
   }
   
-  return "That's fascinating! I'd love to learn more about your specific needs. Would you like to schedule a free discovery call with our team? We can dive deeper into how sevIT can help elevate your brand.";
+  return "That's fascinating! I'd love to learn more about your specific needs. Would you like to schedule a free discovery call with our team?";
 };
 
+// GPU-optimized message component with hardware acceleration
+const ChatMessage = memo(({ message, index }: { message: Message; index: number }) => (
+  <div
+    className={`chat-message flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+    style={{
+      willChange: 'transform, opacity',
+      transform: 'translateZ(0)',
+    }}
+    data-message-index={index}
+  >
+    <div
+      className={`max-w-[80%] px-4 py-3 rounded-2xl ${
+        message.type === 'user'
+          ? 'bg-foreground text-background rounded-br-md'
+          : 'bg-muted text-foreground rounded-bl-md'
+      }`}
+    >
+      <p className="text-sm leading-relaxed">{message.text}</p>
+    </div>
+  </div>
+));
+
+ChatMessage.displayName = 'ChatMessage';
+
+// GPU-optimized typing indicator
+const TypingIndicator = memo(() => (
+  <div 
+    className="flex justify-start"
+    style={{
+      willChange: 'transform, opacity',
+      transform: 'translateZ(0)',
+    }}
+  >
+    <div className="bg-muted px-4 py-3 rounded-2xl rounded-bl-md">
+      <div className="flex gap-1">
+        <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: '0ms' }} />
+        <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: '150ms' }} />
+        <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: '300ms' }} />
+      </div>
+    </div>
+  </div>
+));
+
+TypingIndicator.displayName = 'TypingIndicator';
+
+/**
+ * GPU-Optimized Chat Section
+ * 
+ * Uses GSAP for smooth 60FPS animations with hardware acceleration.
+ * Message animations use transform and opacity only - no layout thrashing.
+ */
 function ChatSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
-  const messagesRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
-  const [hasStarted, setHasStarted] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const navigate = useNavigate();
+  
+  // Track animation state with refs to avoid re-renders
+  const hasAnimatedRef = useRef(false);
+  const scrollTweenRef = useRef<gsap.core.Tween | null>(null);
 
-  // Auto-scroll when messages change
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, isTyping]);
+  // GPU-accelerated scroll to bottom
+  const scrollToBottom = useCallback(() => {
+    if (!messagesContainerRef.current) return;
+    
+    const container = messagesContainerRef.current;
+    const targetScroll = container.scrollHeight - container.clientHeight;
+    
+    // Kill any existing scroll animation
+    if (scrollTweenRef.current) {
+      scrollTweenRef.current.kill();
+    }
+    
+    // Animate scroll with GSAP for smooth 60FPS
+    scrollTweenRef.current = gsap.to(container, {
+      scrollTop: targetScroll,
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  }, []);
+
+  // Play initial message animation sequence
+  const playMessageSequence = useCallback(() => {
+    if (hasAnimatedRef.current) return;
+    hasAnimatedRef.current = true;
+
+    const tl = gsap.timeline();
+    
+    initialMessages.forEach((msg, index) => {
+      if (msg.type === 'ai') {
+        // Show typing indicator
+        tl.call(() => {
+          setIsTyping(true);
+          scrollToBottom();
+        });
+        
+        tl.to({}, { duration: 0.5 }); // Wait for typing effect
+        
+        // Hide typing and show message with GPU animation
+        tl.call(() => {
+          setIsTyping(false);
+          const newMessage: Message = { ...msg, id: Date.now() + index };
+          setMessages(prev => [...prev, newMessage]);
+        });
+        
+        // Animate the new message in
+        tl.add(() => {
+          const messageElements = document.querySelectorAll('.chat-message');
+          const lastMessage = messageElements[messageElements.length - 1];
+          if (lastMessage) {
+            gsap.fromTo(
+              lastMessage,
+              { opacity: 0, y: 20, scale: 0.95 },
+              { 
+                opacity: 1, 
+                y: 0, 
+                scale: 1, 
+                duration: 0.4, 
+                ease: 'power3.out',
+              }
+            );
+          }
+          scrollToBottom();
+        });
+      } else {
+        // User message - add immediately with animation
+        tl.call(() => {
+          const newMessage: Message = { ...msg, id: Date.now() + index };
+          setMessages(prev => [...prev, newMessage]);
+        });
+        
+        tl.add(() => {
+          const messageElements = document.querySelectorAll('.chat-message');
+          const lastMessage = messageElements[messageElements.length - 1];
+          if (lastMessage) {
+            gsap.fromTo(
+              lastMessage,
+              { opacity: 0, x: 30 },
+              { 
+                opacity: 1, 
+                x: 0, 
+                duration: 0.4, 
+                ease: 'power3.out',
+              }
+            );
+          }
+          scrollToBottom();
+        });
+      }
+    });
+  }, [scrollToBottom]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Content animation
+      // Content entrance animation - GPU accelerated
       gsap.fromTo(
         contentRef.current,
         { opacity: 0, x: -50 },
@@ -123,66 +250,47 @@ function ChatSection() {
           opacity: 1,
           x: 0,
           duration: 0.8,
-          ease: 'power2.out',
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top 70%',
+            once: true,
           },
         }
       );
 
-      // Chat window animation
+      // Chat window entrance animation - GPU accelerated
       gsap.fromTo(
         chatWindowRef.current,
-        { opacity: 0, x: 50, y: 30 },
+        { opacity: 0, x: 50 },
         {
           opacity: 1,
           x: 0,
-          y: 0,
           duration: 0.8,
-          ease: 'power2.out',
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top 60%',
-          },
-          onComplete: () => {
-            if (!hasStarted) {
-              setHasStarted(true);
-              playMessageAnimation();
-            }
+            once: true,
+            onEnter: () => {
+              // Start message sequence after entrance animation
+              setTimeout(playMessageSequence, 300);
+            },
           },
         }
       );
     }, sectionRef);
 
-    return () => ctx.revert();
-  }, [hasStarted]);
+    return () => {
+      ctx.revert();
+      if (scrollTweenRef.current) {
+        scrollTweenRef.current.kill();
+      }
+    };
+  }, [playMessageSequence]);
 
-  const playMessageAnimation = () => {
-    initialMessages.forEach((msg) => {
-      setTimeout(() => {
-        if (msg.type === 'ai') {
-          setIsTyping(true);
-          setTimeout(() => {
-            setIsTyping(false);
-            setMessages((prev) => [...prev, msg]);
-            scrollToBottom();
-          }, 600);
-        } else {
-          setMessages((prev) => [...prev, msg]);
-          scrollToBottom();
-        }
-      }, msg.delay || 0);
-    });
-  };
-
-  const scrollToBottom = () => {
-    if (messagesRef.current) {
-      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
-    }
-  };
-
-  const handleSendMessage = (e: React.FormEvent) => {
+  // Handle sending a new message
+  const handleSendMessage = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
 
@@ -192,24 +300,71 @@ function ChatSection() {
       text: inputValue,
     };
 
-    setMessages((prev) => [...prev, newMessage]);
+    // Add user message with GPU animation
+    setMessages(prev => [...prev, newMessage]);
     setInputValue('');
-    scrollToBottom();
+    
+    // Animate in the new message
+    requestAnimationFrame(() => {
+      const messageElements = document.querySelectorAll('.chat-message');
+      const lastMessage = messageElements[messageElements.length - 1];
+      if (lastMessage) {
+        gsap.fromTo(
+          lastMessage,
+          { opacity: 0, x: 30 },
+          { 
+            opacity: 1, 
+            x: 0, 
+            duration: 0.4, 
+            ease: 'power3.out',
+          }
+        );
+      }
+      scrollToBottom();
+    });
 
-    // Simulate AI response with contextual reply
-    setTimeout(() => {
+    // Simulate AI response
+    const tl = gsap.timeline();
+    
+    tl.call(() => {
       setIsTyping(true);
-      setTimeout(() => {
-        setIsTyping(false);
-        const aiResponse: Message = {
-          id: Date.now() + 1,
-          type: 'ai',
-          text: getAIResponse(newMessage.text),
-        };
-        setMessages((prev) => [...prev, aiResponse]);
-        scrollToBottom();
-      }, 1000);
-    }, 400);
+      scrollToBottom();
+    });
+    
+    tl.to({}, { duration: 1 }); // Typing delay
+    
+    tl.call(() => {
+      setIsTyping(false);
+      const aiResponse: Message = {
+        id: Date.now() + 1,
+        type: 'ai',
+        text: getAIResponse(newMessage.text),
+      };
+      setMessages(prev => [...prev, aiResponse]);
+    });
+    
+    tl.add(() => {
+      const messageElements = document.querySelectorAll('.chat-message');
+      const lastMessage = messageElements[messageElements.length - 1];
+      if (lastMessage) {
+        gsap.fromTo(
+          lastMessage,
+          { opacity: 0, y: 20, scale: 0.95 },
+          { 
+            opacity: 1, 
+            y: 0, 
+            scale: 1, 
+            duration: 0.4, 
+            ease: 'power3.out',
+          }
+        );
+      }
+      scrollToBottom();
+    });
+  }, [inputValue, scrollToBottom]);
+
+  const handleTalkToAI = () => {
+    navigate('/services/ai-solutions');
   };
 
   return (
@@ -218,7 +373,7 @@ function ChatSection() {
       id="chat"
       className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 z-50"
     >
-      {/* Space decorations */}
+      {/* Space decorations - CSS animations only */}
       <div className="absolute top-20 right-20 text-accent/20">
         <Star className="w-6 h-6 animate-pulse" />
       </div>
@@ -229,7 +384,13 @@ function ChatSection() {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Content */}
-          <div ref={contentRef}>
+          <div 
+            ref={contentRef}
+            style={{
+              willChange: 'transform, opacity',
+              transform: 'translateZ(0)',
+            }}
+          >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 rounded-full mb-6">
               <Sparkles className="w-4 h-4 text-accent" />
               <span className="text-sm font-medium text-accent">AI-Powered Consultation</span>
@@ -276,21 +437,43 @@ function ChatSection() {
               </div>
             </div>
 
-            {/* CTA */}
-            <div className="mt-10">
+            {/* CTAs */}
+            <div className="mt-10 flex flex-col sm:flex-row gap-4">
               <a
                 href="#booking"
                 className="inline-flex items-center justify-center px-8 py-4 text-sm font-medium text-background bg-foreground rounded-full transition-all duration-300 hover:scale-105 hover:bg-accent"
+                style={{
+                  willChange: 'transform',
+                  transform: 'translateZ(0)',
+                }}
               >
                 Book a Discovery Call
               </a>
+              <button
+                onClick={handleTalkToAI}
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-medium text-foreground border border-border rounded-full transition-all duration-300 hover:bg-surface hover:border-foreground/20 group"
+                style={{
+                  willChange: 'transform',
+                  transform: 'translateZ(0)',
+                }}
+              >
+                <MessageSquare className="w-4 h-4 text-accent" />
+                <span>Talk to Real AI</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
             </div>
           </div>
 
-          {/* Chat Window */}
+          {/* Chat Window - GPU accelerated */}
           <div
             ref={chatWindowRef}
             className="relative bg-surface rounded-3xl border border-border/50 overflow-hidden card-shadow"
+            style={{
+              minHeight: '500px',
+              willChange: 'transform, opacity',
+              transform: 'translateZ(0)',
+              backfaceVisibility: 'hidden',
+            }}
           >
             {/* Chat Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-border/50 bg-surface/80 backdrop-blur-sm">
@@ -302,7 +485,7 @@ function ChatSection() {
                   <h4 className="font-semibold text-foreground text-sm">
                     sev<span className="text-red-500">IT</span> AI
                   </h4>
-                  <p className="text-xs text-muted-foreground">Online</p>
+                  <p className="text-xs text-muted-foreground">Demo Mode</p>
                 </div>
               </div>
               <div className="flex gap-2">
@@ -312,10 +495,13 @@ function ChatSection() {
               </div>
             </div>
 
-            {/* Messages */}
+            {/* Messages - GPU accelerated container */}
             <div
-              ref={messagesRef}
-              className="h-[400px] overflow-y-auto px-6 py-4 space-y-4 scrollbar-thin"
+              ref={messagesContainerRef}
+              className="h-[350px] overflow-y-auto px-6 py-4 space-y-4 scrollbar-thin"
+              style={{
+                willChange: 'scroll-position',
+              }}
             >
               {messages.length === 0 && (
                 <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
@@ -324,35 +510,12 @@ function ChatSection() {
                 </div>
               )}
               
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[80%] px-4 py-3 rounded-2xl ${
-                      message.type === 'user'
-                        ? 'bg-foreground text-background rounded-br-md'
-                        : 'bg-muted text-foreground rounded-bl-md'
-                    }`}
-                  >
-                    <p className="text-sm leading-relaxed">{message.text}</p>
-                  </div>
-                </div>
+              {messages.map((message, index) => (
+                <ChatMessage key={message.id} message={message} index={index} />
               ))}
 
               {/* Typing Indicator */}
-              {isTyping && (
-                <div className="flex justify-start">
-                  <div className="bg-muted px-4 py-3 rounded-2xl rounded-bl-md">
-                    <div className="flex gap-1">
-                      <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: '0ms' }} />
-                      <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: '150ms' }} />
-                      <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: '300ms' }} />
-                    </div>
-                  </div>
-                </div>
-              )}
+              {isTyping && <TypingIndicator />}
             </div>
 
             {/* Input Area */}
@@ -370,7 +533,10 @@ function ChatSection() {
               <Button
                 type="submit"
                 size="icon"
-                className="w-10 h-10 rounded-full bg-accent hover:bg-accent/90 flex-shrink-0"
+                className="w-10 h-10 rounded-full bg-accent hover:bg-accent/90 flex-shrink-0 transition-transform duration-200 active:scale-95"
+                style={{
+                  willChange: 'transform',
+                }}
               >
                 <Send className="w-4 h-4" />
               </Button>

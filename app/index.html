@@ -3,7 +3,71 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nexus AI Agency</title>
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+    <meta name="googlebot" content="noindex, nofollow" />
+    <title>sevITdigital | AI-Powered Digital Agency</title>
+    
+    <!-- Preconnect to critical origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- DNS Prefetch for external resources -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
+    
+    <!-- Preload critical CSS -->
+    <link rel="preload" href="/src/index.css" as="style" />
+    
+    <!-- Critical CSS inline for above-the-fold content -->
+    <style>
+      /* Critical CSS - Above the fold styles */
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      
+      html {
+        scroll-behavior: smooth;
+      }
+      
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: #050505;
+        color: #ffffff;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+      }
+      
+      #root {
+        min-height: 100vh;
+      }
+      
+      /* Prevent FOUC */
+      .loading {
+        opacity: 0;
+      }
+      
+      /* GPU acceleration for animated elements */
+      .gpu-layer {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+      }
+    </style>
+    
+    <!-- Resource hints for route prefetching -->
+    <link rel="prefetch" href="/src/pages/services/BrandingPage.tsx" as="script" />
+    <link rel="prefetch" href="/src/pages/services/RenderingPage.tsx" as="script" />
+    <link rel="prefetch" href="/src/pages/services/AdvertisingPage.tsx" as="script" />
+    <link rel="prefetch" href="/src/pages/services/MarketingPage.tsx" as="script" />
+    <link rel="prefetch" href="/src/pages/services/AISolutionsPage.tsx" as="script" />
+    <link rel="prefetch" href="/src/pages/services/WebDesignPage.tsx" as="script" />
   </head>
   <body>
     <div id="root"></div>

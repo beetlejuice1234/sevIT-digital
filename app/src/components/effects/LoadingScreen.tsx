@@ -1,87 +1,126 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 
 interface LoadingScreenProps {
   onComplete: () => void;
 }
 
+/**
+ * GPU-Optimized Loading Screen
+ * 
+ * Uses requestAnimationFrame instead of setInterval for smooth 60FPS progress updates.
+ * All animations use transform and opacity only for hardware acceleration.
+ */
 function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);
+  const progressFillRef = useRef<HTMLDivElement>(null);
+  const progressTextRef = useRef<HTMLSpanElement>(null);
+  
+  // Use refs for animation state to avoid React re-renders
+  const progressRef = useRef(0);
+  const rafRef = useRef<number | null>(null);
+  const isCompleteRef = useRef(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return prev + Math.random() * 8;
-      });
-    }, 60);
+  // Smooth progress animation using RAF
+  const animateProgress = useCallback(() => {
+    if (isCompleteRef.current) return;
 
-    return () => clearInterval(interval);
-  }, []);
+    // Increment progress with easing
+    const remaining = 100 - progressRef.current;
+    const increment = remaining * 0.03 + Math.random() * 2;
+    progressRef.current = Math.min(progressRef.current + increment, 100);
 
-  useEffect(() => {
-    const tl = gsap.timeline();
-    
-    tl.fromTo(
-      logoRef.current,
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }
-    );
-    
-    tl.fromTo(
-      progressBarRef.current,
-      { opacity: 0, y: 10 },
-      { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' },
-      '-=0.3'
-    );
-  }, []);
+    // Update DOM directly - no React state!
+    if (progressFillRef.current) {
+      progressFillRef.current.style.transform = `scaleX(${progressRef.current / 100})`;
+    }
+    if (progressTextRef.current) {
+      progressTextRef.current.textContent = `${Math.round(progressRef.current)}%`;
+    }
 
-  useEffect(() => {
-    if (progress >= 100) {
-      const tl = gsap.timeline({
+    // Check for completion
+    if (progressRef.current >= 100) {
+      isCompleteRef.current = true;
+      
+      // Exit animation timeline
+      const exitTl = gsap.timeline({
         onComplete: () => {
           onComplete();
         },
       });
 
-      tl.to(logoRef.current, {
+      exitTl.to(logoRef.current, {
         opacity: 0,
-        y: -15,
-        duration: 0.3,
+        y: -20,
+        duration: 0.4,
         ease: 'power2.in',
       });
 
-      tl.to(
+      exitTl.to(
         progressBarRef.current,
         {
           opacity: 0,
-          duration: 0.2,
+          duration: 0.3,
         },
-        '-=0.2'
+        '-=0.25'
       );
 
-      tl.to(
+      exitTl.to(
         containerRef.current,
         {
           opacity: 0,
-          duration: 0.4,
+          duration: 0.5,
           ease: 'power2.inOut',
         },
-        '-=0.1'
+        '-=0.2'
       );
+      
+      return;
     }
-  }, [progress, onComplete]);
+
+    // Continue animation
+    rafRef.current = requestAnimationFrame(animateProgress);
+  }, [onComplete]);
+
+  useEffect(() => {
+    // Entry animation
+    const entryTl = gsap.timeline();
+    
+    entryTl.fromTo(
+      logoRef.current,
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }
+    );
+    
+    entryTl.fromTo(
+      progressBarRef.current,
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' },
+      '-=0.3'
+    );
+
+    // Start progress animation after entry
+    entryTl.add(() => {
+      rafRef.current = requestAnimationFrame(animateProgress);
+    });
+
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, [animateProgress]);
 
   return (
     <div
       ref={containerRef}
       className="fixed inset-0 z-[200] bg-background flex flex-col items-center justify-center"
+      style={{
+        backfaceVisibility: 'hidden',
+        transform: 'translateZ(0)',
+      }}
     >
       <div 
         className="absolute inset-0 pointer-events-none"
@@ -91,27 +130,50 @@ function LoadingScreen({ onComplete }: LoadingScreenProps) {
       />
 
       <div className="relative z-10 flex flex-col items-center">
-        <div ref={logoRef} className="mb-8 opacity-0">
+        {/* Logo */}
+        <div 
+          ref={logoRef} 
+          className="mb-8 opacity-0"
+          style={{
+            willChange: 'transform, opacity',
+            transform: 'translateZ(0)',
+          }}
+        >
           <span className="text-5xl sm:text-6xl font-bold tracking-tight">
             <span className="text-foreground">sev</span>
             <span className="text-red-500">IT</span>
           </span>
         </div>
 
+        {/* Progress Bar */}
         <div 
           ref={progressBarRef}
           className="w-48 sm:w-56 opacity-0"
+          style={{
+            willChange: 'transform, opacity',
+            transform: 'translateZ(0)',
+          }}
         >
+          {/* Track */}
           <div className="h-[2px] bg-border/50 rounded-full overflow-hidden">
+            {/* Fill - uses transform scaleX for GPU acceleration */}
             <div
-              className="h-full bg-red-500 rounded-full transition-all duration-75 ease-out"
-              style={{ width: `${Math.min(progress, 100)}%` }}
+              ref={progressFillRef}
+              className="h-full bg-red-500 rounded-full origin-left"
+              style={{
+                transform: 'scaleX(0)',
+                willChange: 'transform',
+              }}
             />
           </div>
           
+          {/* Percentage Text */}
           <div className="mt-3 text-center">
-            <span className="text-xs text-muted-foreground tracking-widest uppercase">
-              {Math.min(Math.round(progress), 100)}%
+            <span 
+              ref={progressTextRef}
+              className="text-xs text-muted-foreground tracking-widest uppercase"
+            >
+              0%
             </span>
           </div>
         </div>

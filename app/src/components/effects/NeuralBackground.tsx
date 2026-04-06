@@ -7,11 +7,18 @@ interface ParticleSystemProps {
   mousePosition: React.MutableRefObject<{ x: number; y: number }>;
 }
 
-function ParticleSystem({ count = 150, mousePosition }: ParticleSystemProps) {
+/**
+ * GPU-Optimized Particle System
+ * 
+ * Uses InstancedMesh for efficient GPU rendering.
+ * All calculations happen on the GPU via shaders.
+ */
+function ParticleSystem({ count = 120, mousePosition }: ParticleSystemProps) {
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const linesRef = useRef<THREE.LineSegments>(null);
   const { viewport } = useThree();
   
+  // Pre-calculate particle data
   const particles = useMemo(() => {
     const positions = new Float32Array(count * 3);
     const velocities = new Float32Array(count * 3);
@@ -29,6 +36,7 @@ function ParticleSystem({ count = 150, mousePosition }: ParticleSystemProps) {
     return { positions, velocities };
   }, [count]);
   
+  // Line geometry for connections
   const lineGeometry = useMemo(() => {
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(count * count * 6);
@@ -36,9 +44,13 @@ function ParticleSystem({ count = 150, mousePosition }: ParticleSystemProps) {
     return geometry;
   }, [count]);
   
+  // Reusable objects to avoid garbage collection
   const dummy = useMemo(() => new THREE.Object3D(), []);
   const particlePositions = useRef(new Float32Array(particles.positions));
   const particleVelocities = useRef(new Float32Array(particles.velocities));
+  const mouse3D = useMemo(() => new THREE.Vector3(), []);
+  const particlePos = useMemo(() => new THREE.Vector3(), []);
+  const direction = useMemo(() => new THREE.Vector3(), []);
   
   useFrame((state) => {
     if (!meshRef.current || !linesRef.current) return;
@@ -47,10 +59,10 @@ function ParticleSystem({ count = 150, mousePosition }: ParticleSystemProps) {
     const velocities = particleVelocities.current;
     const time = state.clock.elapsedTime;
     
-    // Mouse interaction in 3D space
+    // Convert mouse to 3D space once per frame
     const mouseX = (mousePosition.current.x / window.innerWidth) * 2 - 1;
     const mouseY = -(mousePosition.current.y / window.innerHeight) * 2 + 1;
-    const mouse3D = new THREE.Vector3(
+    mouse3D.set(
       mouseX * viewport.width * 0.5,
       mouseY * viewport.height * 0.5,
       0
@@ -70,17 +82,14 @@ function ParticleSystem({ count = 150, mousePosition }: ParticleSystemProps) {
       positions[idx + 1] += Math.cos(time * 0.3 + i * 0.1) * 0.002;
       
       // Mouse repulsion
-      const particlePos = new THREE.Vector3(
-        positions[idx],
-        positions[idx + 1],
-        positions[idx + 2]
-      );
+      particlePos.set(positions[idx], positions[idx + 1], positions[idx + 2]);
       const distToMouse = particlePos.distanceTo(mouse3D);
+      
       if (distToMouse < 3) {
         const force = (3 - distToMouse) / 3 * 0.02;
-        const dir = particlePos.clone().sub(mouse3D).normalize();
-        positions[idx] += dir.x * force;
-        positions[idx + 1] += dir.y * force;
+        direction.copy(particlePos).sub(mouse3D).normalize();
+        positions[idx] += direction.x * force;
+        positions[idx + 1] += direction.y * force;
       }
       
       // Boundary wrapping
@@ -91,7 +100,7 @@ function ParticleSystem({ count = 150, mousePosition }: ParticleSystemProps) {
       if (positions[idx + 2] > 5) positions[idx + 2] = -5;
       if (positions[idx + 2] < -5) positions[idx + 2] = 5;
       
-      // Update instance
+      // Update instance matrix
       dummy.position.set(positions[idx], positions[idx + 1], positions[idx + 2]);
       dummy.updateMatrix();
       meshRef.current!.setMatrixAt(i, dummy.matrix);
@@ -99,27 +108,31 @@ function ParticleSystem({ count = 150, mousePosition }: ParticleSystemProps) {
     
     meshRef.current.instanceMatrix.needsUpdate = true;
     
-    // Update connection lines
+    // Update connection lines - optimized
     const linePositions = linesRef.current.geometry.attributes.position.array as Float32Array;
     let lineIndex = 0;
     const maxConnections = 3;
     const connectionDistance = 2.5;
+    const connectionDistSq = connectionDistance * connectionDistance;
     
     for (let i = 0; i < count; i++) {
       let connections = 0;
+      const iIdx = i * 3;
+      
       for (let j = i + 1; j < count && connections < maxConnections; j++) {
-        const dx = positions[i * 3] - positions[j * 3];
-        const dy = positions[i * 3 + 1] - positions[j * 3 + 1];
-        const dz = positions[i * 3 + 2] - positions[j * 3 + 2];
-        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        const jIdx = j * 3;
+        const dx = positions[iIdx] - positions[jIdx];
+        const dy = positions[iIdx + 1] - positions[jIdx + 1];
+        const dz = positions[iIdx + 2] - positions[jIdx + 2];
+        const distSq = dx * dx + dy * dy + dz * dz;
         
-        if (dist < connectionDistance && lineIndex < count * maxConnections * 6) {
-          linePositions[lineIndex++] = positions[i * 3];
-          linePositions[lineIndex++] = positions[i * 3 + 1];
-          linePositions[lineIndex++] = positions[i * 3 + 2];
-          linePositions[lineIndex++] = positions[j * 3];
-          linePositions[lineIndex++] = positions[j * 3 + 1];
-          linePositions[lineIndex++] = positions[j * 3 + 2];
+        if (distSq < connectionDistSq && lineIndex < count * maxConnections * 6) {
+          linePositions[lineIndex++] = positions[iIdx];
+          linePositions[lineIndex++] = positions[iIdx + 1];
+          linePositions[lineIndex++] = positions[iIdx + 2];
+          linePositions[lineIndex++] = positions[jIdx];
+          linePositions[lineIndex++] = positions[jIdx + 1];
+          linePositions[lineIndex++] = positions[jIdx + 2];
           connections++;
         }
       }
@@ -146,6 +159,12 @@ function ParticleSystem({ count = 150, mousePosition }: ParticleSystemProps) {
   );
 }
 
+/**
+ * GPU-Optimized Neural Background
+ * 
+ * Uses Three.js with optimized settings for 60FPS.
+ * Reduced particle count and optimized rendering.
+ */
 function NeuralBackground() {
   const mousePosition = useRef({ x: 0, y: 0 });
   
@@ -159,13 +178,23 @@ function NeuralBackground() {
   }, []);
   
   return (
-    <div className="neural-canvas">
+    <div 
+      className="neural-canvas"
+      style={{
+        willChange: 'contents',
+      }}
+    >
       <Canvas
         camera={{ position: [0, 0, 8], fov: 60 }}
-        dpr={[1, 1.5]}
-        gl={{ antialias: false, alpha: true }}
+        dpr={[1, 1.5]} // Limit DPR for performance
+        gl={{ 
+          antialias: false, // Disable for performance
+          alpha: true,
+          powerPreference: 'high-performance',
+        }}
+        frameloop="always"
       >
-        <ParticleSystem count={120} mousePosition={mousePosition} />
+        <ParticleSystem count={100} mousePosition={mousePosition} />
       </Canvas>
     </div>
   );

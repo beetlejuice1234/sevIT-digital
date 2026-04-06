@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -72,6 +72,12 @@ const services = [
   },
 ];
 
+/**
+ * GPU-Optimized Services Section
+ * 
+ * All card animations use transform and opacity only.
+ * Hover effects use CSS transitions for smooth 60FPS.
+ */
 function Services() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -80,28 +86,29 @@ function Services() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Header animation
+      // Header entrance - GPU accelerated
       gsap.fromTo(
         headerRef.current,
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
           duration: 0.8,
-          ease: 'power2.out',
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top 80%',
+            once: true,
           },
         }
       );
 
-      // Cards stagger animation
+      // Cards staggered entrance - GPU accelerated
       const cards = cardsContainerRef.current?.querySelectorAll('.service-card');
       if (cards) {
         gsap.fromTo(
           cards,
-          { opacity: 0, y: 50, scale: 0.95 },
+          { opacity: 0, y: 60, scale: 0.95 },
           {
             opacity: 1,
             y: 0,
@@ -112,6 +119,7 @@ function Services() {
             scrollTrigger: {
               trigger: cardsContainerRef.current,
               start: 'top 85%',
+              once: true,
             },
           }
         );
@@ -121,13 +129,22 @@ function Services() {
     return () => ctx.revert();
   }, []);
 
+  // Memoized hover handlers to prevent unnecessary re-renders
+  const handleMouseEnter = useCallback((id: number) => {
+    setActiveCard(id);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setActiveCard(null);
+  }, []);
+
   return (
     <section
       ref={sectionRef}
       id="services"
       className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 z-30"
     >
-      {/* Floating stars decoration */}
+      {/* Floating stars decoration - CSS animations */}
       <div className="absolute top-20 left-10 text-accent/20">
         <Star className="w-4 h-4 animate-pulse" style={{ animationDelay: '0s' }} />
       </div>
@@ -138,8 +155,15 @@ function Services() {
         <Star className="w-3 h-3 animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
 
-      {/* Section Header */}
-      <div ref={headerRef} className="max-w-7xl mx-auto mb-12 sm:mb-16">
+      {/* Section Header - GPU accelerated */}
+      <div 
+        ref={headerRef} 
+        className="max-w-7xl mx-auto mb-12 sm:mb-16"
+        style={{
+          willChange: 'transform, opacity',
+          transform: 'translateZ(0)',
+        }}
+      >
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-accent/10 rounded-full mb-4">
@@ -156,7 +180,7 @@ function Services() {
         </div>
       </div>
 
-      {/* Services Grid - Sleek 3x2 Layout */}
+      {/* Services Grid - GPU accelerated cards */}
       <div 
         ref={cardsContainerRef}
         className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
@@ -170,34 +194,45 @@ function Services() {
               key={service.id}
               to={service.link}
               className="service-card group relative block"
-              onMouseEnter={() => setActiveCard(service.id)}
-              onMouseLeave={() => setActiveCard(null)}
+              onMouseEnter={() => handleMouseEnter(service.id)}
+              onMouseLeave={handleMouseLeave}
+              style={{
+                willChange: 'transform',
+                transform: 'translateZ(0)',
+              }}
             >
               <div 
                 className={`relative h-full bg-surface/50 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border transition-all duration-500 overflow-hidden ${
                   isActive 
-                    ? 'border-red-500/50 scale-[1.02]' 
+                    ? 'border-red-500/50' 
                     : 'border-border/50 hover:border-foreground/20'
                 }`}
                 style={{
                   boxShadow: isActive 
                     ? `0 0 40px -10px ${service.color}40` 
-                    : 'none'
+                    : 'none',
+                  transform: isActive ? 'scale(1.02)' : 'scale(1)',
+                  willChange: 'transform, box-shadow',
                 }}
               >
-                {/* Orbital ring decoration */}
+                {/* Orbital ring decoration - CSS transform only */}
                 <div 
                   className={`absolute -right-8 -top-8 w-24 h-24 rounded-full border border-dashed transition-all duration-700 ${
-                    isActive ? 'border-red-500/30 rotate-180' : 'border-foreground/5'
+                    isActive ? 'border-red-500/30' : 'border-foreground/5'
                   }`}
+                  style={{
+                    transform: isActive ? 'rotate(180deg)' : 'rotate(0deg)',
+                    willChange: 'transform',
+                  }}
                 />
                 
-                {/* Icon */}
+                {/* Icon - GPU accelerated */}
                 <div 
-                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-all duration-300"
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-transform duration-300"
                   style={{ 
                     backgroundColor: `${service.color}15`,
-                    transform: isActive ? 'scale(1.1)' : 'scale(1)'
+                    transform: isActive ? 'scale(1.1)' : 'scale(1)',
+                    willChange: 'transform',
                   }}
                 >
                   <Icon className="w-6 h-6" style={{ color: service.color }} />
@@ -226,16 +261,20 @@ function Services() {
                 {/* Learn more link */}
                 <div className="flex items-center gap-2 text-sm font-medium" style={{ color: service.color }}>
                   <span>Learn more</span>
-                  <ArrowRight className={`w-4 h-4 transition-transform duration-300 ${isActive ? 'translate-x-1' : ''}`} />
+                  <ArrowRight 
+                    className="w-4 h-4 transition-transform duration-300" 
+                    style={{ transform: isActive ? 'translateX(4px)' : 'translateX(0)' }}
+                  />
                 </div>
 
-                {/* Glow effect on hover */}
+                {/* Glow effect on hover - opacity transition */}
                 <div 
                   className={`absolute inset-0 rounded-2xl transition-opacity duration-500 pointer-events-none ${
                     isActive ? 'opacity-100' : 'opacity-0'
                   }`}
                   style={{
                     background: `radial-gradient(circle at 30% 30%, ${service.color}10, transparent 70%)`,
+                    willChange: 'opacity',
                   }}
                 />
               </div>
@@ -252,6 +291,10 @@ function Services() {
         <a 
           href="#chat"
           className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background rounded-full font-medium hover:bg-accent transition-colors duration-300"
+          style={{
+            willChange: 'transform',
+            transform: 'translateZ(0)',
+          }}
         >
           <span>Let's Discuss Your Project</span>
           <ArrowRight className="w-4 h-4" />
