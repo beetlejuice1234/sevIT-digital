@@ -3,7 +3,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Code2, Zap, Smartphone, Search, Shield, Layers, Monitor, Sparkles, CheckCircle2, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import BackToHome from '../../components/BackToHome';
 
 gsap.registerPlugin(ScrollTrigger);
 
