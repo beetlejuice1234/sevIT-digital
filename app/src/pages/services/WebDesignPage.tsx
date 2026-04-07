@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Code2, Zap, Smartphone, Search, Shield, Layers, Monitor, Sparkles, CheckCircle2 } from 'lucide-react';
@@ -6,6 +6,212 @@ import { Link } from 'react-router-dom';
 import BackToHome from '../../components/BackToHome';
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Mobile Portfolio Swipe Deck Component
+function MobilePortfolioDeck({ websites }: { websites: typeof portfolioWebsites }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  
+  const dragStartX = useRef(0);
+  const dragCurrentX = useRef(0);
+  const dragStartY = useRef(0);
+  const isSwipeValid = useRef(false);
+  const rafId = useRef<number | null>(null);
+  const isAnimating = useRef(false);
+
+  const SWIPE_THRESHOLD = 60;
+  const ROTATION_FACTOR = 0.05;
+
+  const getStackOrder = useCallback(() => {
+    const order = [];
+    for (let i = 0; i < Math.min(3, websites.length); i++) {
+      order.push((currentIndex + i) % websites.length);
+    }
+    return order;
+  }, [currentIndex, websites.length]);
+
+  const initializeStack = useCallback(() => {
+    const order = getStackOrder();
+    order.forEach((siteIdx, stackPos) => {
+      const card = cardsRef.current[siteIdx];
+      if (!card) return;
+      const isTop = stackPos === 0;
+      if (isTop) {
+        gsap.set(card, { x: 0, y: 0, scale: 1, rotation: 0, opacity: 1, zIndex: 30 });
+      } else {
+        const depth = stackPos;
+        gsap.set(card, {
+          x: 0, y: depth * 10, scale: 1 - depth * 0.06, rotation: 0,
+          opacity: 1, zIndex: 30 - depth * 10, filter: `brightness(${0.55 - depth * 0.15})`,
+        });
+      }
+    });
+    websites.forEach((_, idx) => {
+      if (!order.includes(idx)) {
+        const card = cardsRef.current[idx];
+        if (card) gsap.set(card, { opacity: 0, zIndex: 0 });
+      }
+    });
+  }, [currentIndex, getStackOrder, websites.length]);
+
+  const updateDragPosition = useCallback((deltaX: number) => {
+    const order = getStackOrder();
+    const topCard = cardsRef.current[order[0]];
+    const secondCard = cardsRef.current[order[1]];
+    if (!topCard) return;
+    const rotation = deltaX * ROTATION_FACTOR;
+    const progress = Math.min(Math.abs(deltaX) / 150, 1);
+    gsap.set(topCard, { x: deltaX, rotation, scale: 1 - progress * 0.02 });
+    if (secondCard) {
+      gsap.set(secondCard, {
+        scale: 0.94 + progress * 0.06, y: 10 - progress * 10,
+        filter: `brightness(${0.55 + progress * 0.45})`,
+      });
+    }
+  }, [getStackOrder]);
+
+  const swipeNext = useCallback(() => {
+    if (isAnimating.current) return;
+    isAnimating.current = true;
+    const order = getStackOrder();
+    const topCard = cardsRef.current[order[0]];
+    const secondCard = cardsRef.current[order[1]];
+    const thirdCard = cardsRef.current[order[2]];
+    if (!topCard) { isAnimating.current = false; return; }
+    gsap.to(topCard, { x: window.innerWidth, rotation: 15, opacity: 0, duration: 0.4, ease: 'power3.out' });
+    if (secondCard) gsap.to(secondCard, { scale: 1, y: 0, filter: 'brightness(1)', zIndex: 30, duration: 0.4, ease: 'power3.out' });
+    if (thirdCard) gsap.to(thirdCard, { scale: 0.94, y: 10, opacity: 1, filter: 'brightness(0.55)', zIndex: 20, duration: 0.4, ease: 'power3.out' });
+    setTimeout(() => {
+      gsap.set(topCard, { x: 0, rotation: 0, opacity: 0 });
+      setCurrentIndex((prev) => (prev + 1) % websites.length);
+      isAnimating.current = false;
+    }, 400);
+  }, [getStackOrder, websites.length]);
+
+  const swipePrev = useCallback(() => {
+    if (isAnimating.current) return;
+    isAnimating.current = true;
+    const prevIndex = (currentIndex - 1 + websites.length) % websites.length;
+    const order = getStackOrder();
+    const topCard = cardsRef.current[order[0]];
+    const prevCard = cardsRef.current[prevIndex];
+    if (!topCard || !prevCard) { isAnimating.current = false; return; }
+    gsap.set(prevCard, { x: -window.innerWidth, opacity: 0, scale: 1, y: 0, zIndex: 35, filter: 'brightness(1)' });
+    gsap.to(prevCard, { x: 0, opacity: 1, duration: 0.4, ease: 'power3.out' });
+    gsap.to(topCard, { scale: 0.94, y: 10, filter: 'brightness(0.55)', zIndex: 20, duration: 0.4, ease: 'power3.out' });
+    setTimeout(() => { setCurrentIndex(prevIndex); isAnimating.current = false; }, 400);
+  }, [currentIndex, getStackOrder, websites.length]);
+
+  const snapBack = useCallback(() => {
+    const order = getStackOrder();
+    const topCard = cardsRef.current[order[0]];
+    const secondCard = cardsRef.current[order[1]];
+    if (topCard) gsap.to(topCard, { x: 0, rotation: 0, scale: 1, duration: 0.5, ease: 'elastic.out(1, 0.6)' });
+    if (secondCard) gsap.to(secondCard, { scale: 0.94, y: 10, filter: 'brightness(0.55)', duration: 0.4, ease: 'power3.out' });
+  }, [getStackOrder]);
+
+  const handleStart = useCallback((clientX: number, clientY: number) => {
+    if (isAnimating.current) return;
+    setIsDragging(true);
+    dragStartX.current = clientX;
+    dragStartY.current = clientY;
+    dragCurrentX.current = clientX;
+    isSwipeValid.current = false;
+    const topCard = cardsRef.current[getStackOrder()[0]];
+    if (topCard) gsap.killTweensOf(topCard);
+  }, [getStackOrder]);
+
+  const handleMove = useCallback((clientX: number, clientY: number) => {
+    if (!isDragging || isAnimating.current) return;
+    if (rafId.current) return;
+    rafId.current = requestAnimationFrame(() => {
+      dragCurrentX.current = clientX;
+      const deltaX = clientX - dragStartX.current;
+      const deltaY = clientY - dragStartY.current;
+      if (!isSwipeValid.current && Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10) { rafId.current = null; return; }
+      if (Math.abs(deltaY) > Math.abs(deltaX) * 1.2) { setIsDragging(false); rafId.current = null; return; }
+      isSwipeValid.current = true;
+      updateDragPosition(deltaX);
+      rafId.current = null;
+    });
+  }, [isDragging, updateDragPosition]);
+
+  const handleEnd = useCallback(() => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    if (rafId.current) { cancelAnimationFrame(rafId.current); rafId.current = null; }
+    if (!isSwipeValid.current || isAnimating.current) return;
+    const deltaX = dragCurrentX.current - dragStartX.current;
+    if (Math.abs(deltaX) > SWIPE_THRESHOLD) { deltaX > 0 ? swipeNext() : swipePrev(); } else { snapBack(); }
+  }, [isDragging, swipeNext, swipePrev, snapBack]);
+
+  useEffect(() => { initializeStack(); }, [currentIndex, initializeStack]);
+
+  const stackOrder = getStackOrder();
+
+  return (
+    <div className="w-full px-4">
+      <div className="relative mx-auto" style={{ maxWidth: '320px' }}>
+        <div ref={containerRef} className="relative h-[460px] select-none cursor-grab active:cursor-grabbing"
+          onTouchStart={(e) => handleStart(e.touches[0].clientX, e.touches[0].clientY)}
+          onTouchMove={(e) => handleMove(e.touches[0].clientX, e.touches[0].clientY)}
+          onTouchEnd={handleEnd}
+          onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
+          onMouseMove={(e) => isDragging && handleMove(e.clientX, e.clientY)}
+          onMouseUp={handleEnd}
+          onMouseLeave={() => isDragging && handleEnd()}
+          style={{ perspective: '1000px', touchAction: 'pan-y' }}
+        >
+          {websites.map((site, idx) => {
+            const isInStack = stackOrder.includes(idx);
+            const isTop = stackOrder.indexOf(idx) === 0;
+            return (
+              <div key={site.id} ref={(el) => { cardsRef.current[idx] = el; }} className="absolute inset-0 rounded-3xl overflow-hidden shadow-2xl"
+                style={{ opacity: isInStack ? 1 : 0, pointerEvents: isTop ? 'auto' : 'none', willChange: 'transform, opacity', transform: 'translateZ(0)', border: `2px solid ${site.color}40` }}
+              >
+                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `linear-gradient(135deg, ${site.color}30, ${site.color}10)` }} />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 0%, transparent 40%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.95) 100%)' }} />
+                <div className="absolute inset-0 opacity-30" style={{ background: `radial-gradient(circle at 30% 20%, ${site.color}40, transparent 60%)` }} />
+                <div className="absolute bottom-0 left-0 right-0 p-5">
+                  <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 rounded" style={{ backgroundColor: `${site.color}30`, color: site.color }}>{site.category}</span>
+                  <h3 className="text-2xl font-bold text-white mt-2">{site.title}</h3>
+                  <p className="text-white/70 text-sm mt-1 line-clamp-2">{site.description}</p>
+                  <a href={site.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="mt-4 flex items-center justify-center gap-2 px-5 py-3 bg-white text-black rounded-full text-sm font-semibold hover:bg-gray-100 transition-all w-full">
+                    <span>Open in New Tab</span>
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
+                <div className="absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${site.color}25` }}>
+                  <Monitor className="w-5 h-5" style={{ color: site.color }} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex items-center justify-between mt-5 px-1">
+          <button onClick={swipePrev} disabled={isAnimating.current} className="flex items-center gap-1.5 px-3 py-2.5 rounded-full bg-white/5 border border-white/10 text-white/70 hover:text-white hover:border-white/30 active:scale-95 transition-all disabled:opacity-50">
+            <ChevronLeft className="w-4 h-4" />
+            <span className="text-sm font-medium">Prev</span>
+          </button>
+          <div className="flex items-center gap-1.5">
+            {websites.map((_, idx) => (
+              <button key={idx} onClick={() => !isAnimating.current && setCurrentIndex(idx)} className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-5 bg-red-500' : 'w-1.5 bg-white/30 hover:bg-white/50'}`} />
+            ))}
+          </div>
+          <button onClick={swipeNext} disabled={isAnimating.current} className="flex items-center gap-1.5 px-3 py-2.5 rounded-full bg-white/5 border border-white/10 text-white/70 hover:text-white hover:border-white/30 active:scale-95 transition-all disabled:opacity-50">
+            <span className="text-sm font-medium">Next</span>
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="text-center mt-3">
+          <span className="text-xs text-white/50">{currentIndex + 1} / {websites.length}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const features = [
   { icon: Zap, title: 'Lightning Fast', desc: 'Sub-second load times with optimized code and edge caching.' },
@@ -266,8 +472,13 @@ function WebDesignPage() {
             </p>
           </div>
 
-          {/* Main Preview Container */}
-          <div className="relative flex items-center justify-center gap-4 lg:gap-8">
+          {/* Mobile: Swipe Deck */}
+          <div className="md:hidden">
+            <MobilePortfolioDeck websites={portfolioWebsites} />
+          </div>
+
+          {/* Desktop: macOS Mockup - Unchanged */}
+          <div className="hidden md:flex relative items-center justify-center gap-4 lg:gap-8">
             {/* Left Arrow */}
             <button 
               onClick={() => navigate('left')}
@@ -279,7 +490,7 @@ function WebDesignPage() {
 
             {/* Preview Box with Iframe */}
             <div 
-              className="relative flex-1 max-w-6xl aspect-[9/16] md:aspect-[16/10] rounded-2xl lg:rounded-3xl overflow-hidden bg-[#0a0a0a] border border-white/10 shadow-2xl"
+              className="relative flex-1 max-w-6xl aspect-[16/10] rounded-2xl lg:rounded-3xl overflow-hidden bg-[#0a0a0a] border border-white/10 shadow-2xl"
               style={{ boxShadow: '0 0 100px rgba(239, 68, 68, 0.15)' }}
             >
               {/* Browser Chrome */}
@@ -390,22 +601,6 @@ function WebDesignPage() {
                   />
                 ))}
               </div>
-            </div>
-
-            {/* Mobile Info - Below Mockup */}
-            <div className="md:hidden w-full max-w-sm mx-auto mt-4 px-2">
-              <span className="text-xs text-red-400 uppercase tracking-wider">{currentWebsite.category}</span>
-              <h3 className="text-xl font-bold mt-1">{currentWebsite.title}</h3>
-              <p className="text-white/60 text-sm mt-2">{currentWebsite.description}</p>
-              <a 
-                href={currentWebsite.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 flex items-center justify-center gap-2 px-5 py-3 bg-white text-black rounded-full text-sm font-medium hover:bg-red-500 hover:text-white transition-all w-full"
-              >
-                <span>Open in New Tab</span>
-                <ExternalLink className="w-4 h-4" />
-              </a>
             </div>
 
             {/* Right Arrow */}
