@@ -17,6 +17,10 @@ import {
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Animation easing constants
+const SPRING_EASE = 'elastic.out(1, 0.6)';
+const SNAP_EASE = 'power2.out';
+
 const services = [
   {
     id: 1,
@@ -92,9 +96,7 @@ function MobileCardStack() {
   const isSwipeValid = useRef(false);
   const rafId = useRef<number | null>(null);
 
-  // Spring physics config - converted to GSAP ease values
-  const SPRING_EASE = 'elastic.out(1, 0.6)';
-  const SNAP_EASE = 'power2.out';
+  // Spring physics config
   const SWIPE_THRESHOLD = 80;
   const ROTATION_FACTOR = 0.08;
 
