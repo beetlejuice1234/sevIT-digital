@@ -408,7 +408,7 @@ function WebDesignPage() {
               </a>
             </div>
 
-            {/* Right Arrow --'}
+            {/* Right Arrow */}
             <button 
               onClick={() => navigate('right')}
               disabled={isAnimating}
