@@ -183,6 +183,11 @@ function MobilePortfolioDeck({ websites }: { websites: typeof portfolioWebsites 
                     <ExternalLink className="w-4 h-4" />
                   </a>
                 </div>
+                {/* Site Logo - Center */}
+                <div className="absolute top-12 left-1/2 -translate-x-1/2 w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg" style={{ backgroundColor: `${site.color}20`, border: `2px solid ${site.color}40` }}>
+                  <span className="text-3xl font-bold" style={{ color: site.color }}>{site.title.charAt(0)}</span>
+                </div>
+                {/* Category Icon - Top Right */}
                 <div className="absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${site.color}25` }}>
                   <Monitor className="w-5 h-5" style={{ color: site.color }} />
                 </div>
