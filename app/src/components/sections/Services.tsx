@@ -285,7 +285,6 @@ function MobileCardStack() {
     setTimeout(() => {
       setCurrentIndex(prevIndex);
       isAnimating.current = false;
-      setDirection(null);
     }, 400);
   }, [currentIndex, getStackOrder]);
 
