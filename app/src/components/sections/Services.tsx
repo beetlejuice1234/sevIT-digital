@@ -17,10 +17,6 @@ import {
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Animation easing constants
-const SPRING_EASE = 'elastic.out(1, 0.6)';
-const SNAP_EASE = 'power2.out';
-
 const services = [
   {
     id: 1,
@@ -80,132 +76,269 @@ const services = [
 
 /**
  * Mobile Swipeable Card Stack Component
- * Tinder-style 3D card deck with spring physics
+ * Tinder-style 3D card deck with cyclical behavior
  */
 function MobileCardStack() {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [direction, setDirection] = useState<'next' | 'prev' | null>(null);
   const navigate = useNavigate();
   
-  // Touch/drag state refs for 60FPS performance
+  // Touch/drag state refs
   const dragStartX = useRef(0);
   const dragCurrentX = useRef(0);
   const dragStartY = useRef(0);
   const isSwipeValid = useRef(false);
   const rafId = useRef<number | null>(null);
+  const isAnimating = useRef(false);
 
-  // Spring physics config
-  const SWIPE_THRESHOLD = 80;
-  const ROTATION_FACTOR = 0.08;
+  const SWIPE_THRESHOLD = 60;
+  const ROTATION_FACTOR = 0.05;
 
-  // Get card indices for 3D stack (current + 2 behind)
-  const getStackIndices = useCallback(() => {
-    const indices = [];
-    for (let i = 0; i < 3; i++) {
-      const idx = (currentIndex + i) % services.length;
-      indices.push(idx);
+  // Get ordered indices for the stack (current, next, next+1)
+  const getStackOrder = useCallback(() => {
+    const order = [];
+    for (let i = 0; i < Math.min(3, services.length); i++) {
+      order.push((currentIndex + i) % services.length);
     }
-    return indices;
+    return order;
   }, [currentIndex]);
 
-  // Update card positions with 3D stack effect
-  const updateCardPositions = useCallback((activeOffset: number = 0, activeRotation: number = 0) => {
-    const indices = getStackIndices();
+  // Initialize card positions - 3D stack effect
+  const initializeStack = useCallback(() => {
+    const order = getStackOrder();
     
-    indices.forEach((serviceIdx, stackPosition) => {
+    order.forEach((serviceIdx, stackPos) => {
       const card = cardsRef.current[serviceIdx];
       if (!card) return;
 
-      const isActive = stackPosition === 0;
-      const depth = stackPosition; // 0 = front, 1 = middle, 2 = back
-
-      if (isActive) {
-        // Active card follows finger with rotation
+      const isTop = stackPos === 0;
+      
+      if (isTop) {
+        // Top card - fully visible, no transform
         gsap.set(card, {
-          x: activeOffset,
-          rotation: activeRotation,
-          scale: 1 - Math.abs(activeOffset) * 0.0003,
-          zIndex: 30,
+          x: 0,
+          y: 0,
+          scale: 1,
+          rotation: 0,
           opacity: 1,
+          zIndex: 30,
           filter: 'brightness(1)',
         });
       } else {
-        // Background cards hidden - only top card visible
+        // Background cards - visible but scaled down and darker
+        const depth = stackPos;
         gsap.set(card, {
-          opacity: 0,
+          x: 0,
+          y: depth * 8,
+          scale: 1 - depth * 0.05,
+          rotation: 0,
+          opacity: 1,
           zIndex: 30 - depth * 10,
+          filter: `brightness(${0.6 - depth * 0.15})`,
         });
       }
     });
-  }, [getStackIndices]);
 
-  // Handle swipe completion with spring physics
-  const completeSwipe = useCallback((direction: 'left' | 'right') => {
-    const activeCard = cardsRef.current[getStackIndices()[0]];
-    if (!activeCard) return;
+    // Hide other cards
+    services.forEach((_, idx) => {
+      if (!order.includes(idx)) {
+        const card = cardsRef.current[idx];
+        if (card) {
+          gsap.set(card, { opacity: 0, zIndex: 0 });
+        }
+      }
+    });
+  }, [getStackOrder]);
 
-    const exitX = direction === 'right' ? window.innerWidth + 200 : -window.innerWidth - 200;
-    const exitRotation = direction === 'right' ? 25 : -25;
+  // Handle drag during swipe
+  const updateDragPosition = useCallback((deltaX: number) => {
+    const order = getStackOrder();
+    const topCard = cardsRef.current[order[0]];
+    const secondCard = cardsRef.current[order[1]];
+    
+    if (!topCard) return;
 
-    // Animate card out with spring physics
-    gsap.to(activeCard, {
-      x: exitX,
-      rotation: exitRotation,
+    const rotation = deltaX * ROTATION_FACTOR;
+    const progress = Math.min(Math.abs(deltaX) / 150, 1);
+
+    // Top card follows finger
+    gsap.set(topCard, {
+      x: deltaX,
+      rotation: rotation,
+      scale: 1 - progress * 0.02,
+    });
+
+    // Second card scales up as top card moves
+    if (secondCard) {
+      gsap.set(secondCard, {
+        scale: 0.95 + progress * 0.05,
+        y: 8 - progress * 8,
+        filter: `brightness(${0.6 + progress * 0.4})`,
+        zIndex: 30 - Math.sign(progress) * 5,
+      });
+    }
+  }, [getStackOrder]);
+
+  // Complete swipe to NEXT (right swipe)
+  const swipeNext = useCallback(() => {
+    if (isAnimating.current) return;
+    isAnimating.current = true;
+    setDirection('next');
+
+    const order = getStackOrder();
+    const topCard = cardsRef.current[order[0]];
+    const secondCard = cardsRef.current[order[1]];
+    const thirdCard = cardsRef.current[order[2]];
+
+    if (!topCard) {
+      isAnimating.current = false;
+      return;
+    }
+
+    // Animate top card out to the right
+    gsap.to(topCard, {
+      x: window.innerWidth,
+      rotation: 15,
       opacity: 0,
-      duration: 0.5,
-      ease: SNAP_EASE,
-      onComplete: () => {
-        // Reset card position off-screen
-        gsap.set(activeCard, { x: 0, rotation: 0, opacity: 1 });
-        
-        // Advance to next card
-        setCurrentIndex((prev) => (prev + 1) % services.length);
-      },
+      duration: 0.4,
+      ease: 'power3.out',
     });
-  }, [getStackIndices]);
 
-  // Snap back with spring if not swiped far enough
-  const snapBack = useCallback(() => {
-    const activeCard = cardsRef.current[getStackIndices()[0]];
-    if (!activeCard) return;
+    // Second card scales up to become top
+    if (secondCard) {
+      gsap.to(secondCard, {
+        scale: 1,
+        y: 0,
+        filter: 'brightness(1)',
+        zIndex: 30,
+        duration: 0.4,
+        ease: 'power3.out',
+      });
+    }
 
-    gsap.to(activeCard, {
-      x: 0,
-      rotation: 0,
+    // Third card becomes visible as second
+    if (thirdCard) {
+      gsap.to(thirdCard, {
+        scale: 0.95,
+        y: 8,
+        opacity: 1,
+        filter: 'brightness(0.6)',
+        zIndex: 20,
+        duration: 0.4,
+        ease: 'power3.out',
+      });
+    }
+
+    // Advance index after animation
+    setTimeout(() => {
+      gsap.set(topCard, { x: 0, rotation: 0, opacity: 0 });
+      setCurrentIndex((prev) => (prev + 1) % services.length);
+      isAnimating.current = false;
+      setDirection(null);
+    }, 400);
+  }, [getStackOrder]);
+
+  // Complete swipe to PREV (left swipe) - cyclical
+  const swipePrev = useCallback(() => {
+    if (isAnimating.current) return;
+    isAnimating.current = true;
+    setDirection('prev');
+
+    const prevIndex = (currentIndex - 1 + services.length) % services.length;
+    const order = getStackOrder();
+    const topCard = cardsRef.current[order[0]];
+    const prevCard = cardsRef.current[prevIndex];
+
+    if (!topCard || !prevCard) {
+      isAnimating.current = false;
+      return;
+    }
+
+    // Position prev card off-screen left
+    gsap.set(prevCard, {
+      x: -window.innerWidth,
+      opacity: 0,
       scale: 1,
-      duration: 0.5,
-      ease: SPRING_EASE,
+      y: 0,
+      zIndex: 35,
+      filter: 'brightness(1)',
     });
 
-    // Keep background cards hidden
-    getStackIndices().slice(1).forEach((serviceIdx) => {
-      const card = cardsRef.current[serviceIdx];
-      if (!card) return;
-      gsap.set(card, { opacity: 0 });
+    // Animate prev card in from left to become top
+    gsap.to(prevCard, {
+      x: 0,
+      opacity: 1,
+      duration: 0.4,
+      ease: 'power3.out',
     });
-  }, [getStackIndices]);
+
+    // Current top card scales down and becomes second
+    gsap.to(topCard, {
+      scale: 0.95,
+      y: 8,
+      filter: 'brightness(0.6)',
+      zIndex: 20,
+      duration: 0.4,
+      ease: 'power3.out',
+    });
+
+    // Update index
+    setTimeout(() => {
+      setCurrentIndex(prevIndex);
+      isAnimating.current = false;
+      setDirection(null);
+    }, 400);
+  }, [currentIndex, getStackOrder]);
+
+  // Snap back if not swiped far enough
+  const snapBack = useCallback(() => {
+    const order = getStackOrder();
+    const topCard = cardsRef.current[order[0]];
+    const secondCard = cardsRef.current[order[1]];
+
+    if (topCard) {
+      gsap.to(topCard, {
+        x: 0,
+        rotation: 0,
+        scale: 1,
+        duration: 0.5,
+        ease: 'elastic.out(1, 0.6)',
+      });
+    }
+
+    if (secondCard) {
+      gsap.to(secondCard, {
+        scale: 0.95,
+        y: 8,
+        filter: 'brightness(0.6)',
+        duration: 0.4,
+        ease: 'power3.out',
+      });
+    }
+  }, [getStackOrder]);
 
   // Touch/Mouse handlers
   const handleStart = useCallback((clientX: number, clientY: number) => {
+    if (isAnimating.current) return;
+    
     setIsDragging(true);
     dragStartX.current = clientX;
     dragStartY.current = clientY;
     dragCurrentX.current = clientX;
     isSwipeValid.current = true;
 
-    // Kill any ongoing animations on active card
-    const activeCard = cardsRef.current[getStackIndices()[0]];
-    if (activeCard) {
-      gsap.killTweensOf(activeCard);
+    const topCard = cardsRef.current[getStackOrder()[0]];
+    if (topCard) {
+      gsap.killTweensOf(topCard);
     }
-  }, [getStackIndices]);
+  }, [getStackOrder]);
 
   const handleMove = useCallback((clientX: number, clientY: number) => {
-    if (!isDragging || !isSwipeValid.current) return;
+    if (!isDragging || !isSwipeValid.current || isAnimating.current) return;
 
-    // Use requestAnimationFrame for 60FPS
     if (rafId.current) return;
     
     rafId.current = requestAnimationFrame(() => {
@@ -214,18 +347,17 @@ function MobileCardStack() {
       const deltaX = clientX - dragStartX.current;
       const deltaY = clientY - dragStartY.current;
       
-      // Check if scrolling vertically - disable horizontal swipe
+      // Check for vertical scroll
       if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 10) {
         isSwipeValid.current = false;
         rafId.current = null;
         return;
       }
 
-      const rotation = deltaX * ROTATION_FACTOR;
-      updateCardPositions(deltaX, rotation);
+      updateDragPosition(deltaX);
       rafId.current = null;
     });
-  }, [isDragging, updateCardPositions]);
+  }, [isDragging, updateDragPosition]);
 
   const handleEnd = useCallback(() => {
     if (!isDragging) return;
@@ -237,16 +369,20 @@ function MobileCardStack() {
       rafId.current = null;
     }
 
-    if (!isSwipeValid.current) return;
+    if (!isSwipeValid.current || isAnimating.current) return;
 
     const deltaX = dragCurrentX.current - dragStartX.current;
     
     if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
-      completeSwipe(deltaX > 0 ? 'right' : 'left');
+      if (deltaX > 0) {
+        swipeNext(); // Swipe right = next
+      } else {
+        swipePrev(); // Swipe left = prev
+      }
     } else {
       snapBack();
     }
-  }, [isDragging, completeSwipe, snapBack]);
+  }, [isDragging, swipeNext, swipePrev, snapBack]);
 
   // Touch events
   const onTouchStart = (e: React.TouchEvent) => {
@@ -281,192 +417,218 @@ function MobileCardStack() {
     navigate(link);
   };
 
-  // Manual navigation buttons
-  const goNext = () => completeSwipe('left');
-  const goPrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + services.length) % services.length);
-  };
-
-  // Initialize card positions
+  // Initialize positions on mount and index change
   useEffect(() => {
-    updateCardPositions(0, 0);
-  }, [currentIndex, updateCardPositions]);
+    initializeStack();
+  }, [currentIndex, initializeStack]);
 
-  const stackIndices = getStackIndices();
+  const stackOrder = getStackOrder();
+  const currentService = services[currentIndex];
 
   return (
-    <div className="relative w-full max-w-sm mx-auto">
-      {/* Card Stack Container */}
-      <div
-        ref={containerRef}
-        className="relative h-[420px] touch-none select-none cursor-grab active:cursor-grabbing"
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
-        onMouseLeave={onMouseLeave}
-        style={{ perspective: '1000px' }}
-      >
-        {/* Render cards in reverse order for proper z-indexing */}
-        {[...stackIndices].reverse().map((serviceIdx) => {
-          const service = services[serviceIdx];
-          const Icon = service.icon;
-          const stackPos = stackIndices.indexOf(serviceIdx);
-          const isActive = stackPos === 0;
+    <div className="relative w-full px-4">
+      {/* Card Stack Container - Centered with breathing room */}
+      <div className="relative mx-auto" style={{ maxWidth: '340px' }}>
+        {/* Cards Container */}
+        <div
+          ref={containerRef}
+          className="relative h-[480px] touch-none select-none cursor-grab active:cursor-grabbing"
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={onMouseUp}
+          onMouseLeave={onMouseLeave}
+          style={{ perspective: '1000px' }}
+        >
+          {/* Render all cards - stack order determines visibility */}
+          {services.map((service, idx) => {
+            const isInStack = stackOrder.includes(idx);
+            const stackPos = stackOrder.indexOf(idx);
+            const isTop = stackPos === 0;
+            const Icon = service.icon;
 
-          return (
-            <div
-              key={service.id}
-              ref={(el) => { cardsRef.current[serviceIdx] = el; }}
-              className="absolute inset-0 will-change-transform"
-              style={{
-                transformStyle: 'preserve-3d',
-                touchAction: isActive ? 'none' : 'auto',
-              }}
-            >
-              <div 
-                className="h-full w-full bg-surface/80 backdrop-blur-md rounded-3xl border border-border/60 overflow-hidden shadow-2xl"
+            return (
+              <div
+                key={service.id}
+                ref={(el) => { cardsRef.current[idx] = el; }}
+                className="absolute inset-0 will-change-transform"
                 style={{
-                  boxShadow: isActive 
-                    ? `0 25px 50px -12px ${service.color}30, 0 0 0 1px ${service.color}20`
-                    : '0 10px 30px -10px rgba(0,0,0,0.5)',
+                  transformStyle: 'preserve-3d',
+                  opacity: isInStack ? 1 : 0,
+                  pointerEvents: isTop ? 'auto' : 'none',
                 }}
               >
-                {/* Card Background Gradient */}
+                {/* Card Shell */}
                 <div 
-                  className="absolute inset-0 opacity-30"
+                  className="h-full w-full rounded-3xl overflow-hidden shadow-2xl"
                   style={{
-                    background: `radial-gradient(circle at 30% 20%, ${service.color}25, transparent 60%)`,
+                    backgroundColor: 'rgba(30, 30, 35, 0.95)',
+                    border: `1px solid ${service.color}30`,
+                    boxShadow: isTop 
+                      ? `0 25px 60px -15px ${service.color}40, 0 0 0 1px ${service.color}20`
+                      : `0 10px 30px -10px rgba(0,0,0,0.8)`,
                   }}
-                />
+                >
+                  {/* Only render full content for top card */}
+                  {isTop ? (
+                    <div className="relative h-full flex flex-col">
+                      {/* Card Background Gradient */}
+                      <div 
+                        className="absolute inset-0 opacity-40"
+                        style={{
+                          background: `radial-gradient(circle at 30% 20%, ${service.color}30, transparent 60%)`,
+                        }}
+                      />
 
-                {/* Card Content */}
-                <div className="relative h-full flex flex-col p-6">
-                  {/* Header */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div 
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                      style={{ backgroundColor: `${service.color}20` }}
-                    >
-                      <Icon className="w-7 h-7" style={{ color: service.color }} />
+                      {/* Card Content */}
+                      <div className="relative h-full flex flex-col p-6">
+                        {/* Header */}
+                        <div className="flex items-start justify-between mb-5">
+                          <div 
+                            className="w-14 h-14 rounded-2xl flex items-center justify-center"
+                            style={{ backgroundColor: `${service.color}20` }}
+                          >
+                            <Icon className="w-7 h-7" style={{ color: service.color }} />
+                          </div>
+                          <div 
+                            className="text-xs font-bold px-3 py-1.5 rounded-full"
+                            style={{ 
+                              backgroundColor: `${service.color}15`,
+                              color: service.color,
+                            }}
+                          >
+                            {String(idx + 1).padStart(2, '0')}
+                          </div>
+                        </div>
+
+                        {/* Title & Description */}
+                        <h3 className="text-2xl font-bold text-foreground mb-3">
+                          {service.title}
+                        </h3>
+                        <p className="text-muted-foreground text-sm leading-relaxed mb-5 flex-grow">
+                          {service.description}
+                        </p>
+
+                        {/* Features */}
+                        <div className="flex flex-wrap gap-2 mb-6">
+                          {service.features.map((feature, i) => (
+                            <span 
+                              key={i}
+                              className="text-xs px-3 py-1.5 rounded-full bg-foreground/5 text-muted-foreground border border-border/30"
+                            >
+                              {feature}
+                            </span>
+                          ))}
+                        </div>
+
+                        {/* CTA Button */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleLearnMore(service.link);
+                          }}
+                          className="w-full py-4 px-6 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-95"
+                          style={{ 
+                            backgroundColor: service.color,
+                            color: '#fff',
+                          }}
+                        >
+                          <span>Learn More</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      {/* Decorative corner */}
+                      <div 
+                        className="absolute -bottom-10 -right-10 w-32 h-32 rounded-full opacity-20"
+                        style={{
+                          background: `radial-gradient(circle, ${service.color}, transparent 70%)`,
+                        }}
+                      />
                     </div>
-                    <div 
-                      className="text-xs font-bold px-3 py-1 rounded-full"
-                      style={{ 
-                        backgroundColor: `${service.color}15`,
-                        color: service.color,
-                      }}
-                    >
-                      {String(serviceIdx + 1).padStart(2, '0')}
-                    </div>
-                  </div>
-
-                  {/* Title & Description */}
-                  <h3 className="text-2xl font-bold text-foreground mb-3">
-                    {service.title}
-                  </h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-4 flex-grow">
-                    {service.description}
-                  </p>
-
-                  {/* Features */}
-                  <div className="flex flex-wrap gap-2 mb-5">
-                    {service.features.slice(0, 2).map((feature, i) => (
-                      <span 
-                        key={i}
-                        className="text-xs px-3 py-1.5 rounded-full bg-foreground/5 text-muted-foreground border border-border/30"
+                  ) : (
+                    /* Background cards - just color indicator */
+                    <div className="h-full w-full flex items-center justify-center">
+                      <div 
+                        className="w-16 h-16 rounded-2xl flex items-center justify-center opacity-30"
+                        style={{ backgroundColor: `${service.color}30` }}
                       >
-                        {feature}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* CTA Button */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleLearnMore(service.link);
-                    }}
-                    className="w-full py-3.5 px-6 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-95"
-                    style={{ 
-                      backgroundColor: service.color,
-                      color: '#fff',
-                    }}
-                  >
-                    <span>Learn More</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+                        <Icon className="w-8 h-8" style={{ color: service.color }} />
+                      </div>
+                    </div>
+                  )}
                 </div>
-
-                {/* Decorative corner element */}
-                <div 
-                  className="absolute -bottom-10 -right-10 w-32 h-32 rounded-full opacity-20"
-                  style={{
-                    background: `radial-gradient(circle, ${service.color}, transparent 70%)`,
-                  }}
-                />
               </div>
-            </div>
-          );
-        })}
-
-        {/* Swipe hint overlay - shows on first interaction */}
-        {!isDragging && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-4 pointer-events-none opacity-50">
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <ChevronLeft className="w-4 h-4" />
-              <span>Swipe</span>
-            </div>
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <span>Swipe</span>
-              <ChevronRight className="w-4 h-4" />
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Navigation Controls */}
-      <div className="flex items-center justify-center gap-4 mt-6">
-        <button
-          onClick={goPrev}
-          className="w-12 h-12 rounded-full bg-surface/50 border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-all active:scale-95"
-          aria-label="Previous service"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-
-        {/* Progress dots */}
-        <div className="flex items-center gap-2">
-          {services.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentIndex(idx)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                idx === currentIndex 
-                  ? 'w-6 bg-accent' 
-                  : 'bg-foreground/20 hover:bg-foreground/40'
-              }`}
-              aria-label={`Go to service ${idx + 1}`}
-            />
-          ))}
+            );
+          })}
         </div>
 
-        <button
-          onClick={goNext}
-          className="w-12 h-12 rounded-full bg-surface/50 border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-all active:scale-95"
-          aria-label="Next service"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
-      </div>
+        {/* Swipe Controls - BELOW the card stack, never covered */}
+        <div className="flex items-center justify-between mt-6 px-2">
+          {/* Swipe Left: Prev */}
+          <button
+            onClick={swipePrev}
+            disabled={isAnimating.current}
+            className="flex items-center gap-2 px-4 py-3 rounded-full bg-surface/60 border border-border/40 text-muted-foreground hover:text-foreground hover:border-foreground/30 active:scale-95 transition-all disabled:opacity-50"
+          >
+            <ChevronLeft className="w-5 h-5" />
+            <span className="text-sm font-medium">Prev</span>
+          </button>
 
-      {/* Card counter */}
-      <div className="text-center mt-4">
-        <span className="text-sm text-muted-foreground">
-          {currentIndex + 1} <span className="text-foreground/40">/</span> {services.length}
-        </span>
+          {/* Progress Indicator */}
+          <div className="flex flex-col items-center gap-1">
+            <div className="flex items-center gap-1.5">
+              {services.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    if (!isAnimating.current && idx !== currentIndex) {
+                      const diff = idx - currentIndex;
+                      if (diff > 0 || (diff < 0 && Math.abs(diff) > services.length / 2)) {
+                        setCurrentIndex(idx);
+                      } else {
+                        setCurrentIndex(idx);
+                      }
+                    }
+                  }}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    idx === currentIndex 
+                      ? 'w-6 bg-accent' 
+                      : 'w-1.5 bg-foreground/20 hover:bg-foreground/40'
+                  }`}
+                  aria-label={`Go to service ${idx + 1}`}
+                />
+              ))}
+            </div>
+            <span className="text-xs text-muted-foreground mt-1">
+              {currentIndex + 1} / {services.length}
+            </span>
+          </div>
+
+          {/* Swipe Right: Next */}
+          <button
+            onClick={swipeNext}
+            disabled={isAnimating.current}
+            className="flex items-center gap-2 px-4 py-3 rounded-full bg-surface/60 border border-border/40 text-muted-foreground hover:text-foreground hover:border-foreground/30 active:scale-95 transition-all disabled:opacity-50"
+          >
+            <span className="text-sm font-medium">Next</span>
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Swipe hint text */}
+        <div className="flex items-center justify-center gap-8 mt-4 text-xs text-muted-foreground/60">
+          <span className="flex items-center gap-1">
+            <ChevronLeft className="w-3 h-3" />
+            Swipe Left
+          </span>
+          <span className="flex items-center gap-1">
+            Swipe Right
+            <ChevronRight className="w-3 h-3" />
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -486,7 +648,7 @@ function Services() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Header entrance - GPU accelerated
+      // Header entrance
       gsap.fromTo(
         headerRef.current,
         { opacity: 0, y: 40 },
@@ -494,7 +656,7 @@ function Services() {
           opacity: 1,
           y: 0,
           duration: 0.8,
-          ease: SNAP_EASE,
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top 80%',
@@ -503,7 +665,7 @@ function Services() {
         }
       );
 
-      // Cards staggered entrance - GPU accelerated (desktop only)
+      // Desktop cards staggered entrance
       const cards = cardsContainerRef.current?.querySelectorAll('.service-card');
       if (cards) {
         gsap.fromTo(
@@ -515,7 +677,7 @@ function Services() {
             scale: 1,
             duration: 0.6,
             stagger: 0.08,
-            ease: SNAP_EASE,
+            ease: 'power3.out',
             scrollTrigger: {
               trigger: cardsContainerRef.current,
               start: 'top 85%',
@@ -529,7 +691,6 @@ function Services() {
     return () => ctx.revert();
   }, []);
 
-  // Memoized hover handlers to prevent unnecessary re-renders
   const handleMouseEnter = useCallback((id: number) => {
     setActiveCard(id);
   }, []);
@@ -544,7 +705,7 @@ function Services() {
       id="services"
       className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 z-30"
     >
-      {/* Floating stars decoration - CSS animations */}
+      {/* Floating stars decoration */}
       <div className="absolute top-20 left-10 text-accent/20">
         <Star className="w-4 h-4 animate-pulse" style={{ animationDelay: '0s' }} />
       </div>
@@ -555,14 +716,11 @@ function Services() {
         <Star className="w-3 h-3 animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
 
-      {/* Section Header - GPU accelerated */}
+      {/* Section Header */}
       <div 
         ref={headerRef} 
         className="max-w-7xl mx-auto mb-12 sm:mb-16"
-        style={{
-          willChange: 'transform, opacity',
-          transform: 'translateZ(0)',
-        }}
+        style={{ willChange: 'transform, opacity' }}
       >
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
           <div>
@@ -580,12 +738,12 @@ function Services() {
         </div>
       </div>
 
-      {/* Mobile: Swipeable Card Stack (hidden on md+) */}
+      {/* Mobile: Swipeable Card Stack */}
       <div className="md:hidden max-w-7xl mx-auto">
         <MobileCardStack />
       </div>
 
-      {/* Desktop: Grid Layout (hidden on mobile) */}
+      {/* Desktop: Grid Layout */}
       <div 
         ref={cardsContainerRef}
         className="hidden md:grid max-w-7xl mx-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
@@ -601,10 +759,7 @@ function Services() {
               className="service-card group relative block"
               onMouseEnter={() => handleMouseEnter(service.id)}
               onMouseLeave={handleMouseLeave}
-              style={{
-                willChange: 'transform',
-                transform: 'translateZ(0)',
-              }}
+              style={{ willChange: 'transform' }}
             >
               <div 
                 className={`relative h-full bg-surface/50 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border transition-all duration-500 overflow-hidden ${
@@ -617,27 +772,22 @@ function Services() {
                     ? `0 0 40px -10px ${service.color}40` 
                     : 'none',
                   transform: isActive ? 'scale(1.02)' : 'scale(1)',
-                  willChange: 'transform, box-shadow',
                 }}
               >
-                {/* Orbital ring decoration - CSS transform only */}
+                {/* Orbital ring decoration */}
                 <div 
                   className={`absolute -right-8 -top-8 w-24 h-24 rounded-full border border-dashed transition-all duration-700 ${
                     isActive ? 'border-red-500/30' : 'border-foreground/5'
                   }`}
-                  style={{
-                    transform: isActive ? 'rotate(180deg)' : 'rotate(0deg)',
-                    willChange: 'transform',
-                  }}
+                  style={{ transform: isActive ? 'rotate(180deg)' : 'rotate(0deg)' }}
                 />
                 
-                {/* Icon - GPU accelerated */}
+                {/* Icon */}
                 <div 
                   className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-transform duration-300"
                   style={{ 
                     backgroundColor: `${service.color}15`,
                     transform: isActive ? 'scale(1.1)' : 'scale(1)',
-                    willChange: 'transform',
                   }}
                 >
                   <Icon className="w-6 h-6" style={{ color: service.color }} />
@@ -672,14 +822,13 @@ function Services() {
                   />
                 </div>
 
-                {/* Glow effect on hover - opacity transition */}
+                {/* Glow effect */}
                 <div 
                   className={`absolute inset-0 rounded-2xl transition-opacity duration-500 pointer-events-none ${
                     isActive ? 'opacity-100' : 'opacity-0'
                   }`}
                   style={{
                     background: `radial-gradient(circle at 30% 30%, ${service.color}10, transparent 70%)`,
-                    willChange: 'opacity',
                   }}
                 />
               </div>
@@ -696,10 +845,6 @@ function Services() {
         <a 
           href="#chat"
           className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background rounded-full font-medium hover:bg-accent transition-colors duration-300"
-          style={{
-            willChange: 'transform',
-            transform: 'translateZ(0)',
-          }}
         >
           <span>Let's Discuss Your Project</span>
           <ArrowRight className="w-4 h-4" />
