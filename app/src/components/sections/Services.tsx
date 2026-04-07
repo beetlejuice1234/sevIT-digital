@@ -83,7 +83,6 @@ function MobileCardStack() {
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [direction, setDirection] = useState<'next' | 'prev' | null>(null);
   const navigate = useNavigate();
   
   // Touch/drag state refs
@@ -186,7 +185,6 @@ function MobileCardStack() {
   const swipeNext = useCallback(() => {
     if (isAnimating.current) return;
     isAnimating.current = true;
-    setDirection('next');
 
     const order = getStackOrder();
     const topCard = cardsRef.current[order[0]];
@@ -237,7 +235,6 @@ function MobileCardStack() {
       gsap.set(topCard, { x: 0, rotation: 0, opacity: 0 });
       setCurrentIndex((prev) => (prev + 1) % services.length);
       isAnimating.current = false;
-      setDirection(null);
     }, 400);
   }, [getStackOrder]);
 
@@ -245,7 +242,6 @@ function MobileCardStack() {
   const swipePrev = useCallback(() => {
     if (isAnimating.current) return;
     isAnimating.current = true;
-    setDirection('prev');
 
     const prevIndex = (currentIndex - 1 + services.length) % services.length;
     const order = getStackOrder();
@@ -423,7 +419,6 @@ function MobileCardStack() {
   }, [currentIndex, initializeStack]);
 
   const stackOrder = getStackOrder();
-  const currentService = services[currentIndex];
 
   return (
     <div className="relative w-full px-4">
