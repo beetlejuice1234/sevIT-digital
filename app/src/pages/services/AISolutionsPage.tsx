@@ -3,7 +3,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Mic, Send, Bot, Sparkles, Cpu, MessageSquare, Zap, Volume2, VolumeX, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import BackToHome from '../../components/BackToHome';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -633,9 +632,6 @@ function AISolutionsPage() {
   return (
     <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden">
       <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-0" />
-
-      {/* Back Navigation - New Design */}
-      <BackToHome accentColor="#06B6D4" variant="floating" />
 
       {/* HERO - AI Takes Center Stage */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6 lg:px-12 pt-24 pb-12 z-10">

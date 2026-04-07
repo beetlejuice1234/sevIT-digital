@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ArrowLeft } from 'lucide-react';
 
 const navLinks = [
   { label: 'Services', href: '#services', sectionId: 'services' },
@@ -134,6 +134,11 @@ function Navbar() {
     navigate('/');
   }, [navigate]);
 
+  const handleBackClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate('/');
+  }, [navigate]);
+
   return (
     <nav
       ref={navRef}
@@ -155,8 +160,20 @@ function Navbar() {
         }}
       >
         <div className="flex items-center justify-between h-16">
-          {/* Logo - Centered on desktop */}
-          <div className="lg:absolute lg:left-1/2 lg:-translate-x-1/2">
+          {/* Back Button + Logo - Left side */}
+          <div className="flex items-center gap-2">
+            {/* Back Button - Only on sub-pages */}
+            {!isHomePage && (
+              <button
+                onClick={handleBackClick}
+                className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-foreground transition-all duration-300 rounded-full hover:bg-white/5"
+                aria-label="Back to Home"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+            )}
+            
+            {/* Logo - Centered on desktop, left on mobile */}
             <a 
               href="#" 
               onClick={handleLogoClick}

@@ -3,7 +3,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Target, BookOpen, Crown, BarChart3, Shield, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import BackToHome from '../../components/BackToHome';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -191,9 +190,6 @@ function BrandingPage() {
     <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden">
       {/* Animated Starfield */}
       <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-0" />
-
-      {/* Back Navigation - New Design */}
-      <BackToHome accentColor="#EC4899" variant="floating" />
 
       {/* HERO SECTION */}
       <section className="relative min-h-screen flex items-center justify-center px-6 lg:px-12 pt-20 z-10">

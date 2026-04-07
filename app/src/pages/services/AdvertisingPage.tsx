@@ -3,7 +3,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, TrendingUp, Search, Share2, Target, Zap, ChevronRight, GripHorizontal } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import BackToHome from '../../components/BackToHome';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -328,9 +327,6 @@ function AdvertisingPage() {
   return (
     <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden">
       <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-0" />
-
-      {/* Back Navigation - New Design */}
-      <BackToHome accentColor="#EF4444" variant="floating" />
 
       {/* HERO */}
       <section className="relative min-h-[80vh] flex items-center justify-center px-6 lg:px-12 pt-32 z-10">

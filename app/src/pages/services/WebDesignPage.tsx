@@ -430,8 +430,6 @@ function WebDesignPage() {
       />
 
       {/* Back Navigation - New Design */}
-      <BackToHome accentColor="#EF4444" variant="floating" />
-
       {/* HERO SECTION */}
       <section className="relative min-h-[70vh] flex items-center justify-center px-6 lg:px-12 pt-32 pb-20 z-10">
         <div className="absolute inset-0 pointer-events-none" 
