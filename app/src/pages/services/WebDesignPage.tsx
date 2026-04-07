@@ -279,32 +279,32 @@ function WebDesignPage() {
 
             {/* Preview Box with Iframe */}
             <div 
-              className="relative flex-1 max-w-6xl aspect-[16/10] rounded-2xl lg:rounded-3xl overflow-hidden bg-[#0a0a0a] border border-white/10 shadow-2xl"
+              className="relative flex-1 max-w-6xl aspect-[9/16] md:aspect-[16/10] rounded-2xl lg:rounded-3xl overflow-hidden bg-[#0a0a0a] border border-white/10 shadow-2xl"
               style={{ boxShadow: '0 0 100px rgba(239, 68, 68, 0.15)' }}
             >
               {/* Browser Chrome */}
-              <div className="h-10 lg:h-12 bg-[#1a1a1a] border-b border-white/10 flex items-center px-4 gap-3">
-                <div className="flex gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500/80" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                  <div className="w-3 h-3 rounded-full bg-green-500/80" />
+              <div className="h-8 md:h-10 lg:h-12 bg-[#1a1a1a] border-b border-white/10 flex items-center px-3 md:px-4 gap-2 md:gap-3">
+                <div className="flex gap-1.5 md:gap-2">
+                  <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-red-500/80" />
+                  <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-yellow-500/80" />
+                  <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-green-500/80" />
                 </div>
-                <div className="flex-1 flex justify-center">
+                <div className="flex-1 flex justify-center px-2">
                   <a 
                     href={currentWebsite.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-1.5 bg-[#0a0a0a] rounded-lg text-xs text-white/40 flex items-center gap-2 hover:text-white/60 transition-colors"
+                    className="px-2 md:px-4 py-1 md:py-1.5 bg-[#0a0a0a] rounded-lg text-[10px] md:text-xs text-white/40 flex items-center gap-1.5 md:gap-2 hover:text-white/60 transition-colors truncate max-w-[180px] md:max-w-none"
                   >
-                    <div className="w-3 h-3 rounded-full bg-green-500/50" />
-                    {currentWebsite.url}
-                    <ExternalLink className="w-3 h-3 ml-1" />
+                    <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-500/50 flex-shrink-0" />
+                    <span className="truncate">{currentWebsite.url}</span>
+                    <ExternalLink className="w-2.5 h-2.5 md:w-3 md:h-3 flex-shrink-0" />
                   </a>
                 </div>
               </div>
 
               {/* Website Preview Content with Iframe */}
-              <div className="relative flex-1 h-[calc(100%-48px)] overflow-hidden">
+              <div className="relative flex-1 h-[calc(100%-40px)] md:h-[calc(100%-48px)] overflow-hidden">
                 <div ref={contentRef} className="w-full h-full">
                   {/* Loading Spinner */}
                   {isLoading && (
@@ -352,8 +352,8 @@ function WebDesignPage() {
                     </div>
                   )}
 
-                  {/* Overlay Info */}
-                  <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8 bg-gradient-to-t from-black via-black/90 to-transparent pointer-events-none">
+                  {/* Overlay Info - Desktop Only */}
+                  <div className="hidden md:block absolute bottom-0 left-0 right-0 p-6 lg:p-8 bg-gradient-to-t from-black via-black/90 to-transparent pointer-events-none">
                     <div className="flex items-end justify-between pointer-events-auto">
                       <div>
                         <span className="text-xs text-red-400 uppercase tracking-wider">{currentWebsite.category}</span>
@@ -392,7 +392,23 @@ function WebDesignPage() {
               </div>
             </div>
 
-            {/* Right Arrow */}
+            {/* Mobile Info - Below Mockup */}
+            <div className="md:hidden w-full max-w-sm mx-auto mt-4 px-2">
+              <span className="text-xs text-red-400 uppercase tracking-wider">{currentWebsite.category}</span>
+              <h3 className="text-xl font-bold mt-1">{currentWebsite.title}</h3>
+              <p className="text-white/60 text-sm mt-2">{currentWebsite.description}</p>
+              <a 
+                href={currentWebsite.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 flex items-center justify-center gap-2 px-5 py-3 bg-white text-black rounded-full text-sm font-medium hover:bg-red-500 hover:text-white transition-all w-full"
+              >
+                <span>Open in New Tab</span>
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            </div>
+
+            {/* Right Arrow --'}
             <button 
               onClick={() => navigate('right')}
               disabled={isAnimating}
