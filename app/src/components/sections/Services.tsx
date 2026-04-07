@@ -323,7 +323,7 @@ function MobileCardStack() {
     dragStartX.current = clientX;
     dragStartY.current = clientY;
     dragCurrentX.current = clientX;
-    isSwipeValid.current = true;
+    isSwipeValid.current = false; // Start false, enable only if horizontal
 
     const topCard = cardsRef.current[getStackOrder()[0]];
     if (topCard) {
@@ -332,7 +332,7 @@ function MobileCardStack() {
   }, [getStackOrder]);
 
   const handleMove = useCallback((clientX: number, clientY: number) => {
-    if (!isDragging || !isSwipeValid.current || isAnimating.current) return;
+    if (!isDragging || isAnimating.current) return;
 
     if (rafId.current) return;
     
@@ -342,13 +342,21 @@ function MobileCardStack() {
       const deltaX = clientX - dragStartX.current;
       const deltaY = clientY - dragStartY.current;
       
-      // Check for vertical scroll
-      if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 10) {
-        isSwipeValid.current = false;
+      // Determine swipe direction on first significant movement
+      if (!isSwipeValid.current && Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10) {
+        rafId.current = null;
+        return; // Wait for more movement
+      }
+      
+      // If vertical movement dominates, cancel and let page scroll
+      if (Math.abs(deltaY) > Math.abs(deltaX) * 1.2) {
+        setIsDragging(false);
         rafId.current = null;
         return;
       }
-
+      
+      // Horizontal swipe confirmed
+      isSwipeValid.current = true;
       updateDragPosition(deltaX);
       rafId.current = null;
     });
@@ -426,7 +434,7 @@ function MobileCardStack() {
         {/* Cards Container */}
         <div
           ref={containerRef}
-          className="relative h-[480px] touch-none select-none cursor-grab active:cursor-grabbing"
+          className="relative h-[480px] select-none cursor-grab active:cursor-grabbing"
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
@@ -434,7 +442,11 @@ function MobileCardStack() {
           onMouseMove={onMouseMove}
           onMouseUp={onMouseUp}
           onMouseLeave={onMouseLeave}
-          style={{ perspective: '1000px' }}
+          style={{ 
+            perspective: '1000px',
+            touchAction: 'pan-y', // Allow vertical scroll, handle horizontal in JS
+            willChange: 'transform',
+          }}
         >
           {/* Render all cards - stack order determines visibility */}
           {services.map((service, idx) => {
@@ -447,11 +459,13 @@ function MobileCardStack() {
               <div
                 key={service.id}
                 ref={(el) => { cardsRef.current[idx] = el; }}
-                className="absolute inset-0 will-change-transform"
+                className="absolute inset-0"
                 style={{
                   transformStyle: 'preserve-3d',
                   opacity: isInStack ? 1 : 0,
                   pointerEvents: isTop ? 'auto' : 'none',
+                  willChange: 'transform, opacity',
+                  transform: 'translateZ(0)',
                 }}
               >
                 {/* Card Shell */}
