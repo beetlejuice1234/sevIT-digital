@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Code2, Zap, Smartphone, Search, Shield, Layers, Monitor, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Code2, Zap, Smartphone, Search, Shield, Layers, Monitor, Sparkles, CheckCircle2, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import BackToHome from '../../components/BackToHome';
 
@@ -183,9 +183,14 @@ function MobilePortfolioDeck({ websites }: { websites: typeof portfolioWebsites 
                     <ExternalLink className="w-4 h-4" />
                   </a>
                 </div>
-                {/* Site Logo - Center */}
-                <div className="absolute top-12 left-1/2 -translate-x-1/2 w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg" style={{ backgroundColor: `${site.color}20`, border: `2px solid ${site.color}40` }}>
-                  <span className="text-3xl font-bold" style={{ color: site.color }}>{site.title.charAt(0)}</span>
+                {/* Site Favicon Placeholder - Center */}
+                <div className="absolute top-12 left-1/2 -translate-x-1/2">
+                  <div className="w-16 h-16 rounded-xl flex items-center justify-center shadow-lg" style={{ backgroundColor: site.color, border: '3px solid rgba(255,255,255,0.2)' }}>
+                    <Globe className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-black/50 flex items-center justify-center border border-white/20">
+                    <span className="text-[10px] font-bold text-white">{site.title.charAt(0)}</span>
+                  </div>
                 </div>
                 {/* Category Icon - Top Right */}
                 <div className="absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${site.color}25` }}>
