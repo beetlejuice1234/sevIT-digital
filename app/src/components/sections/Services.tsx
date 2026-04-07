@@ -92,8 +92,9 @@ function MobileCardStack() {
   const isSwipeValid = useRef(false);
   const rafId = useRef<number | null>(null);
 
-  // Spring physics config
-  const SPRING_CONFIG = { stiffness: 300, damping: 30, mass: 0.8 };
+  // Spring physics config - converted to GSAP ease values
+  const SPRING_EASE = 'elastic.out(1, 0.6)';
+  const SNAP_EASE = 'power2.out';
   const SWIPE_THRESHOLD = 80;
   const ROTATION_FACTOR = 0.08;
 
@@ -144,7 +145,7 @@ function MobileCardStack() {
           opacity: 1,
           filter: `brightness(${baseBrightness + progress * 0.2})`,
           duration: 0.3,
-          ease: 'power2.out',
+          ease: SNAP_EASE,
           overwrite: true,
         });
       }
@@ -165,7 +166,7 @@ function MobileCardStack() {
       rotation: exitRotation,
       opacity: 0,
       duration: 0.5,
-      ease: 'power3.out',
+      ease: SNAP_EASE,
       onComplete: () => {
         // Reset card position off-screen
         gsap.set(activeCard, { x: 0, rotation: 0, opacity: 1 });
@@ -186,7 +187,7 @@ function MobileCardStack() {
       rotation: 0,
       scale: 1,
       duration: 0.5,
-      ease: 'elastic.out(1, 0.5)',
+      ease: SPRING_EASE,
     });
 
     // Reset background cards
@@ -200,7 +201,7 @@ function MobileCardStack() {
         scale: 1 - depth * 0.06,
         filter: `brightness(${1 - depth * 0.25})`,
         duration: 0.4,
-        ease: 'power2.out',
+        ease: SNAP_EASE,
       });
     });
   }, [getStackIndices]);
@@ -512,7 +513,7 @@ function Services() {
           opacity: 1,
           y: 0,
           duration: 0.8,
-          ease: 'power3.out',
+          ease: SNAP_EASE,
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top 80%',
@@ -533,7 +534,7 @@ function Services() {
             scale: 1,
             duration: 0.6,
             stagger: 0.08,
-            ease: 'power3.out',
+            ease: SNAP_EASE,
             scrollTrigger: {
               trigger: cardsContainerRef.current,
               start: 'top 85%',
