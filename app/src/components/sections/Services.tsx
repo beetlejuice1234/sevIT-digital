@@ -132,23 +132,10 @@ function MobileCardStack() {
           filter: 'brightness(1)',
         });
       } else {
-        // Background cards show 3D depth
-        const baseScale = 1 - depth * 0.06;
-        const baseY = depth * 12;
-        const baseBrightness = 1 - depth * 0.25;
-        const progress = Math.min(Math.abs(activeOffset) / SWIPE_THRESHOLD, 1);
-        
-        gsap.to(card, {
-          x: 0,
-          y: baseY - progress * (depth * 8),
-          rotation: 0,
-          scale: baseScale + progress * 0.04,
+        // Background cards hidden - only top card visible
+        gsap.set(card, {
+          opacity: 0,
           zIndex: 30 - depth * 10,
-          opacity: 1,
-          filter: `brightness(${baseBrightness + progress * 0.2})`,
-          duration: 0.3,
-          ease: SNAP_EASE,
-          overwrite: true,
         });
       }
     });
@@ -192,19 +179,11 @@ function MobileCardStack() {
       ease: SPRING_EASE,
     });
 
-    // Reset background cards
-    getStackIndices().slice(1).forEach((serviceIdx, i) => {
+    // Keep background cards hidden
+    getStackIndices().slice(1).forEach((serviceIdx) => {
       const card = cardsRef.current[serviceIdx];
       if (!card) return;
-      const depth = i + 1;
-      
-      gsap.to(card, {
-        y: depth * 12,
-        scale: 1 - depth * 0.06,
-        filter: `brightness(${1 - depth * 0.25})`,
-        duration: 0.4,
-        ease: SNAP_EASE,
-      });
+      gsap.set(card, { opacity: 0 });
     });
   }, [getStackIndices]);
 
