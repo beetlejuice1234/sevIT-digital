@@ -93,7 +93,7 @@ function MobileCardStack() {
   const rafId = useRef<number | null>(null);
   const isAnimating = useRef(false);
 
-  const pauseAutoPlayTimer = useRef<NodeJS.Timeout | null>(null);
+  const pauseAutoPlayTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isAutoPlayPaused = useRef(false);
 
   const SWIPE_THRESHOLD = 60;
