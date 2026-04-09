@@ -159,34 +159,9 @@ function Navbar() {
           willChange: 'background, backdrop-filter, border-color',
         }}
       >
-        <div className="flex items-center justify-between h-16">
-          {/* Back Button + Logo - Left side */}
-          <div className="flex items-center gap-2">
-            {/* Back Button - Only on sub-pages */}
-            {!isHomePage && (
-              <button
-                onClick={handleBackClick}
-                className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-foreground transition-all duration-300 rounded-full hover:bg-white/5"
-                aria-label="Back to Home"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </button>
-            )}
-            
-            {/* Logo - Centered on desktop, left on mobile */}
-            <a 
-              href="#" 
-              onClick={handleLogoClick}
-              className="flex items-center transition-transform duration-300 hover:scale-105"
-              style={{ willChange: 'transform' }}
-            >
-              <span className="text-xl font-bold text-foreground">sev</span>
-              <span className="text-xl font-bold text-red-500">IT</span>
-            </a>
-          </div>
-
+        <div className="flex items-center justify-between h-16 relative">
           {/* Desktop Navigation - Left side */}
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-8 flex-1">
             {navLinks.slice(0, 2).map((link) => (
               <a
                 key={link.label}
@@ -203,8 +178,33 @@ function Navbar() {
             ))}
           </div>
 
+          {/* Back Button + Logo - Centered on desktop, left on mobile */}
+          <div className="flex items-center gap-2 lg:absolute lg:left-1/2 lg:-translate-x-1/2 z-10 transition-transform duration-300">
+            {/* Back Button - Only on sub-pages */}
+            {!isHomePage && (
+              <button
+                onClick={handleBackClick}
+                className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-foreground transition-all duration-300 rounded-full hover:bg-white/5"
+                aria-label="Back to Home"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+            )}
+            
+            {/* Logo */}
+            <a 
+              href="#" 
+              onClick={handleLogoClick}
+              className="flex items-center transition-transform duration-300 hover:scale-105"
+              style={{ willChange: 'transform' }}
+            >
+              <span className="text-xl font-bold text-foreground">sev</span>
+              <span className="text-xl font-bold text-red-500">IT</span>
+            </a>
+          </div>
+
           {/* Desktop Navigation - Right side */}
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-8 flex-1 justify-end">
             {navLinks.slice(2).map((link) => (
               <a
                 key={link.label}
