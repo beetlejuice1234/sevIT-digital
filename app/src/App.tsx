@@ -50,10 +50,14 @@ function ScrollRestoration() {
     if (isHomePage && isPopNavigation) {
       // BACK button to home - restore position
       const savedY = savedPositionsRef.current['/'] || 0;
-      window.scrollTo(0, savedY);
+      setTimeout(() => {
+        window.scrollTo({ top: savedY, behavior: 'instant' });
+      }, 50);
     } else {
       // All other navigation (forward, direct link click) - go to top
-      window.scrollTo(0, 0);
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }, 50);
     }
   }, [pathname, navigationType]);
 

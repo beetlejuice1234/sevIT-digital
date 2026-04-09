@@ -93,8 +93,22 @@ function MobileCardStack() {
   const rafId = useRef<number | null>(null);
   const isAnimating = useRef(false);
 
+  const pauseAutoPlayTimer = useRef<NodeJS.Timeout | null>(null);
+  const isAutoPlayPaused = useRef(false);
+
   const SWIPE_THRESHOLD = 60;
   const ROTATION_FACTOR = 0.05;
+
+  const handleInteraction = useCallback(() => {
+    isAutoPlayPaused.current = true;
+    if (pauseAutoPlayTimer.current) {
+      clearTimeout(pauseAutoPlayTimer.current);
+    }
+    // Pause auto-swipe for 15 seconds after user interaction
+    pauseAutoPlayTimer.current = setTimeout(() => {
+      isAutoPlayPaused.current = false;
+    }, 15000);
+  }, []);
 
   // Get ordered indices for the stack (current, next, next+1)
   const getStackOrder = useCallback(() => {
@@ -317,6 +331,7 @@ function MobileCardStack() {
 
   // Touch/Mouse handlers
   const handleStart = useCallback((clientX: number, clientY: number) => {
+    handleInteraction();
     if (isAnimating.current) return;
     
     setIsDragging(true);
@@ -424,6 +439,17 @@ function MobileCardStack() {
   useEffect(() => {
     initializeStack();
   }, [currentIndex, initializeStack]);
+
+  // Auto-swipe functionality
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (!isAnimating.current && !isDragging && !isAutoPlayPaused.current) {
+        swipeNext();
+      }
+    }, 4500); // 4.5 seconds per slide
+
+    return () => clearInterval(intervalId);
+  }, [swipeNext, isDragging]);
 
   const stackOrder = getStackOrder();
 
@@ -577,7 +603,10 @@ function MobileCardStack() {
         <div className="flex items-center justify-between mt-6 px-2">
           {/* Swipe Left: Prev */}
           <button
-            onClick={swipePrev}
+            onClick={() => {
+              handleInteraction();
+              swipePrev();
+            }}
             disabled={isAnimating.current}
             className="flex items-center gap-2 px-4 py-3 rounded-full bg-surface/60 border border-border/40 text-muted-foreground hover:text-foreground hover:border-foreground/30 active:scale-95 transition-all disabled:opacity-50"
           >
@@ -592,6 +621,7 @@ function MobileCardStack() {
                 <button
                   key={idx}
                   onClick={() => {
+                    handleInteraction();
                     if (!isAnimating.current && idx !== currentIndex) {
                       const diff = idx - currentIndex;
                       if (diff > 0 || (diff < 0 && Math.abs(diff) > services.length / 2)) {
@@ -617,7 +647,10 @@ function MobileCardStack() {
 
           {/* Swipe Right: Next */}
           <button
-            onClick={swipeNext}
+            onClick={() => {
+              handleInteraction();
+              swipeNext();
+            }}
             disabled={isAnimating.current}
             className="flex items-center gap-2 px-4 py-3 rounded-full bg-surface/60 border border-border/40 text-muted-foreground hover:text-foreground hover:border-foreground/30 active:scale-95 transition-all disabled:opacity-50"
           >

@@ -94,7 +94,7 @@ function Hero() {
     <section
       ref={sectionRef}
       id="hero"
-      className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 z-10"
+      className="relative min-h-[100svh] sm:min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 z-10 pt-16 sm:pt-0"
     >
       <div className="max-w-7xl mx-auto text-center">
         {/* Label - GPU accelerated */}
@@ -147,7 +147,7 @@ function Hero() {
         {/* Subheading - GPU accelerated */}
         <p
           ref={subheadingRef}
-          className="max-w-xl mx-auto text-base sm:text-lg text-muted-foreground leading-relaxed opacity-0"
+          className="max-w-xl mx-auto text-sm sm:text-base lg:text-lg text-muted-foreground leading-relaxed opacity-0 px-2 sm:px-0"
           style={{
             minHeight: '56px',
             willChange: 'transform, opacity',
@@ -196,18 +196,18 @@ function Hero() {
         </div>
       </div>
 
-      {/* Scroll Hint - GPU accelerated */}
+      {/* Scroll Hint - always shown, GPU accelerated */}
       <div
         ref={scrollHintRef}
-        className="absolute bottom-8 left-1/2 flex flex-col items-center gap-2 opacity-0"
+        className="absolute bottom-6 sm:bottom-8 left-1/2 flex flex-col items-center gap-2 opacity-0"
         style={{
           willChange: 'opacity',
           transform: 'translateX(-50%) translateZ(0)',
           backfaceVisibility: 'hidden',
         }}
       >
-        <span className="text-xs text-muted-foreground tracking-wider uppercase">Scroll</span>
-        <ChevronDown className="w-5 h-5 text-muted-foreground animate-scroll-bounce" />
+        <span className="text-[10px] sm:text-xs text-muted-foreground tracking-wider uppercase">Scroll</span>
+        <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground animate-scroll-bounce" />
       </div>
     </section>
   );

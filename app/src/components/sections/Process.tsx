@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Search, PenTool, Code, Rocket, Star, Orbit } from 'lucide-react';
+import MobileTimeline from '../ui/MobileTimeline';
+import type { TimelineStep } from '../ui/MobileTimeline';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -180,8 +182,8 @@ function Process() {
           </defs>
         </svg>
 
-        {/* Steps Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
+        {/* Steps Grid — Desktop */}
+        <div className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
           {steps.map((step, index) => {
             const Icon = step.icon;
             return (
@@ -238,6 +240,19 @@ function Process() {
             );
           })}
         </div>
+
+        {/* Steps — Mobile Timeline */}
+        <MobileTimeline
+          steps={steps.map((step) => ({
+            number: step.number,
+            title: `${step.title} — ${step.subtitle}`,
+            description: step.description,
+            accentColor: 'rgb(239,68,68)',
+            accentClass: 'text-accent',
+            bgClass: 'bg-accent/20',
+            borderClass: 'border-accent/40',
+          } satisfies TimelineStep))}
+        />
       </div>
     </section>
   );

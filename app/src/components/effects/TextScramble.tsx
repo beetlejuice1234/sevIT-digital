@@ -21,7 +21,13 @@ const chars = '!<>-_\\/[]{}—=+*^?#________';
 function TextScramble({ text, className = '', triggerPoint = 'top 80%' }: TextScrambleProps) {
   const containerRef = useRef<HTMLSpanElement>(null);
   const hasAnimated = useRef(false);
-  const [displayText, setDisplayText] = useState(text);
+  const [displayText, setDisplayText] = useState(() => {
+    let scrambled = '';
+    for (let i = 0; i < text.length; i++) {
+      scrambled += text[i] === ' ' ? ' ' : chars[Math.floor(Math.random() * chars.length)];
+    }
+    return scrambled;
+  });
   const [isScrambling, setIsScrambling] = useState(false);
 
   // Stable container size - prevents layout shift

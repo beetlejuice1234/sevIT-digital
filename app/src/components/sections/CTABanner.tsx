@@ -94,31 +94,31 @@ function CTABanner() {
           </div>
 
           {/* Content */}
-          <div ref={contentRef} className="relative z-10 px-8 sm:px-12 lg:px-16 py-12 sm:py-16 lg:py-20 text-center">
+          <div ref={contentRef} className="relative z-10 px-6 sm:px-12 lg:px-16 py-10 sm:py-16 lg:py-20 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 rounded-full mb-6">
               <Calendar className="w-4 h-4 text-accent" />
               <span className="text-sm font-medium text-accent">Book Your Session</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
               Ready to Launch?
             </h2>
 
-            <p className="max-w-2xl mx-auto text-muted-foreground text-base sm:text-lg mb-10">
+            <p className="max-w-2xl mx-auto text-muted-foreground text-sm sm:text-base lg:text-lg mb-8 sm:mb-10">
               Schedule a free discovery call and let's discuss how we can 
               elevate your brand into the digital stratosphere.
             </p>
 
             {/* Benefits */}
-            <div className="flex flex-wrap justify-center gap-6 mb-10">
+            <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-6 mb-8 sm:mb-10">
               {benefits.map((benefit, index) => {
                 const Icon = benefit.icon;
                 return (
                   <div
                     key={index}
-                    className="flex items-center gap-2 text-sm text-muted-foreground"
+                    className="flex items-center justify-center gap-2 text-sm text-muted-foreground"
                   >
-                    <Icon className="w-4 h-4 text-accent" />
+                    <Icon className="w-4 h-4 text-accent flex-shrink-0" />
                     <span>{benefit.text}</span>
                   </div>
                 );
