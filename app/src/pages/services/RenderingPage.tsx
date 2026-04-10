@@ -3,7 +3,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Box, Layers, Sparkles, Camera, Cpu, Globe, Play, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import LazyImage from '../../components/ui/LazyImage';
 import MobileAccordionCards from '../../components/ui/MobileAccordionCards';
 import type { AccordionCardItem } from '../../components/ui/MobileAccordionCards';
 
@@ -17,12 +16,86 @@ const VIOLET = {
 };
 
 const showcaseItems = [
-  { id: 1, title: 'MATERIAL SIMULATION', tag: 'PBR • Subsurface', description: 'Physically accurate translucency and caustic light refraction.', image: '/images/3d-portfolio-1.jpg', rotation: -3, scale: 1.05 },
-  { id: 2, title: 'LIGHTING MASTERY', tag: 'Volumetric • HDR', description: 'Studio-grade three-point lighting with controlled caustics.', image: '/images/3d-portfolio-2.jpg', rotation: 2, scale: 1 },
-  { id: 3, title: 'TOPOLOGY EXCELLENCE', tag: 'Quad-Based • Clean', description: 'Subdivision-ready meshes and optimized UV unwrapping.', image: '/images/3d-portfolio-3.jpg', rotation: -1.5, scale: 0.95 },
-  { id: 4, title: 'ENVIRONMENTAL STORYTELLING', tag: 'Context • Narrative', description: 'We build worlds that sell lifestyles, not just products.', image: '/images/3d-portfolio-4.jpg', rotation: 3.5, scale: 1.02 },
-  { id: 5, title: 'COMPOSITION SCIENCE', tag: 'Camera • Focal', description: 'Every frame engineered for maximum visual persuasion.', image: '/images/3d-portfolio-5.jpg', rotation: -2.5, scale: 0.98 },
-  { id: 6, title: 'MOTION & DYNAMICS', tag: 'Physics • Particles', description: 'Cinematic pacing and fluid dynamics that convert.', image: '/images/3d-portfolio-6.jpg', rotation: 1.5, scale: 1.03 },
+  {
+    id: 1,
+    title: 'KORLOFF PARIS',
+    tag: 'Fragrance • Lifestyle',
+    description: 'Model and product composited in a single cohesive scene — editorial-grade fragrance advertising.',
+    image: '/images/renders/saraperf.png',
+    rotation: -2,
+    glow: 'rgba(120, 180, 120, 0.5)',
+    fit: 'cover' as const,
+  },
+  {
+    id: 2,
+    title: 'FRAGRANCE PERFECTION',
+    tag: 'Luxury • Detail',
+    description: 'Glass, liquid, and metallic materials rendered at photographic fidelity.',
+    image: '/images/renders/collageperf3.png',
+    rotation: 1.5,
+    glow: 'rgba(99, 102, 241, 0.5)',
+    fit: 'cover' as const,
+  },
+  {
+    id: 3,
+    title: 'ORIGAMI INTERIOR',
+    tag: 'Architecture • Spatial',
+    description: 'Spatial storytelling that sells the feeling of being there before the space exists.',
+    image: '/images/renders/origamiinterior.png',
+    rotation: -1.5,
+    glow: 'rgba(245, 158, 11, 0.45)',
+    fit: 'cover' as const,
+  },
+  {
+    id: 4,
+    title: 'PERFUME MODEL',
+    tag: 'PBR • Caustics',
+    description: 'Precise caustic lighting and subsurface scattering on luxury perfume bottles.',
+    image: '/images/renders/perfmodel2.png',
+    rotation: 2.5,
+    glow: 'rgba(244, 63, 94, 0.45)',
+    fit: 'cover' as const,
+  },
+  {
+    id: 5,
+    title: 'ELKADUWA SPRINGS',
+    tag: 'Product • Lifestyle',
+    description: 'Premium water bottle brand imagery — clean composition, studio-quality lighting.',
+    image: '/images/renders/elkaduwa4.png',
+    rotation: -2,
+    glow: 'rgba(6, 182, 212, 0.45)',
+    fit: 'cover' as const,
+  },
+  {
+    id: 6,
+    title: 'TOM FORD — LOST CHERRY',
+    tag: 'Luxury • Mood',
+    description: 'Warm ambient storytelling with reflective surfaces and botanical elements.',
+    image: '/images/renders/perf3.png',
+    rotation: 1,
+    glow: 'rgba(190, 70, 70, 0.5)',
+    fit: 'cover' as const,
+  },
+  {
+    id: 7,
+    title: 'THE SCENT OF BERGAMOOD',
+    tag: 'Studio • Dramatic',
+    description: 'Dark moody product photography with atmospheric smoke and citrus elements.',
+    image: '/images/renders/perf1.png',
+    rotation: -1,
+    glow: 'rgba(52, 211, 153, 0.45)',
+    fit: 'cover' as const,
+  },
+  {
+    id: 8,
+    title: 'WATCH — MATERIAL STUDY',
+    tag: 'Micro-Detail • Jewellery',
+    description: 'Every scratch, reflection, and bevelled edge rendered to absolute perfection.',
+    image: '/images/renders/watch-detail.png',
+    rotation: 1.5,
+    glow: 'rgba(251, 191, 36, 0.5)',
+    fit: 'cover' as const,
+  },
 ];
 
 const services = [
@@ -263,86 +336,130 @@ function RenderingPage() {
             </div>
           </div>
 
-          {/* Desktop Scattered Gallery */}
-          <div className="relative hidden lg:block" style={{ perspective: '1200px' }}>
-            {/* Row 1 */}
-            <div className="flex flex-col lg:flex-row gap-8 lg:gap-0 mb-8 lg:mb-[-40px] items-start">
-              <div className="showcase-item group relative w-full lg:w-[58%] opacity-0" style={{ transform: `rotate(${showcaseItems[0].rotation}deg)`, zIndex: 10 }}>
-                <div className="relative overflow-hidden rounded-[2rem] lg:rounded-[2.5rem] transition-all duration-700 group-hover:scale-[1.02] group-hover:shadow-[0_0_60px_rgba(139,92,246,0.2)]" style={{ clipPath: 'polygon(0 0, 100% 0, 100% 92%, 95% 100%, 0 100%)' }}>
-                  <div className="absolute inset-0 rounded-[2.5rem] z-20 pointer-events-none" style={{ border: '1px solid transparent', background: 'linear-gradient(#050505, #050505) padding-box, linear-gradient(135deg, rgba(139,92,246,0.4), transparent 40%, transparent 60%, rgba(168,85,247,0.3)) border-box' }} />
-                  <div className="aspect-[16/11] relative">
-                    <LazyImage src={showcaseItems[0].image} alt={showcaseItems[0].title} className="absolute inset-0 w-full h-full" placeholderColor="#0a0a0a" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(139,92,246,0.03) 3px, rgba(139,92,246,0.03) 4px)' }} />
+          {/* Desktop Gallery — 8 cards, 4 rows */}
+          <div className="relative hidden lg:block">
+
+            {/* Row 1 — wide hero (Korloff) + portrait (Fragrance) */}
+            <div className="flex items-start gap-5 mb-5">
+              <div
+                className="showcase-item group relative w-[60%] flex-shrink-0 opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
+                style={{ transform: `rotate(${showcaseItems[0].rotation}deg)`, zIndex: 10 }}
+                onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 60px ${showcaseItems[0].glow}`)}
+                onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
+              >
+                <div className="aspect-[4/3] relative overflow-hidden" style={{ background: '#6e8c6b' }}>
+                  <img src={showcaseItems[0].image} alt={showcaseItems[0].title}
+                    className="absolute inset-0 w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.03]"
+                    loading="eager" decoding="async" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent" />
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-7">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-1 h-7 rounded-full" style={{ background: showcaseItems[0].glow }} />
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[0].tag}</span>
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-1 h-8 bg-violet-500 rounded-full" />
-                      <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[0].tag}</span>
-                    </div>
-                    <h3 className="text-2xl lg:text-4xl font-black tracking-tight mb-3 group-hover:text-violet-200 transition-colors">{showcaseItems[0].title}</h3>
-                    <p className="text-white/50 text-sm leading-relaxed max-w-md">{showcaseItems[0].description}</p>
-                  </div>
+                  <h3 className="text-2xl lg:text-3xl font-black tracking-tight mb-2 group-hover:text-violet-200 transition-colors">{showcaseItems[0].title}</h3>
+                  <p className="text-white/50 text-sm leading-relaxed">{showcaseItems[0].description}</p>
                 </div>
               </div>
 
-              <div className="showcase-item group relative w-full lg:w-[46%] lg:ml-[-4%] lg:mt-[80px] opacity-0" style={{ transform: `rotate(${showcaseItems[1].rotation}deg)`, zIndex: 9 }}>
-                <div className="relative overflow-hidden rounded-[2rem] transition-all duration-700 group-hover:scale-[1.03] group-hover:shadow-[0_0_50px_rgba(139,92,246,0.15)]" style={{ clipPath: 'polygon(5% 0, 100% 0, 100% 100%, 0 100%, 0 8%)' }}>
-                  <div className="absolute inset-0 z-20 pointer-events-none" style={{ border: '1px solid transparent', background: 'linear-gradient(#050505, #050505) padding-box, linear-gradient(225deg, rgba(139,92,246,0.3), transparent 50%) border-box' }} />
-                  <div className="aspect-[4/5] relative">
-                    <LazyImage src={showcaseItems[1].image} alt={showcaseItems[1].title} className="absolute inset-0 w-full h-full" placeholderColor="#0a0a0a" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/20" />
+              <div
+                className="showcase-item group relative flex-1 opacity-0 mt-12 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
+                style={{ transform: `rotate(${showcaseItems[1].rotation}deg)`, zIndex: 9 }}
+                onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 50px ${showcaseItems[1].glow}`)}
+                onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
+              >
+                <div className="aspect-[3/4] relative overflow-hidden">
+                  <img src={showcaseItems[1].image} alt={showcaseItems[1].title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                    loading="eager" decoding="async" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-1 h-6 rounded-full" style={{ background: showcaseItems[1].glow }} />
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[1].tag}</span>
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-7">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-1 h-6 bg-violet-500 rounded-full" />
-                      <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[1].tag}</span>
-                    </div>
-                    <h3 className="text-xl lg:text-2xl font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[1].title}</h3>
-                    <p className="text-white/40 text-xs leading-relaxed mt-2">{showcaseItems[1].description}</p>
-                  </div>
+                  <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[1].title}</h3>
                 </div>
               </div>
             </div>
 
-            {/* Row 2 */}
-            <div className="flex flex-col md:flex-row gap-8 md:gap-0 mb-8 lg:mb-[-30px] items-start">
-              {[2, 3, 4].map((idx) => (
-                <div key={idx} className={`showcase-item group relative w-full md:w-[35%] opacity-0 ${idx === 3 ? 'md:ml-[-3%] md:mt-[60px]' : idx === 4 ? 'md:ml-[-3%]' : ''}`} style={{ transform: `rotate(${showcaseItems[idx].rotation}deg)`, zIndex: idx === 3 ? 11 : 8 - idx }}>
-                  <div className="relative overflow-hidden rounded-[1.5rem] lg:rounded-[2rem] transition-all duration-700 group-hover:scale-[1.04]">
-                    <div className={`aspect-${idx === 3 ? '[5/4]' : '[3/4]'} relative`}>
-                      <LazyImage src={showcaseItems[idx].image} alt={showcaseItems[idx].title} className="absolute inset-0 w-full h-full" placeholderColor="#0a0a0a" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+            {/* Row 2 — three equal portrait cards */}
+            <div className="flex items-start gap-5 mb-5">
+              {[2, 3, 4].map((idx, i) => (
+                <div
+                  key={idx}
+                  className="showcase-item group relative flex-1 opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
+                  style={{ transform: `rotate(${showcaseItems[idx].rotation}deg)`, marginTop: i === 1 ? '40px' : '0', zIndex: i === 1 ? 12 : 8 }}
+                  onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 50px ${showcaseItems[idx].glow}`)}
+                  onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
+                >
+                  <div className="aspect-[3/4] relative overflow-hidden">
+                    <img src={showcaseItems[idx].image} alt={showcaseItems[idx].title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                      loading="lazy" decoding="async" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-5">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-1 h-5 rounded-full" style={{ background: showcaseItems[idx].glow }} />
+                      <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400">{showcaseItems[idx].tag}</span>
                     </div>
-                    <div className="absolute bottom-0 left-0 right-0 p-6">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-1 h-5 bg-violet-500 rounded-full" />
-                        <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400">{showcaseItems[idx].tag}</span>
-                      </div>
-                      <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[idx].title}</h3>
-                    </div>
+                    <h3 className="text-base font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[idx].title}</h3>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Row 3 — Cinematic strip */}
-            <div className="showcase-item group relative w-full lg:w-[85%] mx-auto opacity-0" style={{ transform: `rotate(${showcaseItems[5].rotation}deg)`, zIndex: 12 }}>
-              <div className="relative overflow-hidden rounded-[2rem] lg:rounded-[2.5rem] transition-all duration-700 group-hover:scale-[1.01]" style={{ clipPath: 'polygon(0 0, 100% 0, 98% 100%, 2% 100%)' }}>
-                <div className="aspect-[21/9] relative">
-                  <LazyImage src={showcaseItems[5].image} alt={showcaseItems[5].title} className="absolute inset-0 w-full h-full" placeholderColor="#0a0a0a" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-                  <div className="absolute top-0 left-0 right-0 h-[8%] bg-black/60" />
-                  <div className="absolute bottom-0 left-0 right-0 h-[8%] bg-black/60" />
-                </div>
-                <div className="absolute bottom-[8%] left-0 right-0 p-8 lg:p-10">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-1 h-8 bg-violet-500 rounded-full" />
-                    <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[5].tag}</span>
+            {/* Row 3 — two portrait cards (Bergamood + Tom Ford) */}
+            <div className="flex items-start gap-5 mb-5">
+              {[5, 6].map((idx, i) => (
+                <div
+                  key={idx}
+                  className="showcase-item group relative flex-1 opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
+                  style={{ transform: `rotate(${showcaseItems[idx].rotation}deg)`, marginTop: i === 1 ? '32px' : '0', zIndex: 10 }}
+                  onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 55px ${showcaseItems[idx].glow}`)}
+                  onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
+                >
+                  <div className="aspect-[3/4] relative overflow-hidden">
+                    <img src={showcaseItems[idx].image} alt={showcaseItems[idx].title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                      loading="lazy" decoding="async" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                   </div>
-                  <h3 className="text-2xl lg:text-3xl font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[5].title}</h3>
-                  <p className="text-white/40 text-sm leading-relaxed mt-2 max-w-lg">{showcaseItems[5].description}</p>
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-1 h-6 rounded-full" style={{ background: showcaseItems[idx].glow }} />
+                      <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[idx].tag}</span>
+                    </div>
+                    <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[idx].title}</h3>
+                    <p className="text-white/40 text-xs leading-relaxed mt-1">{showcaseItems[idx].description}</p>
+                  </div>
                 </div>
+              ))}
+            </div>
+
+            {/* Row 4 — cinematic watch strip */}
+            <div
+              className="showcase-item group relative w-[88%] mx-auto opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
+              style={{ transform: `rotate(${showcaseItems[7].rotation}deg)`, zIndex: 12 }}
+              onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 70px ${showcaseItems[7].glow}`)}
+              onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
+            >
+              <div className="aspect-[21/9] relative overflow-hidden">
+                <img src={showcaseItems[7].image} alt={showcaseItems[7].title}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                  loading="lazy" decoding="async" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-1 h-8 rounded-full" style={{ background: showcaseItems[7].glow }} />
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[7].tag}</span>
+                </div>
+                <h3 className="text-2xl lg:text-3xl font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[7].title}</h3>
+                <p className="text-white/40 text-sm leading-relaxed mt-2 max-w-lg">{showcaseItems[7].description}</p>
               </div>
             </div>
           </div>
@@ -351,54 +468,44 @@ function RenderingPage() {
           <div className="lg:hidden">
             {/* 2-column masonry-style grid */}
             <div className="grid grid-cols-2 gap-3">
-              {/* Column A — items 0, 2, 4 */}
+              {/* Column A — items 0, 2, 4, 6 */}
               <div className="flex flex-col gap-3">
-                {[0, 2, 4].map((idx) => (
+                {[0, 2, 4, 6].map((idx) => (
                   <div
                     key={idx}
                     ref={(el) => { masonryRefs.current[idx] = el; }}
                     className="relative overflow-hidden rounded-2xl bg-black/20 border border-white/10"
-                    style={{ aspectRatio: idx === 0 ? '3/4' : idx === 2 ? '1/1' : '3/4' }}
+                    style={{ aspectRatio: idx === 0 ? '16/10' : '3/4' }}
                   >
-                    <LazyImage
-                      src={showcaseItems[idx].image}
-                      alt={showcaseItems[idx].title}
-                      className="absolute inset-0 w-full h-full object-cover"
-                      placeholderColor="#0a0a0a"
-                    />
+                    <img src={showcaseItems[idx].image} alt={showcaseItems[idx].title}
+                      className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                    {/* Info overlay */}
                     <div className="absolute bottom-0 left-0 right-0 p-3">
                       <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[idx].tag}</span>
                       <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[idx].title}</h3>
                     </div>
-                    {/* Violet accent line */}
-                    <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500/80 to-transparent" />
+                    <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[idx].glow}, transparent)` }} />
                   </div>
                 ))}
               </div>
 
-              {/* Column B — items 1, 3, 5 */}
+              {/* Column B — items 1, 3, 5, 7 */}
               <div className="flex flex-col gap-3 mt-6">
-                {[1, 3, 5].map((idx) => (
+                {[1, 3, 5, 7].map((idx) => (
                   <div
                     key={idx}
                     ref={(el) => { masonryRefs.current[idx] = el; }}
                     className="relative overflow-hidden rounded-2xl bg-black/20 border border-white/10"
-                    style={{ aspectRatio: idx === 1 ? '1/1' : idx === 3 ? '3/4' : '3/4' }}
+                    style={{ aspectRatio: '3/4' }}
                   >
-                    <LazyImage
-                      src={showcaseItems[idx].image}
-                      alt={showcaseItems[idx].title}
-                      className="absolute inset-0 w-full h-full object-cover"
-                      placeholderColor="#0a0a0a"
-                    />
+                    <img src={showcaseItems[idx].image} alt={showcaseItems[idx].title}
+                      className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-3">
                       <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[idx].tag}</span>
                       <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[idx].title}</h3>
                     </div>
-                    <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500/80 to-transparent" />
+                    <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[idx].glow}, transparent)` }} />
                   </div>
                 ))}
               </div>
@@ -413,6 +520,63 @@ function RenderingPage() {
           }
         `}</style>
       </section>
+
+      {/* ── VIDEO SHOWREEL — Full-bleed cinematic strip ─────────────────────── */}
+      <section className="relative z-10 overflow-hidden" style={{ marginTop: '-1px' }}>
+        {/* Diagonal cut top edge */}
+        <div
+          className="absolute top-0 left-0 right-0 h-24 z-10 pointer-events-none"
+          style={{ background: 'linear-gradient(to bottom right, #050505 49.9%, transparent 50%)' }}
+        />
+        {/* Diagonal cut bottom edge */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-24 z-10 pointer-events-none"
+          style={{ background: 'linear-gradient(to top left, #050505 49.9%, transparent 50%)' }}
+        />
+
+        {/* Full-bleed video — no box, no bars */}
+        <div className="relative w-full" style={{ height: 'clamp(320px, 56vw, 720px)' }}>
+          <video
+            className="absolute inset-0 w-full h-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="none"
+            poster="/images/renders/collage1.png"
+            aria-label="sevIT 3D rendering showreel"
+          >
+            <source src="/images/renders/showreel.mp4" type="video/mp4" />
+          </video>
+
+          {/* Dark vignette overlay */}
+          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, transparent 30%, rgba(5,5,5,0.55) 100%)' }} />
+          {/* Gradient edges to bleed into page bg */}
+          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#050505] to-transparent" />
+          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#050505] to-transparent" />
+
+          {/* Floating centre label */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center z-10 text-center px-6">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-sm rounded-full mb-5 border border-white/10">
+              <Play className="w-3 h-3 text-violet-400" />
+              <span className="text-xs uppercase tracking-[0.25em] text-white/50">Motion Showreel</span>
+            </span>
+            <h2 className="text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter drop-shadow-2xl">
+              SEE IT IN
+            </h2>
+            <p className="text-4xl sm:text-5xl md:text-7xl font-black text-violet-400 uppercase tracking-wider drop-shadow-2xl">
+              MOTION
+            </p>
+          </div>
+
+          {/* Bottom-left badge */}
+          <div className="absolute bottom-10 left-6 lg:left-12 z-10 flex items-center gap-3">
+            <div className="w-2 h-2 rounded-full bg-violet-500 animate-pulse" />
+            <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-medium">sevIT Digital — 2025 Render Showreel</span>
+          </div>
+        </div>
+      </section>
+
 
       {/* ── SERVICES SECTION ─────────────────────────────────────────────────── */}
       <section className="services-section relative py-24 md:py-32 px-6 lg:px-12 z-10 border-t border-white/10">

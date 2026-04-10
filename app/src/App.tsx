@@ -11,6 +11,9 @@ import Navbar from './components/Navbar';
 import LoadingScreen from './components/effects/LoadingScreen';
 import Footer from './components/sections/Footer';
 import RoutePrefetcher from './components/RoutePrefetcher';
+import FloatingWhatsApp from './components/ui/FloatingWhatsApp';
+import PageTransition from './components/ui/PageTransition';
+import SkipToContent from './components/ui/SkipToContent';
 
 // Lazy load pages for code splitting with prefetch hints
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -20,6 +23,10 @@ const RenderingPage = lazy(() => import('./pages/services/RenderingPage'));
 const AdvertisingPage = lazy(() => import('./pages/services/AdvertisingPage'));
 const MarketingPage = lazy(() => import('./pages/services/MarketingPage'));
 const AISolutionsPage = lazy(() => import('./pages/services/AISolutionsPage'));
+
+// Error and 404 Pages
+import ErrorBoundary from './components/ui/ErrorBoundary';
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 /**
  * Scroll Restoration Component
@@ -140,8 +147,11 @@ function App() {
 
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
-      {/* Loading Screen */}
-      {isLoading && <LoadingScreen onComplete={handleLoadingComplete} />}
+      {/* Global Error Boundary to catch render failures */}
+      <ErrorBoundary>
+        <SkipToContent />
+        {/* Loading Screen */}
+        {isLoading && <LoadingScreen onComplete={handleLoadingComplete} />}
 
       <HashRouter>
         {/* Route Prefetcher - makes navigation instant */}
@@ -153,21 +163,29 @@ function App() {
         {/* Navigation - fixed position */}
         <Navbar />
 
-        {/* Main Content */}
-        <main className="relative z-10">
-          <Suspense fallback={<PageLoader />}>  
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/services/web-design" element={<ServicePageWrapper><WebDesignPage /></ServicePageWrapper>} />
-              <Route path="/services/branding" element={<ServicePageWrapper><BrandingPage /></ServicePageWrapper>} />
-              <Route path="/services/3d-rendering" element={<ServicePageWrapper><RenderingPage /></ServicePageWrapper>} />
-              <Route path="/services/advertising" element={<ServicePageWrapper><AdvertisingPage /></ServicePageWrapper>} />
-              <Route path="/services/marketing" element={<ServicePageWrapper><MarketingPage /></ServicePageWrapper>} />
-              <Route path="/services/ai-solutions" element={<ServicePageWrapper><AISolutionsPage /></ServicePageWrapper>} />
-            </Routes>
-          </Suspense>
+        {/* Main Content - wrapped in PageTransition for cross-fade on route change */}
+        <main id="main-content" className="relative z-10">
+          <PageTransition>
+            <Suspense fallback={<PageLoader />}>  
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/services/web-design" element={<ServicePageWrapper><WebDesignPage /></ServicePageWrapper>} />
+                <Route path="/services/branding" element={<ServicePageWrapper><BrandingPage /></ServicePageWrapper>} />
+                <Route path="/services/3d-rendering" element={<ServicePageWrapper><RenderingPage /></ServicePageWrapper>} />
+                <Route path="/services/advertising" element={<ServicePageWrapper><AdvertisingPage /></ServicePageWrapper>} />
+                <Route path="/services/marketing" element={<ServicePageWrapper><MarketingPage /></ServicePageWrapper>} />
+                <Route path="/services/ai-solutions" element={<ServicePageWrapper><AISolutionsPage /></ServicePageWrapper>} />
+                
+                {/* 404 Route */}
+                <Route path="*" element={<ServicePageWrapper><NotFoundPage /></ServicePageWrapper>} />
+              </Routes>
+            </Suspense>
+          </PageTransition>
         </main>
+        {/* Global Floating WhatsApp */}
+        <FloatingWhatsApp />
       </HashRouter>
+      </ErrorBoundary>
     </div>
   );
 }

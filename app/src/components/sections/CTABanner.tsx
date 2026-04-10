@@ -3,6 +3,10 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Calendar, Zap, TrendingUp, Clock, Rocket, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useMagneticEffect } from '@/hooks/useMagneticEffect';
+import { useTextReveal } from '@/hooks/useTextReveal';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useCallback } from 'react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,6 +29,33 @@ function CTABanner() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  const magneticBtn1 = useMagneticEffect<HTMLButtonElement>({ radius: 50, strength: 0.3 });
+  const magneticBtn2 = useMagneticEffect<HTMLButtonElement>({ radius: 50, strength: 0.3 });
+
+  // Optional: add text reveal to the CTABanner paragraph
+  const textRevealRef = useTextReveal<HTMLParagraphElement>('cta-banner-p', { y: 20 });
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+
+  const handleNavClick = useCallback((e: React.MouseEvent, sectionId: string) => {
+    e.preventDefault();
+    if (isHomePage) {
+      const target = document.getElementById(sectionId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      navigate('/');
+      setTimeout(() => {
+        const target = document.getElementById(sectionId);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  }, [isHomePage, navigate]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -104,7 +135,7 @@ function CTABanner() {
               Ready to Launch?
             </h2>
 
-            <p className="max-w-2xl mx-auto text-muted-foreground text-sm sm:text-base lg:text-lg mb-8 sm:mb-10">
+            <p ref={textRevealRef} className="max-w-2xl mx-auto text-muted-foreground text-sm sm:text-base lg:text-lg mb-8 sm:mb-10">
               Schedule a free discovery call and let's discuss how we can 
               elevate your brand into the digital stratosphere.
             </p>
@@ -128,16 +159,22 @@ function CTABanner() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
+                ref={magneticBtn1}
                 size="lg"
+                onClick={(e) => handleNavClick(e, 'chat')}
                 className="px-8 py-6 text-base font-medium bg-foreground text-background rounded-full hover:bg-accent hover:text-white transition-all duration-300 hover:scale-105"
+                style={{ willChange: 'transform' }}
               >
                 <Calendar className="w-5 h-5 mr-2" />
                 Schedule Discovery Call
               </Button>
               <Button
+                ref={magneticBtn2}
                 variant="outline"
                 size="lg"
+                onClick={(e) => handleNavClick(e, 'services')}
                 className="px-8 py-6 text-base font-medium border-border/50 text-foreground rounded-full hover:bg-surface transition-all duration-300"
+                style={{ willChange: 'transform' }}
               >
                 View Our Work
               </Button>

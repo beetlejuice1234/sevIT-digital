@@ -1,11 +1,9 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useMagneticEffect } from '@/hooks/useMagneticEffect';
 import { 
-  Twitter, 
-  Linkedin, 
-  Instagram, 
-  Github,
+  Instagram,
   Mail,
   MapPin,
   Phone,
@@ -13,23 +11,26 @@ import {
   Star,
   Rocket
 } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useCallback } from 'react';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const footerLinks = {
   services: [
-    { label: 'Web Design', href: '#services' },
-    { label: '3D Rendering', href: '#services' },
-    { label: 'Branding', href: '#services' },
-    { label: 'Advertising', href: '#services' },
-    { label: 'Growth Marketing', href: '#services' },
+    { label: 'Web Design', href: '#/services/web-design', sectionId: 'services' },
+    { label: '3D Rendering', href: '#/services/3d-rendering', sectionId: 'services' },
+    { label: 'Branding', href: '#/services/branding', sectionId: 'services' },
+    { label: 'Advertising', href: '#/services/advertising', sectionId: 'services' },
+    { label: 'Growth Marketing', href: '#/services/marketing', sectionId: 'services' },
+    { label: 'AI Solutions', href: '#/services/ai-solutions', sectionId: 'services' },
   ],
   company: [
-    { label: 'About Us', href: '#' },
-    { label: 'Our Process', href: '#process' },
-    { label: 'Case Studies', href: '#' },
+    { label: 'About Us', href: '#manifesto', sectionId: 'manifesto' },
+    { label: 'Our Process', href: '#process', sectionId: 'process' },
+    { label: 'Testimonials', href: '#testimonials', sectionId: 'testimonials' },
     { label: 'Careers', href: '#' },
-    { label: 'Contact', href: '#chat' },
+    { label: 'Contact', href: '#chat', sectionId: 'chat' },
   ],
   resources: [
     { label: 'Blog', href: '#' },
@@ -40,16 +41,68 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: Twitter, href: '#', label: 'Twitter' },
-  { icon: Linkedin, href: '#', label: 'LinkedIn' },
-  { icon: Instagram, href: '#', label: 'Instagram' },
-  { icon: Github, href: '#', label: 'GitHub' },
+  { icon: Instagram, href: 'https://www.instagram.com/sevitdigital?igsh=MWp3dDdlMmI2djczeA==', label: 'Instagram' },
+  { icon: Phone, href: 'https://wa.me/94761816862', label: 'WhatsApp' },
+  { icon: Mail, href: 'mailto:ctjayalath27@gmail.com', label: 'Email' },
 ];
+
+function MagneticSocialIcon({ social }: { social: typeof socialLinks[0] }) {
+  const Icon = social.icon;
+  // Use magnetic effect on social icons - slightly smaller radius for icons
+  const magneticRef = useMagneticEffect<HTMLAnchorElement>({ radius: 40, strength: 0.4 });
+  
+  return (
+    <a
+      ref={magneticRef}
+      href={social.href}
+      aria-label={social.label}
+      className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-surface border border-border/50 flex items-center justify-center text-muted-foreground transition-all duration-300 hover:text-foreground hover:border-foreground/20"
+      style={{ willChange: 'transform' }}
+    >
+      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+    </a>
+  );
+}
 
 function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const watermarkRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+
+  const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string, sectionId?: string) => {
+    // If it's a route path starting with #/
+    if (href.startsWith('#/')) {
+      e.preventDefault();
+      const path = href.replace('#', '');
+      navigate(path);
+      // Ensure we scroll to top on new page
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      return;
+    }
+
+    // If it's a section anchor
+    if (sectionId) {
+      e.preventDefault();
+      if (isHomePage) {
+        const target = document.getElementById(sectionId);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        // Navigate home first, then scroll
+        navigate('/');
+        setTimeout(() => {
+          const target = document.getElementById(sectionId);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      }
+    }
+  }, [isHomePage, navigate]);
 
   useEffect(() => {
     // Disable parallax on mobile for performance
@@ -136,33 +189,23 @@ function Footer() {
             <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
               <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
                 <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent flex-shrink-0" />
-                <span>hello@sevit.agency</span>
+                <a href="mailto:ctjayalath27@gmail.com" className="hover:text-foreground transition-colors">ctjayalath27@gmail.com</a>
               </div>
               <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
                 <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent flex-shrink-0" />
-                <span>+1 (555) 123-4567</span>
+                <a href="https://wa.me/94761816862" className="hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">+94 76 181 6862</a>
               </div>
               <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
                 <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent flex-shrink-0" />
-                <span>San Francisco, CA</span>
+                <span>Remote / Worldwide</span>
               </div>
             </div>
 
             {/* Social Links - Smaller on mobile */}
             <div className="flex gap-2 sm:gap-3">
-              {socialLinks.map((social) => {
-                const Icon = social.icon;
-                return (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    aria-label={social.label}
-                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-surface border border-border/50 flex items-center justify-center text-muted-foreground transition-all duration-300 hover:text-foreground hover:border-foreground/20 hover:scale-110"
-                  >
-                    <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  </a>
-                );
-              })}
+              {socialLinks.map((social) => (
+                <MagneticSocialIcon key={social.label} social={social} />
+              ))}
             </div>
           </div>
 
@@ -174,6 +217,7 @@ function Footer() {
                 <li key={link.label}>
                   <a
                     href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href, link.sectionId)}
                     className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 flex items-center gap-1 group"
                   >
                     {link.label}
@@ -192,6 +236,7 @@ function Footer() {
                 <li key={link.label}>
                   <a
                     href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href, link.sectionId)}
                     className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 flex items-center gap-1 group"
                   >
                     {link.label}
@@ -210,6 +255,7 @@ function Footer() {
                 <li key={link.label}>
                   <a
                     href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href)}
                     className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 flex items-center gap-1 group"
                   >
                     {link.label}

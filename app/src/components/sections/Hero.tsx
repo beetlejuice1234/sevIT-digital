@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ChevronDown } from 'lucide-react';
+import { useMagneticEffect } from '@/hooks/useMagneticEffect';
+import { useTextReveal } from '@/hooks/useTextReveal';
 
 /**
  * GPU-Optimized Hero Section
@@ -16,6 +18,13 @@ function Hero() {
   const subheadingRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const scrollHintRef = useRef<HTMLDivElement>(null);
+
+  // Magnetic effect — heavy/premium spring feel, 50px radius
+  const magneticCta1 = useMagneticEffect<HTMLAnchorElement>({ radius: 55, strength: 0.3 });
+  const magneticCta2 = useMagneticEffect<HTMLAnchorElement>({ radius: 55, strength: 0.3 });
+
+  // Once-per-session text reveal on the subheading
+  const subRevealRef = useTextReveal<HTMLParagraphElement>('hero-subheading', { y: 30, duration: 0.8 });
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -144,9 +153,13 @@ function Hero() {
           </span>
         </h1>
 
-        {/* Subheading - GPU accelerated */}
+        {/* Subheading - GPU accelerated, with line reveal */}
         <p
-          ref={subheadingRef}
+          ref={(node) => {
+            // Assign to both the GSAP entry-animation ref and the text-reveal hook ref
+            (subheadingRef as React.MutableRefObject<HTMLParagraphElement | null>).current = node;
+            (subRevealRef as React.MutableRefObject<HTMLParagraphElement | null>).current = node;
+          }}
           className="max-w-xl mx-auto text-sm sm:text-base lg:text-lg text-muted-foreground leading-relaxed opacity-0 px-2 sm:px-0"
           style={{
             minHeight: '56px',
@@ -170,8 +183,9 @@ function Hero() {
           }}
         >
           <a
+            ref={magneticCta1}
             href="#chat"
-            className="group relative inline-flex items-center justify-center px-8 py-4 text-sm font-medium text-background bg-foreground rounded-full overflow-hidden transition-transform duration-300 hover:scale-105"
+            className="group relative inline-flex items-center justify-center px-8 py-4 min-h-[44px] text-sm font-medium text-background bg-foreground rounded-full overflow-hidden transition-transform duration-300 hover:scale-105"
             style={{
               willChange: 'transform',
               transform: 'translateZ(0)',
@@ -184,8 +198,9 @@ function Hero() {
             />
           </a>
           <a
+            ref={magneticCta2}
             href="#services"
-            className="inline-flex items-center justify-center px-8 py-4 text-sm font-medium text-foreground border border-border rounded-full transition-all duration-300 hover:bg-surface hover:border-foreground/20"
+            className="inline-flex items-center justify-center px-8 py-4 min-h-[44px] text-sm font-medium text-foreground border border-border rounded-full transition-all duration-300 hover:bg-surface hover:border-foreground/20"
             style={{
               willChange: 'transform',
               transform: 'translateZ(0)',
