@@ -155,7 +155,7 @@ function Navbar() {
           willChange: 'background, backdrop-filter, border-color',
         }}
       >
-        <div className="flex items-center justify-between min-h-[44px] h-16 relative">
+        <div className="flex items-center justify-between min-h-[44px] h-14 relative">
           {/* Desktop Navigation - Left side */}
           <div className="hidden lg:flex items-center gap-2 flex-1">
             {navLinks.slice(0, 2).map((link) => (
@@ -191,8 +191,12 @@ function Navbar() {
               style={{ willChange: 'transform' }}
               aria-label="Go to sevIT homepage"
             >
-              <span className="text-xl font-bold text-foreground">sev</span>
-              <span className="text-xl font-bold text-red-500">IT</span>
+              <img
+                src="/images/sevIT_horizontal_logo_transparent.png"
+                alt="sevIT"
+                className="h-20 lg:h-28 w-auto object-contain"
+                draggable={false}
+              />
             </a>
           </div>
 
