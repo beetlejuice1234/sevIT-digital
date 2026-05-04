@@ -122,8 +122,13 @@ function Hero() {
           </span>
         </div>
 
+        {/* SEO Hidden H1 */}
+        <h1 className="sr-only">
+          sevIT Digital - AI Agents for Sri Lanka, Web Designing, and 3D Renders
+        </h1>
+
         {/* Main Heading - Fixed dimensions, GPU accelerated */}
-        <h1 
+        <h2 
           className="mb-8"
           style={{ 
             minHeight: 'clamp(120px, 18vw, 200px)',
@@ -151,7 +156,7 @@ function Hero() {
           >
             YOUR BRAND
           </span>
-        </h1>
+        </h2>
 
         {/* Subheading - GPU accelerated, with line reveal */}
         <p
