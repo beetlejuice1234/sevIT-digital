@@ -8,58 +8,42 @@ gsap.registerPlugin(ScrollTrigger);
 const testimonials = [
   {
     id: 1,
-    name: 'Sarah Chen',
-    role: 'CEO',
-    company: 'TechFlow Solutions',
-    content: 'sevIT completely transformed our digital presence. Our new website generates 3x more qualified leads and the 3D product visualizations they created are absolutely stunning.',
+    name: 'Akash Kavisekara',
+    role: 'Owner',
+    company: 'Clickzone Mobiles',
+    content: 'sevIT completely transformed our mobile store\'s online presence. The new website and targeted ad campaigns brought in customers we\'d never reached before. Our sales jumped within the first two months — genuinely impressed with the results.',
     rating: 5,
   },
   {
     id: 2,
-    name: 'Marcus Johnson',
+    name: 'Sathira Dewmina',
     role: 'Founder',
-    company: 'GrowthLabs',
-    content: 'The branding package from sevIT was exceptional. They captured our vision perfectly and delivered a cohesive identity that resonates with our target audience.',
+    company: 'Threesara',
+    content: 'Working with sevIT was a seamless experience from start to finish. The branding they created perfectly captures our identity, and the website has become our strongest marketing tool. Would recommend them to any business serious about growth.',
     rating: 5,
   },
   {
     id: 3,
-    name: 'Emily Rodriguez',
-    role: 'Marketing Director',
-    company: 'Elevate Brands',
-    content: 'Our Google Ads campaigns now deliver 4x ROAS thanks to sevIT\'s data-driven approach. They truly understand digital marketing inside and out.',
+    name: 'Eshan',
+    role: 'Gym Owner',
+    company: 'Kandy',
+    content: 'sevIT built us a professional website and handled our social media campaigns. Membership sign-ups have doubled since launch. The 3D visuals they created for our equipment promotions look absolutely next level — clients keep asking about them.',
     rating: 5,
   },
   {
     id: 4,
-    name: 'David Park',
-    role: 'CTO',
-    company: 'DataSync Inc',
-    content: 'Working with sevIT was seamless from start to finish. They built us a blazing-fast React application that our users absolutely love. Top-notch developers!',
-    rating: 5,
-  },
-  {
-    id: 5,
-    name: 'Lisa Thompson',
-    role: 'Owner',
-    company: 'Bloom Boutique',
-    content: 'From logo design to a stunning e-commerce site with 3D product views, sevIT handled everything. Our online sales have doubled in just three months!',
-    rating: 5,
-  },
-  {
-    id: 6,
-    name: 'James Wilson',
-    role: 'Operations Manager',
-    company: 'ScaleUp Co',
-    content: 'The SEO strategy sevIT implemented pushed us to page one for our key terms. Organic traffic is up 200% and still climbing. Incredible results!',
+    name: 'Sajeewani Amarasinghe',
+    role: 'Salon Owner',
+    company: 'Kandy',
+    content: 'The new website and Instagram campaigns sevIT put together brought in so many new clients. Booking rates improved dramatically and everything looks exactly how I imagined. Very professional, very creative — couldn\'t be happier.',
     rating: 5,
   },
 ];
 
 // Split testimonials into 3 columns
 const column1 = [testimonials[0], testimonials[3]];
-const column2 = [testimonials[1], testimonials[4]];
-const column3 = [testimonials[2], testimonials[5]];
+const column2 = [testimonials[1]];
+const column3 = [testimonials[2]];
 
 /**
  * GPU-Optimized Testimonial Card

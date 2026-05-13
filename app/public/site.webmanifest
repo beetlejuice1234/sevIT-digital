@@ -1,0 +1,12 @@
+{
+  "name": "sevIT Digital",
+  "short_name": "sevIT",
+  "description": "AI-powered digital agency for web design, branding, 3D rendering, advertising, marketing, and AI solutions.",
+  "icons": [
+    { "src": "/images/sevIT_3d_sparkle_transparent_1.png", "sizes": "any", "type": "image/png", "purpose": "any" }
+  ],
+  "theme_color": "#050505",
+  "background_color": "#050505",
+  "display": "standalone",
+  "start_url": "/"
+}

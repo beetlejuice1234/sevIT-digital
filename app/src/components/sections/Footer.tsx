@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+﻿import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useMagneticEffect } from '@/hooks/useMagneticEffect';
@@ -19,7 +19,7 @@ gsap.registerPlugin(ScrollTrigger);
 const footerLinks = {
   services: [
     { label: 'Web Design', href: '#/services/web-design', sectionId: 'services' },
-    { label: '3D Rendering', href: '#/services/3d-rendering', sectionId: 'services' },
+    { label: '3D Render & Virtual Ads', href: '#/services/3d-rendering', sectionId: 'services' },
     { label: 'Branding', href: '#/services/branding', sectionId: 'services' },
     { label: 'Advertising', href: '#/services/advertising', sectionId: 'services' },
     { label: 'Growth Marketing', href: '#/services/marketing', sectionId: 'services' },
@@ -270,7 +270,7 @@ function Footer() {
         {/* Bottom Bar - Stacked on mobile */}
         <div className="pt-6 sm:pt-8 border-t border-border/50 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
           <p className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
-            © {new Date().getFullYear()} sevIT Digital Agency. All rights reserved.
+            Â© {new Date().getFullYear()} sevIT Digital Agency. All rights reserved.
           </p>
           <div className="flex gap-4 sm:gap-6">
             <a href="#" className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors">

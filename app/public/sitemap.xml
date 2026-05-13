@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://sevit.agency/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://sevit.agency/services/web-design</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://sevit.agency/services/branding</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://sevit.agency/services/3d-rendering</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://sevit.agency/services/advertising</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://sevit.agency/services/marketing</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://sevit.agency/services/ai-solutions</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+</urlset>

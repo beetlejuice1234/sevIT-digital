@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Box, Layers, Sparkles, Camera, Cpu, Globe, Play, Zap } from 'lucide-react';
@@ -18,7 +18,7 @@ const VIOLET = {
 const showcaseItems = [
   {
     id: 1,
-    title: 'KORLOFF PARIS',
+    title: 'VIRTUAL PRODUCT SHOOT',
     tag: 'Fragrance • Lifestyle',
     description: 'Model and product composited in a single cohesive scene — editorial-grade fragrance advertising.',
     image: '/images/renders/saraperf.png',
@@ -125,11 +125,67 @@ const methodologyPoints = [
   { icon: Zap, title: 'BUILT TO SELL', desc: "Our visuals aren't just pretty pictures—they're designed to make people want to buy." },
 ];
 
+const korloffImages = [
+  '/images/renders/saraperf.png',
+  '/images/renders/saraa.png',
+  '/images/renders/saraprfu.png',
+  '/images/renders/3.png',
+  '/images/renders/perf in mouth.png',
+  '/images/renders/perfmodel2.png',
+];
+const fragranceImages = [
+  '/images/renders/collageperf.png',
+  '/images/renders/collage1.png',
+];
+const elkaduwaImages = [
+  '/images/renders/elkaduwa4.png',
+  '/images/renders/elkaduwamist.png',
+];
+
 function RenderingPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
   const isVisibleRef = useRef(true);
   const masonryRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const [korloffIdx, setKorloffIdx] = useState(0);
+  const [fragranceIdx, setFragranceIdx] = useState(0);
+  const [elkaduwaIdx, setElkaduwaIdx] = useState(0);
+
+  const korloffTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const fragranceTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const elkaduwaTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const korloffResume = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fragranceResume = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const elkaduwaResume = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    korloffTimer.current = setInterval(() => setKorloffIdx(i => (i + 1) % korloffImages.length), 2000);
+    fragranceTimer.current = setInterval(() => setFragranceIdx(i => (i + 1) % fragranceImages.length), 2000);
+    elkaduwaTimer.current = setInterval(() => setElkaduwaIdx(i => (i + 1) % elkaduwaImages.length), 2000);
+    return () => {
+      if (korloffTimer.current) clearInterval(korloffTimer.current);
+      if (fragranceTimer.current) clearInterval(fragranceTimer.current);
+      if (elkaduwaTimer.current) clearInterval(elkaduwaTimer.current);
+      if (korloffResume.current) clearTimeout(korloffResume.current);
+      if (fragranceResume.current) clearTimeout(fragranceResume.current);
+      if (elkaduwaResume.current) clearTimeout(elkaduwaResume.current);
+    };
+  }, []);
+
+  const pauseAndResume = (
+    timerRef: { current: ReturnType<typeof setInterval> | null },
+    resumeRef: { current: ReturnType<typeof setTimeout> | null },
+    setter: (fn: (i: number) => number) => void,
+    length: number
+  ) => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = null;
+    if (resumeRef.current) clearTimeout(resumeRef.current);
+    resumeRef.current = setTimeout(() => {
+      timerRef.current = setInterval(() => setter(i => (i + 1) % length), 2000);
+    }, 5000);
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -250,7 +306,7 @@ function RenderingPage() {
         <div className="relative z-10 max-w-6xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-violet-500/10 border border-violet-500/30 rounded-full mb-8 md:mb-10">
             <Layers className="w-4 h-4 text-violet-500" />
-            <span className="text-xs uppercase tracking-[0.3em] text-violet-400">3D Render Studio</span>
+            <span className="text-xs uppercase tracking-[0.3em] text-violet-400">3D Render & Virtual Ads</span>
           </div>
 
           <h1 className="text-5xl sm:text-7xl lg:text-9xl font-black leading-[0.85] tracking-tighter mb-8 md:mb-10">
@@ -264,8 +320,12 @@ function RenderingPage() {
             </span>
           </h1>
 
+          <p className="hero-sub text-sm sm:text-base text-violet-300/80 font-semibold uppercase tracking-[0.2em] max-w-2xl mx-auto mb-5 opacity-0">
+            Studio-quality product photography and lifestyle ads. No camera. No studio. Fraction of the cost.
+          </p>
+
           <p className="hero-sub text-base sm:text-lg md:text-xl text-white/60 max-w-3xl mx-auto mb-10 md:mb-12 leading-relaxed opacity-0">
-            We create 3D visuals that look totally real, without the headaches of physical photoshoots. Show off your products perfectly, from every angle, before they even exist.
+            We create photorealistic 3D visuals and AI-powered virtual ad campaigns that look indistinguishable from real photography — no studio, no crew, no scheduling. Show off your products from every angle, in any setting, before they even exist.
           </p>
 
           <div className="hero-cta opacity-0">
@@ -273,7 +333,7 @@ function RenderingPage() {
               to="/#chat"
               className="inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-violet-500 text-white rounded-full font-bold text-base md:text-lg uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300 group"
             >
-              <span>Request a Custom Render Quote</span>
+              <span>Request a Custom Visual Strategy Session</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
@@ -348,10 +408,26 @@ function RenderingPage() {
                 onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
               >
                 <div className="aspect-[4/3] relative overflow-hidden" style={{ background: '#6e8c6b' }}>
-                  <img src={showcaseItems[0].image} alt={showcaseItems[0].title}
+                  <img src={korloffImages[korloffIdx]} alt={showcaseItems[0].title}
                     className="absolute inset-0 w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.03]"
                     loading="eager" decoding="async" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent" />
+                  {/* Carousel buttons */}
+                  <button onClick={() => { pauseAndResume(korloffTimer, korloffResume, setKorloffIdx, korloffImages.length); setKorloffIdx(i => (i - 1 + korloffImages.length) % korloffImages.length); }}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
+                    ◀
+                  </button>
+                  <button onClick={() => { pauseAndResume(korloffTimer, korloffResume, setKorloffIdx, korloffImages.length); setKorloffIdx(i => (i + 1) % korloffImages.length); }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
+                    ▶
+                  </button>
+                  {/* Dot indicators */}
+                  <div className="absolute bottom-16 right-5 z-20 flex gap-1.5">
+                    {korloffImages.map((_, i) => (
+                      <div key={i} className="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                        style={{ background: i === korloffIdx ? 'rgba(139,92,246,1)' : 'rgba(255,255,255,0.3)' }} />
+                    ))}
+                  </div>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-7">
                   <div className="flex items-center gap-2 mb-3">
@@ -360,6 +436,7 @@ function RenderingPage() {
                   </div>
                   <h3 className="text-2xl lg:text-3xl font-black tracking-tight mb-2 group-hover:text-violet-200 transition-colors">{showcaseItems[0].title}</h3>
                   <p className="text-white/50 text-sm leading-relaxed">{showcaseItems[0].description}</p>
+                  <p className="text-white/30 text-[10px] uppercase tracking-widest mt-2 italic">Concept ad created by <span className="normal-case">sev</span>IT.</p>
                 </div>
               </div>
 
@@ -369,11 +446,27 @@ function RenderingPage() {
                 onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 50px ${showcaseItems[1].glow}`)}
                 onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
               >
-                <div className="aspect-[3/4] relative overflow-hidden">
-                  <img src={showcaseItems[1].image} alt={showcaseItems[1].title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                <div className="aspect-[3/4] relative overflow-hidden bg-black/60">
+                  <img src={fragranceImages[fragranceIdx]} alt={showcaseItems[1].title}
+                    className="absolute inset-0 w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.04]"
                     loading="eager" decoding="async" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  {/* Carousel buttons */}
+                  <button onClick={() => { pauseAndResume(fragranceTimer, fragranceResume, setFragranceIdx, fragranceImages.length); setFragranceIdx(i => (i - 1 + fragranceImages.length) % fragranceImages.length); }}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
+                    ◀
+                  </button>
+                  <button onClick={() => { pauseAndResume(fragranceTimer, fragranceResume, setFragranceIdx, fragranceImages.length); setFragranceIdx(i => (i + 1) % fragranceImages.length); }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
+                    ▶
+                  </button>
+                  {/* Dot indicators */}
+                  <div className="absolute bottom-16 right-4 z-20 flex gap-1.5">
+                    {fragranceImages.map((_, i) => (
+                      <div key={i} className="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                        style={{ background: i === fragranceIdx ? 'rgba(99,102,241,1)' : 'rgba(255,255,255,0.3)' }} />
+                    ))}
+                  </div>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-6">
                   <div className="flex items-center gap-2 mb-2">
@@ -381,35 +474,72 @@ function RenderingPage() {
                     <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[1].tag}</span>
                   </div>
                   <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[1].title}</h3>
+                  <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept ad created by <span className="normal-case">sev</span>IT.</p>
                 </div>
               </div>
             </div>
 
-            {/* Row 2 — three equal portrait cards */}
+            {/* Row 2 — ORIGAMI (wider) + ELKADUWA SPRINGS (carousel) */}
             <div className="flex items-start gap-5 mb-5">
-              {[2, 3, 4].map((idx, i) => (
-                <div
-                  key={idx}
-                  className="showcase-item group relative flex-1 opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
-                  style={{ transform: `rotate(${showcaseItems[idx].rotation}deg)`, marginTop: i === 1 ? '40px' : '0', zIndex: i === 1 ? 12 : 8 }}
-                  onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 50px ${showcaseItems[idx].glow}`)}
-                  onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
-                >
-                  <div className="aspect-[3/4] relative overflow-hidden">
-                    <img src={showcaseItems[idx].image} alt={showcaseItems[idx].title}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                      loading="lazy" decoding="async" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
+              {/* ORIGAMI INTERIOR — wider */}
+              <div
+                className="showcase-item group relative flex-[1.7] opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
+                style={{ transform: `rotate(${showcaseItems[2].rotation}deg)`, zIndex: 8 }}
+                onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 50px ${showcaseItems[2].glow}`)}
+                onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
+              >
+                <div className="aspect-[3/4] relative overflow-hidden">
+                  <img src={showcaseItems[2].image} alt={showcaseItems[2].title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                    loading="lazy" decoding="async" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-1 h-5 rounded-full" style={{ background: showcaseItems[2].glow }} />
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400">{showcaseItems[2].tag}</span>
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-5">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-1 h-5 rounded-full" style={{ background: showcaseItems[idx].glow }} />
-                      <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400">{showcaseItems[idx].tag}</span>
-                    </div>
-                    <h3 className="text-base font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[idx].title}</h3>
+                  <h3 className="text-base font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[2].title}</h3>
+                </div>
+              </div>
+
+              {/* ELKADUWA SPRINGS — carousel */}
+              <div
+                className="showcase-item group relative flex-1 opacity-0 mt-10 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
+                style={{ transform: `rotate(${showcaseItems[4].rotation}deg)`, zIndex: 8 }}
+                onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 50px ${showcaseItems[4].glow}`)}
+                onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
+              >
+                <div className="aspect-[3/4] relative overflow-hidden">
+                  <img src={elkaduwaImages[elkaduwaIdx]} alt={showcaseItems[4].title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                    loading="lazy" decoding="async" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
+                  {/* Carousel buttons */}
+                  <button onClick={() => { pauseAndResume(elkaduwaTimer, elkaduwaResume, setElkaduwaIdx, elkaduwaImages.length); setElkaduwaIdx(i => (i - 1 + elkaduwaImages.length) % elkaduwaImages.length); }}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
+                    ◀
+                  </button>
+                  <button onClick={() => { pauseAndResume(elkaduwaTimer, elkaduwaResume, setElkaduwaIdx, elkaduwaImages.length); setElkaduwaIdx(i => (i + 1) % elkaduwaImages.length); }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
+                    ▶
+                  </button>
+                  {/* Dot indicators */}
+                  <div className="absolute bottom-16 right-4 z-20 flex gap-1.5">
+                    {elkaduwaImages.map((_, i) => (
+                      <div key={i} className="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                        style={{ background: i === elkaduwaIdx ? 'rgba(6,182,212,1)' : 'rgba(255,255,255,0.3)' }} />
+                    ))}
                   </div>
                 </div>
-              ))}
+                <div className="absolute bottom-0 left-0 right-0 p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-1 h-5 rounded-full" style={{ background: showcaseItems[4].glow }} />
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400">{showcaseItems[4].tag}</span>
+                  </div>
+                  <h3 className="text-base font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[4].title}</h3>
+                </div>
+              </div>
             </div>
 
             {/* Row 3 — two portrait cards (Bergamood + Tom Ford) */}
@@ -435,6 +565,7 @@ function RenderingPage() {
                     </div>
                     <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[idx].title}</h3>
                     <p className="text-white/40 text-xs leading-relaxed mt-1">{showcaseItems[idx].description}</p>
+                    <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept ad created by <span className="normal-case">sev</span>IT.</p>
                   </div>
                 </div>
               ))}
@@ -466,48 +597,146 @@ function RenderingPage() {
 
           {/* ── Mobile Masonry Gallery ─────────────────────────────────────────── */}
           <div className="lg:hidden">
-            {/* 2-column masonry-style grid */}
-            <div className="grid grid-cols-2 gap-3">
-              {/* Column A — items 0, 2, 4, 6 */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Column A */}
               <div className="flex flex-col gap-3">
-                {[0, 2, 4, 6].map((idx) => (
-                  <div
-                    key={idx}
-                    ref={(el) => { masonryRefs.current[idx] = el; }}
-                    className="relative overflow-hidden rounded-2xl bg-black/20 border border-white/10"
-                    style={{ aspectRatio: idx === 0 ? '16/10' : '3/4' }}
-                  >
-                    <img src={showcaseItems[idx].image} alt={showcaseItems[idx].title}
-                      className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-3">
-                      <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[idx].tag}</span>
-                      <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[idx].title}</h3>
-                    </div>
-                    <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[idx].glow}, transparent)` }} />
+                {/* VIRTUAL PRODUCT SHOOT (carousel) */}
+                <div
+                  ref={(el) => { masonryRefs.current[0] = el; }}
+                  className="relative overflow-hidden rounded-2xl border border-white/10 aspect-[3/4]"
+                  style={{ background: '#6e8c6b' }}
+                >
+                  <img src={korloffImages[korloffIdx]} alt={showcaseItems[0].title}
+                    className="absolute inset-0 w-full h-full object-contain" loading="lazy" decoding="async" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+                  <button onClick={() => { pauseAndResume(korloffTimer, korloffResume, setKorloffIdx, korloffImages.length); setKorloffIdx(i => (i - 1 + korloffImages.length) % korloffImages.length); }}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-6 sm:h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white text-xs sm:text-[10px]">◀</button>
+                  <button onClick={() => { pauseAndResume(korloffTimer, korloffResume, setKorloffIdx, korloffImages.length); setKorloffIdx(i => (i + 1) % korloffImages.length); }}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-6 sm:h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white text-xs sm:text-[10px]">▶</button>
+                  {/* Dot indicators */}
+                  <div className="absolute bottom-12 right-3 z-20 flex gap-1.5">
+                    {korloffImages.map((_, i) => (
+                      <div key={i} className="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                        style={{ background: i === korloffIdx ? 'rgba(139,92,246,1)' : 'rgba(255,255,255,0.3)' }} />
+                    ))}
                   </div>
-                ))}
+                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-3">
+                    <span className="text-[10px] sm:text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[0].tag}</span>
+                    <h3 className="text-sm sm:text-[11px] font-black leading-tight text-white">{showcaseItems[0].title}</h3>
+                    <p className="text-white/40 text-[9px] sm:text-[8px] uppercase tracking-widest mt-1 italic">Concept ad by <span className="normal-case">sev</span>IT.</p>
+                  </div>
+                  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[0].glow}, transparent)` }} />
+                </div>
+
+                {/* ORIGAMI INTERIOR (idx 2) */}
+                <div
+                  ref={(el) => { masonryRefs.current[2] = el; }}
+                  className="relative overflow-hidden rounded-2xl bg-black/20 border border-white/10"
+                  style={{ aspectRatio: '3/4' }}
+                >
+                  <img src={showcaseItems[2].image} alt={showcaseItems[2].title}
+                    className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                    <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[2].tag}</span>
+                    <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[2].title}</h3>
+                  </div>
+                  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[2].glow}, transparent)` }} />
+                </div>
+
+                {/* TOM FORD (idx 5) */}
+                <div
+                  ref={(el) => { masonryRefs.current[5] = el; }}
+                  className="relative overflow-hidden rounded-2xl bg-black/20 border border-white/10"
+                  style={{ aspectRatio: '3/4' }}
+                >
+                  <img src={showcaseItems[5].image} alt={showcaseItems[5].title}
+                    className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                    <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[5].tag}</span>
+                    <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[5].title}</h3>
+                    <p className="text-white/40 text-[8px] uppercase tracking-widest mt-1 italic">Concept ad by <span className="normal-case">sev</span>IT.</p>
+                  </div>
+                  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[5].glow}, transparent)` }} />
+                </div>
+
+                {/* WATCH (idx 7) */}
+                <div
+                  ref={(el) => { masonryRefs.current[7] = el; }}
+                  className="relative overflow-hidden rounded-2xl bg-black/20 border border-white/10"
+                  style={{ aspectRatio: '4/5' }}
+                >
+                  <img src={showcaseItems[7].image} alt={showcaseItems[7].title}
+                    className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                    <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[7].tag}</span>
+                    <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[7].title}</h3>
+                  </div>
+                  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[7].glow}, transparent)` }} />
+                </div>
               </div>
 
-              {/* Column B — items 1, 3, 5, 7 */}
-              <div className="flex flex-col gap-3 mt-6">
-                {[1, 3, 5, 7].map((idx) => (
-                  <div
-                    key={idx}
-                    ref={(el) => { masonryRefs.current[idx] = el; }}
-                    className="relative overflow-hidden rounded-2xl bg-black/20 border border-white/10"
-                    style={{ aspectRatio: '3/4' }}
-                  >
-                    <img src={showcaseItems[idx].image} alt={showcaseItems[idx].title}
-                      className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-3">
-                      <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[idx].tag}</span>
-                      <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[idx].title}</h3>
-                    </div>
-                    <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[idx].glow}, transparent)` }} />
+              {/* Column B */}
+              <div className="flex flex-col gap-3 sm:mt-6">
+                {/* FRAGRANCE PERFECTION (carousel) */}
+                <div
+                  ref={(el) => { masonryRefs.current[1] = el; }}
+                  className="relative overflow-hidden rounded-2xl bg-black/60 border border-white/10"
+                  style={{ aspectRatio: '3/4' }}
+                >
+                  <img src={fragranceImages[fragranceIdx]} alt={showcaseItems[1].title}
+                    className="absolute inset-0 w-full h-full object-contain" loading="lazy" decoding="async" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  <button onClick={() => { pauseAndResume(fragranceTimer, fragranceResume, setFragranceIdx, fragranceImages.length); setFragranceIdx(i => (i - 1 + fragranceImages.length) % fragranceImages.length); }}
+                    className="absolute left-1.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white text-[10px]">◀</button>
+                  <button onClick={() => { pauseAndResume(fragranceTimer, fragranceResume, setFragranceIdx, fragranceImages.length); setFragranceIdx(i => (i + 1) % fragranceImages.length); }}
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white text-[10px]">▶</button>
+                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                    <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[1].tag}</span>
+                    <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[1].title}</h3>
+                    <p className="text-white/40 text-[8px] uppercase tracking-widest mt-1 italic">Concept ad by <span className="normal-case">sev</span>IT.</p>
                   </div>
-                ))}
+                  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[1].glow}, transparent)` }} />
+                </div>
+
+                {/* ELKADUWA SPRINGS (carousel) */}
+                <div
+                  ref={(el) => { masonryRefs.current[4] = el; }}
+                  className="relative overflow-hidden rounded-2xl bg-black/20 border border-white/10"
+                  style={{ aspectRatio: '3/4' }}
+                >
+                  <img src={elkaduwaImages[elkaduwaIdx]} alt={showcaseItems[4].title}
+                    className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  <button onClick={() => { pauseAndResume(elkaduwaTimer, elkaduwaResume, setElkaduwaIdx, elkaduwaImages.length); setElkaduwaIdx(i => (i - 1 + elkaduwaImages.length) % elkaduwaImages.length); }}
+                    className="absolute left-1.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white text-[10px]">◀</button>
+                  <button onClick={() => { pauseAndResume(elkaduwaTimer, elkaduwaResume, setElkaduwaIdx, elkaduwaImages.length); setElkaduwaIdx(i => (i + 1) % elkaduwaImages.length); }}
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white text-[10px]">▶</button>
+                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                    <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[4].tag}</span>
+                    <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[4].title}</h3>
+                  </div>
+                  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[4].glow}, transparent)` }} />
+                </div>
+
+                {/* THE SCENT OF BERGAMOOD (idx 6) */}
+                <div
+                  ref={(el) => { masonryRefs.current[6] = el; }}
+                  className="relative overflow-hidden rounded-2xl bg-black/20 border border-white/10"
+                  style={{ aspectRatio: '3/4' }}
+                >
+                  <img src={showcaseItems[6].image} alt={showcaseItems[6].title}
+                    className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                    <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[6].tag}</span>
+                    <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[6].title}</h3>
+                    <p className="text-white/40 text-[8px] uppercase tracking-widest mt-1 italic">Concept ad by <span className="normal-case">sev</span>IT.</p>
+                  </div>
+                  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[6].glow}, transparent)` }} />
+                </div>
               </div>
             </div>
           </div>
@@ -535,7 +764,7 @@ function RenderingPage() {
         />
 
         {/* Full-bleed video — no box, no bars */}
-        <div className="relative w-full" style={{ height: 'clamp(320px, 56vw, 720px)' }}>
+        <div className="relative w-full" style={{ height: 'clamp(45vh, 56vw, 720px)' }}>
           <video
             className="absolute inset-0 w-full h-full object-cover"
             autoPlay
@@ -561,10 +790,10 @@ function RenderingPage() {
               <Play className="w-3 h-3 text-violet-400" />
               <span className="text-xs uppercase tracking-[0.25em] text-white/50">Motion Showreel</span>
             </span>
-            <h2 className="text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter drop-shadow-2xl">
+            <h2 className="text-4xl xs:text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter drop-shadow-2xl">
               SEE IT IN
             </h2>
-            <p className="text-4xl sm:text-5xl md:text-7xl font-black text-violet-400 uppercase tracking-wider drop-shadow-2xl">
+            <p className="text-3xl xs:text-4xl sm:text-5xl md:text-7xl font-black text-violet-400 uppercase tracking-wider drop-shadow-2xl">
               MOTION
             </p>
           </div>
@@ -720,13 +949,13 @@ function RenderingPage() {
             to="/#chat"
             className="inline-flex items-center gap-3 px-8 md:px-12 py-5 md:py-6 bg-violet-500 text-white rounded-full font-bold text-base md:text-xl uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300 group"
           >
-            <span>Schedule Your 3D Visual Strategy Session</span>
+            <span>Book Your Visual Strategy Session</span>
             <ArrowRight className="w-5 md:w-6 h-5 md:h-6 group-hover:translate-x-1 transition-transform" />
           </Link>
 
           <p className="text-white/30 text-sm mt-8 uppercase tracking-widest">
             No commitment required. We'll analyze your current visual strategy and show you exactly
-            where 3D rendering can replace costly production.
+            where 3D renders and virtual ads can replace costly production.
           </p>
         </div>
       </section>

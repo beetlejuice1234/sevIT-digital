@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { ChevronDown } from 'lucide-react';
 import { useMagneticEffect } from '@/hooks/useMagneticEffect';
@@ -22,6 +22,15 @@ function Hero() {
   // Magnetic effect — heavy/premium spring feel, 50px radius
   const magneticCta1 = useMagneticEffect<HTMLAnchorElement>({ radius: 55, strength: 0.3 });
   const magneticCta2 = useMagneticEffect<HTMLAnchorElement>({ radius: 55, strength: 0.3 });
+
+  const scrollToSection = useCallback((e: React.MouseEvent, sectionId: string) => {
+    e.preventDefault();
+    const target = document.getElementById(sectionId);
+    if (target) {
+      const y = window.scrollY + target.getBoundingClientRect().top - 80;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  }, []);
 
   // Once-per-session text reveal on the subheading
   const subRevealRef = useTextReveal<HTMLParagraphElement>('hero-subheading', { y: 30, duration: 0.8 });
@@ -185,6 +194,7 @@ function Hero() {
           <a
             ref={magneticCta1}
             href="#chat"
+            onClick={(e) => scrollToSection(e, 'chat')}
             className="group relative inline-flex items-center justify-center px-8 py-4 min-h-[44px] text-sm font-medium text-background bg-foreground rounded-full overflow-hidden transition-transform duration-300 hover:scale-105"
             style={{
               willChange: 'transform',
@@ -192,7 +202,7 @@ function Hero() {
             }}
           >
             <span className="relative z-10">Start Your Project</span>
-            <div 
+            <div
               className="absolute inset-0 bg-accent transition-transform duration-300 translate-y-full group-hover:translate-y-0"
               style={{ willChange: 'transform' }}
             />
@@ -200,6 +210,7 @@ function Hero() {
           <a
             ref={magneticCta2}
             href="#services"
+            onClick={(e) => scrollToSection(e, 'services')}
             className="inline-flex items-center justify-center px-8 py-4 min-h-[44px] text-sm font-medium text-foreground border border-border rounded-full transition-all duration-300 hover:bg-surface hover:border-foreground/20"
             style={{
               willChange: 'transform',

@@ -179,6 +179,11 @@ function AdvertisingPage() {
         { opacity: 1, x: 0, duration: 0.7, stagger: 0.15, ease: 'power3.out',
           scrollTrigger: { trigger: '.process-section', start: 'top 80%', once: true } }
       );
+      gsap.fromTo('.video-card',
+        { opacity: 0, y: 80, scale: 0.92 },
+        { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.2, ease: 'power3.out',
+          scrollTrigger: { trigger: '.video-showcase-section', start: 'top 80%', once: true } }
+      );
     });
     return () => ctx.revert();
   }, []);
@@ -300,6 +305,70 @@ function AdvertisingPage() {
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 text-white/40">
           <span className="text-xs uppercase tracking-widest">Scroll</span>
           <div className="w-px h-8 bg-gradient-to-b from-red-500 to-transparent" />
+        </div>
+      </section>
+
+      {/* ── VIDEO SHOWCASE ───────────────────────────────────────────────────── */}
+      <section className="video-showcase-section relative py-20 md:py-24 px-6 lg:px-12 z-10 border-t border-white/10">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10 md:mb-14">
+            <span className="text-sm text-red-400 uppercase tracking-wider">Our Work</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mt-2">
+              Ads We've Built.
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">
+                Results That Speak.
+              </span>
+            </h2>
+            <p className="text-white/40 mt-4 max-w-lg mx-auto text-sm leading-relaxed">
+              Studio-quality virtual ads — no camera crew, no set, no production budget.
+            </p>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-start gap-5 lg:gap-6">
+            {/* Bergamood */}
+            <div
+              className="video-card group relative w-full md:flex-1 opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500 bg-black"
+              onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 55px rgba(239,68,68,0.35)')}
+              onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
+            >
+              <div className="aspect-[21/9] relative overflow-hidden bg-black">
+                <video className="absolute inset-0 w-full h-full object-cover" autoPlay muted loop playsInline>
+                  <source src="/images/renders/bergamood.mov" type="video/mp4" />
+                </video>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/5 to-transparent" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-1 h-5 rounded-full bg-red-500/80" />
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-red-400 font-medium">Fragrance • Lifestyle</span>
+                </div>
+                <h3 className="text-lg md:text-xl font-black tracking-tight group-hover:text-red-200 transition-colors">THE SCENT OF BERGAMOOD</h3>
+                <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept ad created by <span className="normal-case">sev</span>IT.</p>
+              </div>
+            </div>
+
+            {/* Chocolate */}
+            <div
+              className="video-card group relative w-full md:flex-1 opacity-0 md:mt-10 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500 bg-black"
+              onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 55px rgba(249,115,22,0.35)')}
+              onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
+            >
+              <div className="aspect-video relative overflow-hidden">
+                <video className="absolute inset-0 w-full h-full object-cover" autoPlay muted loop playsInline>
+                  <source src="/images/renders/chocolate.mov" type="video/mp4" />
+                </video>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/5 to-transparent" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-1 h-5 rounded-full bg-orange-500/80" />
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-orange-400 font-medium">Food & Beverage • Product</span>
+                </div>
+                <h3 className="text-lg md:text-xl font-black tracking-tight group-hover:text-orange-200 transition-colors">CHOCOLATE</h3>
+                <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept ad created by <span className="normal-case">sev</span>IT.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

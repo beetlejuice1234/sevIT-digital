@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+﻿import { useEffect, useRef, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -38,11 +38,11 @@ const services = [
   },
   {
     id: 3,
-    title: '3D Rendering',
-    description: 'Photorealistic 3D visuals that bring your products and ideas to life.',
+    title: '3D Render & Virtual Ads',
+    description: 'Photorealistic 3D visuals and AI-powered virtual ad campaigns — no camera, no studio.',
     icon: Box,
     color: '#8B5CF6',
-    features: ['Product Visualization', 'Architectural Renders', 'Animations'],
+    features: ['Product Visualization', 'Virtual Ads', 'Animations'],
     link: '/services/3d-rendering',
   },
   {
@@ -885,6 +885,7 @@ function Services() {
         </p>
         <a 
           href="#chat"
+          onClick={(e: React.MouseEvent) => { e.preventDefault(); const t = document.getElementById('chat'); if (t) { window.scrollTo({ top: window.scrollY + t.getBoundingClientRect().top - 80, behavior: 'smooth' }); } }}
           className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background rounded-full font-medium hover:bg-accent transition-colors duration-300"
         >
           <span>Let's Discuss Your Project</span>

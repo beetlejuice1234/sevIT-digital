@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+﻿import { useEffect, useRef, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { Menu, X, ArrowLeft, ArrowUpRight } from 'lucide-react';
@@ -12,7 +12,7 @@ const navLinks = [
 const serviceLinks = [
   { label: 'Web Design', href: '#/services/web-design' },
   { label: 'Branding', href: '#/services/branding' },
-  { label: '3D Rendering', href: '#/services/3d-rendering' },
+  { label: '3D Render & Virtual Ads', href: '#/services/3d-rendering' },
   { label: 'Advertising', href: '#/services/advertising' },
   { label: 'Marketing', href: '#/services/marketing' },
   { label: 'AI Solutions', href: '#/services/ai-solutions' },
@@ -111,7 +111,8 @@ function Navbar() {
     if (isHomePage && sectionId) {
       const target = document.getElementById(sectionId);
       if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
+        const y = window.scrollY + target.getBoundingClientRect().top - 80;
+        window.scrollTo({ top: y, behavior: 'smooth' });
       }
     } else if (href.startsWith('#/')) {
       const path = href.replace('#', '');
@@ -121,9 +122,10 @@ function Navbar() {
       setTimeout(() => {
         const target = document.getElementById(sectionId);
         if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
+          const y = window.scrollY + target.getBoundingClientRect().top - 80;
+          window.scrollTo({ top: y, behavior: 'smooth' });
         }
-      }, 100);
+      }, 600);
     }
   }, [isHomePage, navigate]);
 
@@ -155,7 +157,7 @@ function Navbar() {
           willChange: 'background, backdrop-filter, border-color',
         }}
       >
-        <div className="flex items-center justify-between min-h-[44px] h-16 relative">
+        <div className="flex items-center justify-between min-h-[44px] h-14 relative">
           {/* Desktop Navigation - Left side */}
           <div className="hidden lg:flex items-center gap-2 flex-1">
             {navLinks.slice(0, 2).map((link) => (
@@ -191,8 +193,12 @@ function Navbar() {
               style={{ willChange: 'transform' }}
               aria-label="Go to sevIT homepage"
             >
-              <span className="text-xl font-bold text-foreground">sev</span>
-              <span className="text-xl font-bold text-red-500">IT</span>
+              <img
+                src="/images/sevIT_horizontal_logo_transparent.png"
+                alt="sevIT"
+                className="h-20 lg:h-28 w-auto object-contain"
+                draggable={false}
+              />
             </a>
           </div>
 
