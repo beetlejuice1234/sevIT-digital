@@ -277,12 +277,11 @@ function AdvertisingPage() {
           </h1>
 
           <p className="hero-line text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-4 opacity-0 leading-relaxed">
-            Most ad agencies charge a lot and report on metrics that don't mean anything to your bottom line.
-            We focus on the numbers that matter: leads, sales, and how much you're getting back on every dollar you spend.
+            Most agencies report on vanity metrics. We focus on the numbers that matter: leads, sales, and real ROI. We engineer campaigns that connect your product with intent.
           </p>
 
           <p className="hero-line text-sm md:text-base text-white/35 max-w-xl mx-auto mb-8 md:mb-10 opacity-0">
-            No fluff. No locked-in retainers before we've proven ourselves. Just focused, honest advertising work.
+            No fluff. No complex retainers. Just focused, transparent, and high-performance advertising.
           </p>
 
           <div className="hero-line opacity-0">
@@ -413,7 +412,7 @@ function AdvertisingPage() {
               Why Most Ad Spend<br />Goes Nowhere
             </h2>
             <p className="text-white/40 mt-4 max-w-lg mx-auto text-sm leading-relaxed">
-              These are the most common mistakes we see — not attacking anyone, just being honest about what doesn't work and what we do differently.
+              Common mistakes that drain budgets without delivering value. We don't guess—we optimize for conversion.
             </p>
           </div>
           <WhyAdsFailSection />
@@ -465,16 +464,13 @@ function AdvertisingPage() {
                   </span>
                 </h2>
                 <p className="text-white/50 text-sm leading-relaxed mb-4">
-                  Big agencies have account coordinators and layers of management between you and the person actually running your ads.
-                  With us, the people you talk to are the same people doing the work.
+                  Big agencies have layers of management between you and the work. With us, you talk directly to the specialists running your ads.
                 </p>
                 <p className="text-white/50 text-sm leading-relaxed mb-4">
-                  We're selective about who we work with because we want every campaign we run to actually perform.
-                  A bad result doesn't just hurt your business — it hurts ours.
+                  We're selective because we play to win. A bad result doesn't just hurt your business—it hurts ours.
                 </p>
                 <p className="text-white/50 text-sm leading-relaxed">
-                  If you're looking for cheap campaign management on autopilot, we're not the right fit.
-                  If you want a team that's genuinely invested in your results, let's talk.
+                  If you're looking for autopilot campaign management, we're not the right fit. If you want a team invested in your growth, let's talk.
                 </p>
               </div>
               <div className="space-y-3 md:space-y-4">

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://sevit.agency/sitemap.xml
+Sitemap: https://sevitdigital.com/sitemap.xml

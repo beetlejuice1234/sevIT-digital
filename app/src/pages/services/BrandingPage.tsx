@@ -13,21 +13,21 @@ const pillars = [
     icon: Crown,
     title: 'THE ICON\nTHAT CONQUERS',
     subtitle: 'Logo Design',
-    description: `A logo isn't decoration—it's the nucleus of your digital existence. We craft vector-perfect, mathematically precise marks engineered for instant recognition at 16px or 50 feet.\n\nNo templates. No recycled concepts. Every curve, every angle, every negative space is calculated for maximum psychological impact. We study color theory, gestalt principles, and competitive whitespace to ensure your mark doesn't just exist—it dominates.\n\nYour logo will work on a billboard in Tokyo, an app icon in San Francisco, and a business card in London. Scalable. Timeless. Unforgettable.\n\nThis is where empires begin.`,
+    description: `A logo is the nucleus of your digital existence. We craft vector-perfect, mathematically precise marks engineered for instant recognition. No templates. No recycled concepts. Every curve is calculated for psychological impact. Scalable, timeless, and designed to dominate across every touchpoint. This is where empires begin.`,
     color: '#EC4899',
   },
   {
     icon: BookOpen,
     title: 'THE BRAND BIBLE\nZERO DEVIATION',
     subtitle: 'Style Guides',
-    description: `Inconsistent branding is brand suicide. One rogue social post, one off-color banner, one misplaced font—and your authority crumbles. We don't let that happen.\n\nThe sevIT Brand Bible is your company's constitutional law. It governs every pixel, every word, every interaction:\n\n→ Typography pairings that command attention\n→ Color psychology palettes engineered for conversion\n→ Spatial rules that create visual hierarchy\n→ Tone of voice constraints that maintain authority\n→ Usage scenarios for every digital touchpoint\n\nThis isn't a PDF that collects dust. It's a living weapon that ensures every employee, every agency, every contractor represents your brand with surgical precision. Zero dilution. Maximum impact.`,
+    description: `Inconsistent branding is brand suicide. One rogue post can erode your authority. The sevIT Brand Bible is your company's law—governing every pixel, word, and interaction with surgical precision. This isn't just a guide; it's a system that ensures zero dilution and maximum impact across your entire digital empire.`,
     color: '#F472B6',
   },
   {
     icon: Target,
     title: 'STRATEGIC\nWARFARE',
     subtitle: 'Brand Strategy',
-    description: `Before we touch a single pixel, we dissect your market. We analyze your competitors' positioning, identify their weaknesses, and find the psychological angles they missed.\n\nWho is your ideal customer? What keeps them awake at 3 AM? What do they secretly desire that no one else is selling them?\n\nWe map the competitive landscape, tear down existing narratives, and engineer a brand position that makes you the only logical choice. Not the cheapest. Not the flashiest. The inevitable.\n\nThis is market warfare backed by data, psychology, and ruthless precision. When we're done, your competitors won't know what hit them.`,
+    description: `We dissect your market to identify the psychological angles your competitors missed. By mapping the competitive landscape and tearing down existing narratives, we engineer a brand position that makes you the only logical choice. Not the cheapest. Not the flashiest. The inevitable.`,
     color: '#DB2777',
   },
 ];
@@ -149,8 +149,8 @@ function BrandingPage() {
           </h1>
 
           <p className="hero-sub text-base sm:text-lg md:text-xl text-white/60 max-w-3xl mx-auto mb-10 md:mb-12 leading-relaxed opacity-0">
-            Your brand isn't a logo. It's a weapon. We engineer visual ecosystems that command
-            premium pricing, obliterate competition, and burn into the consumer psyche. While
+            Your brand is your greatest weapon. We engineer visual systems that command
+            authority, outpace competition, and burn into the consumer psyche. While
             others play with colors, we architect digital empires.
           </p>
 
@@ -240,20 +240,13 @@ function BrandingPage() {
               Most agencies design what "looks cool." We design what <span className="text-pink-500 font-bold">converts</span>.
             </p>
             <p className="text-white/50 leading-relaxed max-w-3xl mx-auto mt-6">
-              Every sevIT branding decision is backed by market research, consumer psychology, and conversion data.
-              We don't chase trends—we engineer trust, authority, and desire.
-            </p>
-            <p className="text-white/50 leading-relaxed max-w-3xl mx-auto mt-4">
-              A sevIT brand isn't just recognizable. It's <span className="text-white font-semibold">magnetic</span>.
-              It lowers customer acquisition costs because prospects trust you before they even click.
-              It commands premium pricing because you look like the category leader.
-              It creates loyalty because customers feel like they're part of something bigger.
+              Every branding decision is backed by market research and psychology. We don't chase trends—we engineer trust, authority, and desire. A sevIT brand is magnetic, lowering acquisition costs and commanding premium pricing by making you the category leader.
             </p>
             <p className="text-xl md:text-2xl font-bold text-white mt-8 uppercase tracking-wider">
-              We don't build brands. We build digital monuments that outlast market shifts, economic downturns, and competitor attacks.
+              We build digital monuments that outlast market shifts, economic downturns, and competitor attacks.
             </p>
             <p className="text-2xl md:text-3xl font-black text-pink-500 mt-4 uppercase tracking-widest">
-              This is branding that prints money.
+              Branding engineered for absolute ROI.
             </p>
           </div>
 
@@ -315,26 +308,13 @@ function BrandingPage() {
           </h2>
 
           <p className="text-base sm:text-lg md:text-xl text-white/60 leading-relaxed max-w-2xl mx-auto mb-6">
-            You can keep blending in. Keep using that forgettable logo. Keep watching competitors
-            steal your market share while your brand fades into digital noise.
-          </p>
-
-          <p className="text-lg sm:text-xl md:text-2xl text-white font-bold mb-10 md:mb-12">
-            Or you can <span className="text-pink-500">step up</span>.
-          </p>
-
-          <p className="text-white/50 leading-relaxed max-w-2xl mx-auto mb-10 md:mb-12">
-            sevIT brands don't compete—they <span className="text-white font-semibold">dominate</span>.
-            They command attention. They print money. They make the competition look like amateurs
-            playing in the minor leagues.
+            You can keep blending in with a forgettable identity. Or you can step up. 
+            sevIT brands don't compete—they <span className="text-white font-semibold">dominate</span>. 
+            They command attention, drive revenue, and leave the competition in the minor leagues.
           </p>
 
           <p className="text-pink-500 font-bold uppercase tracking-widest mb-10 md:mb-12">
-            The market doesn't wait for the hesitant. It rewards the bold.
-          </p>
-
-          <p className="text-xl md:text-2xl font-black text-white uppercase tracking-wider mb-10 md:mb-12">
-            What's it going to be?
+            The market rewards the bold. The choice is yours.
           </p>
 
           <Link

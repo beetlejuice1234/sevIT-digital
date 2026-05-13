@@ -263,12 +263,12 @@ function MarketingPage() {
           </h1>
 
           <p className="hero-line text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-4 opacity-0 leading-relaxed">
-            Growth marketing is about building systems that consistently bring new people to your business
-            and turn them into paying customers — not just running a campaign and hoping for the best.
+            Growth marketing is the systematic accumulation of audience, authority, and trust. 
+            We build assets that consistently convert—not one-off campaigns that fade.
           </p>
 
           <p className="hero-line text-sm md:text-base text-white/35 max-w-xl mx-auto mb-8 md:mb-10 opacity-0">
-            We handle the SEO, conversion optimization, and email marketing so you can focus on actually running your business.
+            We handle the SEO, CRO, and email strategy so you can focus on scale.
           </p>
 
           <div className="hero-line opacity-0">
@@ -303,13 +303,13 @@ function MarketingPage() {
                 What is growth<br />marketing, actually?
               </h2>
               <p className="text-white/50 text-sm leading-relaxed mb-4">
-                You've probably seen businesses that seem to be everywhere — ranking on Google, showing up in your inbox, recommended by friends. That doesn't happen by accident.
+                The world's most visible brands don't appear by accident. They use growth marketing—a systematic combination of channels engineered for compounding returns.
               </p>
               <p className="text-white/50 text-sm leading-relaxed mb-4">
-                Growth marketing is the combination of channels and tactics that work together to bring in a steady, compounding stream of customers. The key word is <span className="text-white">compounding</span> — the work you do today keeps paying off months from now.
+                The key is <span className="text-white">compounding value</span>. The work we do today builds equity that pays off for months.
               </p>
               <p className="text-white/50 text-sm leading-relaxed">
-                Unlike paid ads where you stop the moment you cut the budget, growth marketing builds assets: search rankings, email lists, optimized pages. These keep working for you.
+                Unlike paid ads that stop the moment the budget ends, growth assets like search rankings and email lists keep working for you long after the initial setup.
               </p>
             </div>
             <GrowthExplainer />
@@ -395,13 +395,13 @@ function MarketingPage() {
                   </span>
                 </h2>
                 <p className="text-white/50 text-sm leading-relaxed mb-4">
-                  Anyone who promises you a specific traffic increase or revenue number before doing any work is making things up. Growth depends on your market, your product, your starting point.
+                  Anyone promising specific traffic or revenue numbers before seeing your data is guessing. Growth depends on your market, your product, and your starting point.
                 </p>
                 <p className="text-white/50 text-sm leading-relaxed mb-4">
-                  What we can promise is that we'll be methodical about it: test, measure, learn, and repeat. No busy work, no vanity metrics, no sending you monthly reports full of charts that don't connect to revenue.
+                  We promise a methodical approach: test, measure, learn, and repeat. No busy work. No vanity metrics. No reports full of charts that don't connect to revenue.
                 </p>
                 <p className="text-white/50 text-sm leading-relaxed">
-                  If you're a good fit for what we do, we'll tell you honestly. And if you're not, we'll tell you that too.
+                  If you're a fit for our systems, we'll tell you honestly. If you're not, we'll tell you that too.
                 </p>
               </div>
               <div className="space-y-3 md:space-y-4">
