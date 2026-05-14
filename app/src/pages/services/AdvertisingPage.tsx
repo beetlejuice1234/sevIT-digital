@@ -1,4 +1,26 @@
 import React, { useEffect, useRef } from 'react';
+
+function useLazyVideo(src: string) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !el.src) {
+          el.src = src;
+          el.load();
+          el.play().catch(() => {});
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [src]);
+  return videoRef;
+}
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, TrendingUp, Search, Share2, Target, Zap, MousePointer, BarChart2, Layers } from 'lucide-react';
@@ -103,6 +125,9 @@ function AdvertisingPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
   const isVisibleRef = useRef(true);
+
+  const bergamoodRef = useLazyVideo('/images/renders/bergamood.mov');
+  const chocolateRef = useLazyVideo('/images/renders/chocolate.mov');
 
   // Starfield background
   useEffect(() => {
@@ -331,9 +356,7 @@ function AdvertisingPage() {
               onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
             >
               <div className="aspect-[21/9] relative overflow-hidden bg-black">
-                <video className="absolute inset-0 w-full h-full object-cover" autoPlay muted loop playsInline>
-                  <source src="/images/renders/bergamood.mov" type="video/mp4" />
-                </video>
+                <video ref={bergamoodRef} className="absolute inset-0 w-full h-full object-cover" muted loop playsInline preload="none" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/5 to-transparent" />
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
@@ -353,9 +376,7 @@ function AdvertisingPage() {
               onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
             >
               <div className="aspect-video relative overflow-hidden">
-                <video className="absolute inset-0 w-full h-full object-cover" autoPlay muted loop playsInline>
-                  <source src="/images/renders/chocolate.mov" type="video/mp4" />
-                </video>
+                <video ref={chocolateRef} className="absolute inset-0 w-full h-full object-cover" muted loop playsInline preload="none" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/5 to-transparent" />
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">

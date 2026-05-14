@@ -6,6 +6,28 @@ import { Link } from 'react-router-dom';
 import MobileAccordionCards from '../../components/ui/MobileAccordionCards';
 import type { AccordionCardItem } from '../../components/ui/MobileAccordionCards';
 
+function useLazyVideo(src: string) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !el.src) {
+          el.src = src;
+          el.load();
+          el.play().catch(() => {});
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [src]);
+  return videoRef;
+}
+
 gsap.registerPlugin(ScrollTrigger);
 
 const VIOLET = {
@@ -151,6 +173,8 @@ function RenderingPage() {
   const [korloffIdx, setKorloffIdx] = useState(0);
   const [fragranceIdx, setFragranceIdx] = useState(0);
   const [elkaduwaIdx, setElkaduwaIdx] = useState(0);
+
+  const showreelRef = useLazyVideo('/images/renders/showreel.mp4');
 
   const korloffTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const fragranceTimer = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -766,17 +790,15 @@ function RenderingPage() {
         {/* Full-bleed video — no box, no bars */}
         <div className="relative w-full" style={{ height: 'clamp(45vh, 56vw, 720px)' }}>
           <video
+            ref={showreelRef}
             className="absolute inset-0 w-full h-full object-cover"
-            autoPlay
             muted
             loop
             playsInline
             preload="none"
             poster="/images/renders/collage1.png"
             aria-label="sevIT 3D rendering showreel"
-          >
-            <source src="/images/renders/showreel.mp4" type="video/mp4" />
-          </video>
+          />
 
           {/* Dark vignette overlay */}
           <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, transparent 30%, rgba(5,5,5,0.55) 100%)' }} />
