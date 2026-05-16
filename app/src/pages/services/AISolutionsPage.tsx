@@ -17,9 +17,11 @@ const CYAN = {
   borderClass: 'border-cyan-500/40',
 };
 
-// ─── Free AI APIs ─────────────────────────────────────────────────────────────
+// ─── AI & Voice APIs ──────────────────────────────────────────────────────────
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const GROQ_API_KEY = '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';
+const ELEVEN_API_KEY = '061bf5a739e1196f314f02be58b9fbf43fb91715b44f11d32b5aca93b934e753';
+const ELEVEN_VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; // Bella — sultry, warm, natural
 
 const fallbackResponses: Record<string, string> = {
   cost: "AI automation typically pays for itself within 2-3 months. A chatbot handling 1000 conversations/month can save $3,000+ in support costs. Let's discuss your specific use case.",
@@ -244,28 +246,50 @@ function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
     };
   }, [isActive, isListening, isThinking]);
 
-  const speak = useCallback((text: string) => {
-    if (!soundEnabled || !synthRef.current) return;
-    synthRef.current.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1.0;
-    utterance.pitch = 1.05;
-    utterance.volume = 1;
-    // Pick the best available English voice
-    const voices = synthRef.current.getVoices();
-    const preferred = voices.find(v => v.name.includes('Samantha'))
-      || voices.find(v => v.name.includes('Victoria'))
-      || voices.find(v => v.name.includes('Karen'))
-      || voices.find(v => v.name.includes('Zira'))
-      || voices.find(v => v.name.includes('Google US English'))
-      || voices.find(v => v.lang === 'en-US' && !v.localService)
-      || voices.find(v => v.lang === 'en-US')
-      || voices[0];
-    if (preferred) utterance.voice = preferred;
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-    synthRef.current.speak(utterance);
+  const speak = useCallback(async (text: string) => {
+    if (!soundEnabled) return;
+    setIsSpeaking(true);
+    try {
+      // ElevenLabs — Bella voice (sultry, warm, natural)
+      const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVEN_VOICE_ID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'xi-api-key': ELEVEN_API_KEY,
+        },
+        body: JSON.stringify({
+          text,
+          model_id: 'eleven_turbo_v2_5',
+          voice_settings: { stability: 0.4, similarity_boost: 0.85, use_speaker_boost: true },
+        }),
+      });
+      if (!res.ok) throw new Error(`ElevenLabs ${res.status}`);
+      const blob = await res.blob();
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      await new Promise<void>((resolve) => {
+        audio.onended = () => { setIsSpeaking(false); URL.revokeObjectURL(audioUrl); resolve(); };
+        audio.onerror = () => { setIsSpeaking(false); URL.revokeObjectURL(audioUrl); resolve(); };
+        audio.play().catch(() => { setIsSpeaking(false); resolve(); });
+      });
+    } catch (err) {
+      console.log('ElevenLabs TTS failed, using browser fallback:', err);
+      setIsSpeaking(false);
+      // Browser speech fallback
+      if (synthRef.current) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.0; utterance.pitch = 1.05;
+        const voices = synthRef.current.getVoices();
+        const v = voices.find(v => v.name.includes('Samantha'))
+          || voices.find(v => v.name.includes('Karen'))
+          || voices.find(v => v.lang === 'en-US')
+          || voices[0];
+        if (v) utterance.voice = v;
+        utterance.onstart = () => setIsSpeaking(true);
+        utterance.onend = () => setIsSpeaking(false);
+        synthRef.current.speak(utterance);
+      }
+    }
   }, [soundEnabled]);
 
   const handleQuery = useCallback(async (text: string) => {
