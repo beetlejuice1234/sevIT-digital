@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { Menu, X, ArrowLeft, ArrowUpRight } from 'lucide-react';
@@ -187,7 +187,7 @@ function Navbar() {
             
             {/* Logo */}
             <a 
-              href="#" 
+              href="/" 
               onClick={handleLogoClick}
               className="flex items-center transition-transform duration-300 hover:scale-105 min-h-[44px] px-2"
               style={{ willChange: 'transform' }}

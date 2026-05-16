@@ -36,7 +36,7 @@ class ErrorBoundary extends Component<Props, State> {
       }
       
       const errorDetails = `Error: ${this.state.error?.message}\n\nStack Trace:\n${this.state.errorInfo?.componentStack}`;
-      const mailtoLink = `mailto:ctjayalath27@gmail.com?subject=sevIT%20Ops%20Report:%20Application%20Crash&body=Please%20describe%20what%20you%20were%20doing%20before%20the%20crash:%0A%0A%0A%0A---%20Error%20Details%20For%20Devs%20---%0A${encodeURIComponent(errorDetails)}`;
+      const mailtoLink = `mailto:sevit@sevitdigital.com?subject=sevIT%20Ops%20Report:%20Application%20Crash&body=Please%20describe%20what%20you%20were%20doing%20before%20the%20crash:%0A%0A%0A%0A---%20Error%20Details%20For%20Devs%20---%0A${encodeURIComponent(errorDetails)}`;
 
       return (
         <div className="min-h-[80vh] flex flex-col items-center justify-center bg-background px-4 text-center z-[100] relative">

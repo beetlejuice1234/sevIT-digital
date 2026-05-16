@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useMagneticEffect } from '@/hooks/useMagneticEffect';
@@ -29,21 +29,15 @@ const footerLinks = {
     { label: 'About Us', href: '#manifesto', sectionId: 'manifesto' },
     { label: 'Our Process', href: '#process', sectionId: 'process' },
     { label: 'Testimonials', href: '#testimonials', sectionId: 'testimonials' },
-    { label: 'Careers', href: '#' },
+    { label: 'Careers', href: '#chat', sectionId: 'chat' },
     { label: 'Contact', href: '#chat', sectionId: 'chat' },
-  ],
-  resources: [
-    { label: 'Blog', href: '#' },
-    { label: 'Documentation', href: '#' },
-    { label: 'Privacy Policy', href: '#' },
-    { label: 'Terms of Service', href: '#' },
   ],
 };
 
 const socialLinks = [
   { icon: Instagram, href: 'https://www.instagram.com/sevitdigital?igsh=MWp3dDdlMmI2djczeA==', label: 'Instagram' },
-  { icon: Phone, href: 'https://wa.me/94761816862', label: 'WhatsApp' },
-  { icon: Mail, href: 'mailto:ctjayalath27@gmail.com', label: 'Email' },
+  { icon: Phone, href: 'https://wa.me/94761107081', label: 'WhatsApp' },
+  { icon: Mail, href: 'mailto:sevit@sevitdigital.com', label: 'Email' },
 ];
 
 function MagneticSocialIcon({ social }: { social: typeof socialLinks[0] }) {
@@ -173,7 +167,7 @@ function Footer() {
       {/* Content */}
       <div ref={contentRef} className="relative z-10 max-w-7xl mx-auto">
         {/* Main Footer Grid - Single column on mobile */}
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8 lg:gap-8 mb-10 sm:mb-12 md:mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-8 mb-10 sm:mb-12 md:mb-16">
           {/* Brand Column - Full width on mobile */}
           <div className="col-span-2 lg:col-span-2">
             <div className="mb-3 sm:mb-4">
@@ -189,11 +183,11 @@ function Footer() {
             <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
               <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
                 <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent flex-shrink-0" />
-                <a href="mailto:ctjayalath27@gmail.com" className="hover:text-foreground transition-colors">ctjayalath27@gmail.com</a>
+                <a href="mailto:sevit@sevitdigital.com" className="hover:text-foreground transition-colors">sevit@sevitdigital.com</a>
               </div>
               <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
                 <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent flex-shrink-0" />
-                <a href="https://wa.me/94761816862" className="hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">+94 76 181 6862</a>
+                <a href="https://wa.me/94761107081" className="hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">+94 76 110 7081</a>
               </div>
               <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
                 <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent flex-shrink-0" />
@@ -247,24 +241,7 @@ function Footer() {
             </ul>
           </div>
 
-          {/* Resources Links */}
-          <div>
-            <h4 className="font-semibold text-foreground mb-2 sm:mb-4 text-sm sm:text-base">Resources</h4>
-            <ul className="space-y-2 sm:space-y-3">
-              {footerLinks.resources.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    onClick={(e) => handleNavClick(e, link.href)}
-                    className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 flex items-center gap-1 group"
-                  >
-                    {link.label}
-                    <ArrowUpRight className="w-2.5 h-2.5 sm:w-3 sm:h-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+
         </div>
 
         {/* Bottom Bar - Stacked on mobile */}
@@ -272,17 +249,7 @@ function Footer() {
           <p className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
             Â© {new Date().getFullYear()} sevIT Digital Agency. All rights reserved.
           </p>
-          <div className="flex gap-4 sm:gap-6">
-            <a href="#" className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Privacy
-            </a>
-            <a href="#" className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Terms
-            </a>
-            <a href="#" className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Cookies
-            </a>
-          </div>
+
         </div>
       </div>
     </footer>

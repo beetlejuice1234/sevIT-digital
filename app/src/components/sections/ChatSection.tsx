@@ -500,7 +500,7 @@ function ChatSection() {
 
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
               <a
-                href="https://wa.me/94761816862?text=Hi!%20I'd%20like%20to%20schedule%20a%20discovery%20call."
+                href="https://wa.me/94761107081?text=Hi!%20I'd%20like%20to%20schedule%20a%20discovery%20call."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-8 py-4 text-sm font-medium text-background bg-foreground rounded-full transition-all duration-300 hover:scale-105 hover:bg-accent"

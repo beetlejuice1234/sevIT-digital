@@ -28,7 +28,7 @@ export function FloatingWhatsApp() {
   return (
     <a
       ref={buttonRef}
-      href="https://wa.me/94761816862?text=Hi!%20I'd%20like%20to%20learn%20more%20about%20your%20services."
+      href="https://wa.me/94761107081?text=Hi!%20I'd%20like%20to%20learn%20more%20about%20your%20services."
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 sm:bottom-10 sm:right-10 z-[100] w-14 h-14 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-2xl shadow-[#25D366]/30 hover:-translate-y-1 transition-all duration-300 group"

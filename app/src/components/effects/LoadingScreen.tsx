@@ -234,7 +234,7 @@ function LoadingScreen({ onComplete }: LoadingScreenProps) {
           {/* Sparkle mark */}
           <img
             ref={sparkleRef}
-            src="/images/sevIT_3d_sparkle_transparent_1.png"
+            src="/images/sevIT_3d_sparkle_transparent_1.webp"
             alt=""
             className="relative w-28 h-28 sm:w-32 sm:h-32 object-contain opacity-0 select-none"
             draggable={false}

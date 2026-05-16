@@ -43,7 +43,7 @@ const showcaseItems = [
     title: 'VIRTUAL PRODUCT SHOOT',
     tag: 'Fragrance • Lifestyle',
     description: 'Model and product composited in a single cohesive scene — editorial-grade fragrance advertising.',
-    image: '/images/renders/saraperf.png',
+    image: '/images/renders/saraperf.webp',
     rotation: -2,
     glow: 'rgba(120, 180, 120, 0.5)',
     fit: 'cover' as const,
@@ -53,7 +53,7 @@ const showcaseItems = [
     title: 'FRAGRANCE PERFECTION',
     tag: 'Luxury • Detail',
     description: 'Glass, liquid, and metallic materials rendered at photographic fidelity.',
-    image: '/images/renders/collageperf3.png',
+    image: '/images/renders/collageperf3.webp',
     rotation: 1.5,
     glow: 'rgba(99, 102, 241, 0.5)',
     fit: 'cover' as const,
@@ -63,7 +63,7 @@ const showcaseItems = [
     title: 'ORIGAMI INTERIOR',
     tag: 'Architecture • Spatial',
     description: 'Spatial storytelling that sells the feeling of being there before the space exists.',
-    image: '/images/renders/origamiinterior.png',
+    image: '/images/renders/origamiinterior.webp',
     rotation: -1.5,
     glow: 'rgba(245, 158, 11, 0.45)',
     fit: 'cover' as const,
@@ -73,7 +73,7 @@ const showcaseItems = [
     title: 'PERFUME MODEL',
     tag: 'PBR • Caustics',
     description: 'Precise caustic lighting and subsurface scattering on luxury perfume bottles.',
-    image: '/images/renders/perfmodel2.png',
+    image: '/images/renders/perfmodel2.webp',
     rotation: 2.5,
     glow: 'rgba(244, 63, 94, 0.45)',
     fit: 'cover' as const,
@@ -83,7 +83,7 @@ const showcaseItems = [
     title: 'ELKADUWA SPRINGS',
     tag: 'Product • Lifestyle',
     description: 'Premium water bottle brand imagery — clean composition, studio-quality lighting.',
-    image: '/images/renders/elkaduwa4.png',
+    image: '/images/renders/elkaduwa4.webp',
     rotation: -2,
     glow: 'rgba(6, 182, 212, 0.45)',
     fit: 'cover' as const,
@@ -93,7 +93,7 @@ const showcaseItems = [
     title: 'TOM FORD — LOST CHERRY',
     tag: 'Luxury • Mood',
     description: 'Warm ambient storytelling with reflective surfaces and botanical elements.',
-    image: '/images/renders/perf3.png',
+    image: '/images/renders/perf3.webp',
     rotation: 1,
     glow: 'rgba(190, 70, 70, 0.5)',
     fit: 'cover' as const,
@@ -103,7 +103,7 @@ const showcaseItems = [
     title: 'THE SCENT OF BERGAMOOD',
     tag: 'Studio • Dramatic',
     description: 'Dark moody product photography with atmospheric smoke and citrus elements.',
-    image: '/images/renders/perf1.png',
+    image: '/images/renders/perf1.webp',
     rotation: -1,
     glow: 'rgba(52, 211, 153, 0.45)',
     fit: 'cover' as const,
@@ -113,7 +113,7 @@ const showcaseItems = [
     title: 'WATCH — MATERIAL STUDY',
     tag: 'Micro-Detail • Jewellery',
     description: 'Every scratch, reflection, and bevelled edge rendered to absolute perfection.',
-    image: '/images/renders/watch-detail.png',
+    image: '/images/renders/watch-detail.webp',
     rotation: 1.5,
     glow: 'rgba(251, 191, 36, 0.5)',
     fit: 'cover' as const,
@@ -148,20 +148,20 @@ const methodologyPoints = [
 ];
 
 const korloffImages = [
-  '/images/renders/saraperf.png',
-  '/images/renders/saraa.png',
-  '/images/renders/saraprfu.png',
-  '/images/renders/3.png',
-  '/images/renders/perf in mouth.png',
-  '/images/renders/perfmodel2.png',
+  '/images/renders/saraperf.webp',
+  '/images/renders/saraa.webp',
+  '/images/renders/saraprfu.webp',
+  '/images/renders/3.webp',
+  '/images/renders/perf in mouth.webp',
+  '/images/renders/perfmodel2.webp',
 ];
 const fragranceImages = [
-  '/images/renders/collageperf.png',
-  '/images/renders/collage1.png',
+  '/images/renders/collageperf.webp',
+  '/images/renders/collage1.webp',
 ];
 const elkaduwaImages = [
-  '/images/renders/elkaduwa4.png',
-  '/images/renders/elkaduwamist.png',
+  '/images/renders/elkaduwa4.webp',
+  '/images/renders/elkaduwamist.webp',
 ];
 
 function RenderingPage() {
@@ -796,7 +796,7 @@ function RenderingPage() {
             loop
             playsInline
             preload="none"
-            poster="/images/renders/collage1.png"
+            poster="/images/renders/collage1.webp"
             aria-label="sevIT 3D rendering showreel"
           />
 

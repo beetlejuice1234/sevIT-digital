@@ -790,7 +790,7 @@ function WebDesignPage() {
                 <span>Get a Free Quote</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
-              <a href="mailto:ctjayalath27@gmail.com" className="inline-flex items-center gap-2 px-8 py-4 border border-white/20 rounded-full hover:bg-white/5 transition-all">
+              <a href="mailto:sevit@sevitdigital.com" className="inline-flex items-center gap-2 px-8 py-4 border border-white/20 rounded-full hover:bg-white/5 transition-all">
                 <span>Contact Us</span>
               </a>
             </div>
