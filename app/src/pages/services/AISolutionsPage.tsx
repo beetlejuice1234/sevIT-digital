@@ -85,10 +85,11 @@ function getFallbackResponse(query: string): string {
 async function callFreeAI(message: string): Promise<string> {
   try {
     const systemPrompt = encodeURIComponent(
-      "You are sevAI, the AI assistant for sevIT Digital Agency. You specialize in AI automation, chatbots, workflow automation, data extraction, and custom AI solutions for businesses. Be helpful, professional, and concise. Always steer conversations toward how sevIT can help. Keep responses under 80 words."
+      "You are sevAI, an elite AI business consultant for sevIT Digital Agency. You specialize in explaining how AI automation, custom chatbots, and data extraction save businesses time and money. Be extremely concise, highly professional, and persuasive. Avoid robotic fluff. Speak naturally like a human expert. Keep your responses under 60 words."
     );
     const userMessage = encodeURIComponent(message);
-    const url = `${POLLINATIONS_URL}/${userMessage}?system=${systemPrompt}&model=openai&seed=42`;
+    // Forcing gpt-4o for much better, smarter responses than the default model
+    const url = `${POLLINATIONS_URL}/${userMessage}?system=${systemPrompt}&model=gpt-4o&seed=42`;
     const response = await fetch(url, { method: 'GET', headers: { 'Accept': 'text/plain' } });
     if (!response.ok) throw new Error('API failed');
     const text = await response.text();
@@ -232,12 +233,12 @@ function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
     if (!soundEnabled) return;
     try {
       setIsSpeaking(true);
-      const response = await fetch('/api/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, voiceId: 'EXAVITQu4vr4xnSDxMaL' }),
-      });
-      if (!response.ok) throw new Error(`TTS failed`);
+      // StreamElements Free TTS API (Joanna is a high-quality US Female voice from Amazon Polly)
+      const encodedText = encodeURIComponent(text);
+      const url = `https://api.streamelements.com/kappa/v2/speech?voice=Joanna&text=${encodedText}`;
+      
+      const response = await fetch(url, { method: 'GET' });
+      if (!response.ok) throw new Error(`StreamElements TTS failed`);
       const audioBlob = await response.blob();
       const audioUrl = URL.createObjectURL(audioBlob);
       const audio = new Audio(audioUrl);
@@ -245,7 +246,7 @@ function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
       audio.onerror = () => { setIsSpeaking(false); URL.revokeObjectURL(audioUrl); };
       await audio.play();
     } catch (err) {
-      console.log('ElevenLabs TTS failed, falling back to browser:', err);
+      console.log('StreamElements TTS failed, falling back to browser:', err);
       if (synthRef.current) {
         synthRef.current.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
