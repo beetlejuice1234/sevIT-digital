@@ -63,36 +63,6 @@ const getTypingDuration = (text: string, isAI: boolean): number => {
   return Math.max(600, baseDuration + (Math.random() * variance * 2 - variance));
 };
 
-// AI response templates
-const getAIResponse = (userMessage: string): string => {
-  const lowerMsg = userMessage.toLowerCase();
-  
-  if (lowerMsg.includes('price') || lowerMsg.includes('cost') || lowerMsg.includes('how much')) {
-    return "Our pricing varies based on project scope. Websites start at $3,500, full branding packages at $2,000, and 3D rendering projects at $1,500. Let's schedule a call to discuss your specific needs!";
-  }
-  
-  if (lowerMsg.includes('time') || lowerMsg.includes('long')) {
-    return "Typical timelines: Website projects take 4-8 weeks, branding 2-4 weeks, and 3D rendering 1-3 weeks. Rush options available!";
-  }
-  
-  if (lowerMsg.includes('3d') || lowerMsg.includes('render')) {
-    return "Our 3D team creates photorealistic product visualizations and animations that make your products impossible to ignore!";
-  }
-  
-  if (lowerMsg.includes('brand') || lowerMsg.includes('logo')) {
-    return "We craft complete brand identities - from logo design to color palettes, typography, and brand guidelines.";
-  }
-  
-  if (lowerMsg.includes('marketing') || lowerMsg.includes('ad')) {
-    return "Our growth marketing team runs data-driven campaigns across Google Ads, Meta, and more. We focus on ROI!";
-  }
-  
-  if (lowerMsg.includes('seo')) {
-    return "SEO is built into everything we do. From technical optimization to content strategy, we'll help you climb the rankings!";
-  }
-  
-  return "That's fascinating! I'd love to learn more. Would you like to schedule a free discovery call with our team?";
-};
 
 // Chat Message Component
 const ChatMessage = memo(({ message }: { message: Message }) => {
@@ -347,84 +317,12 @@ function ChatSection() {
     e.preventDefault();
     if (!inputValue.trim()) return;
 
-    const tl = gsap.timeline();
-
-    // User types
-    tl.call(() => {
-      setIsTyping('user');
-      scrollToBottom();
-    });
-    
-    const userTypingDuration = Math.min(getTypingDuration(inputValue, false) / 1000, 1.2);
-    tl.to({}, { duration: userTypingDuration });
-
-    // User message appears
-    tl.call(() => {
-      setIsTyping(null);
-      const newMessage: Message = {
-        id: Date.now(),
-        type: 'user',
-        text: inputValue,
-        timestamp: getTimestamp(),
-      };
-      setMessages(prev => [...prev, newMessage]);
-      setInputValue('');
-    });
-
-    // Animate user message
-    tl.add(() => {
-      const messageElements = document.querySelectorAll('.chat-message');
-      const lastMessage = messageElements[messageElements.length - 1];
-      if (lastMessage) {
-        gsap.fromTo(
-          lastMessage,
-          { opacity: 0, x: 15, scale: 0.98 },
-          { opacity: 1, x: 0, scale: 1, duration: 0.2, ease: 'power2.out' }
-        );
-      }
-      scrollToBottom();
-    });
-
-    // AI "reads" the message
-    const readingTime = Math.min(inputValue.length * 0.015, 1);
-    tl.to({}, { duration: readingTime });
-
-    // AI starts typing
-    tl.call(() => {
-      setIsTyping('ai');
-      scrollToBottom();
-    });
-
-    const aiResponse = getAIResponse(inputValue);
-    const aiTypingDuration = Math.min(getTypingDuration(aiResponse, true) / 1000, 2);
-    tl.to({}, { duration: aiTypingDuration });
-
-    // AI message appears
-    tl.call(() => {
-      setIsTyping(null);
-      const responseMessage: Message = {
-        id: Date.now() + 1,
-        type: 'ai',
-        text: aiResponse,
-        timestamp: getTimestamp(),
-      };
-      setMessages(prev => [...prev, responseMessage]);
-    });
-
-    // Animate AI response
-    tl.add(() => {
-      const messageElements = document.querySelectorAll('.chat-message');
-      const lastMessage = messageElements[messageElements.length - 1];
-      if (lastMessage) {
-        gsap.fromTo(
-          lastMessage,
-          { opacity: 0, y: 10, scale: 0.98 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: 'power2.out' }
-        );
-      }
-      scrollToBottom();
-    });
-  }, [inputValue, scrollToBottom]);
+    // Instead of playing a dummy AI response, redirect to the real AI page
+    // with the user's message pre-loaded as a query parameter
+    const encodedMessage = encodeURIComponent(inputValue.trim());
+    setInputValue('');
+    navigate(`/services/ai-solutions?msg=${encodedMessage}`);
+  }, [inputValue, navigate]);
 
   const handleTalkToAI = () => {
     navigate('/services/ai-solutions');

@@ -100,7 +100,7 @@ async function callFreeAI(message: string): Promise<string> {
 }
 
 // ─── Jarvis-style Circular AI Interface ───────────────────────────────────────
-function JarvisAI() {
+function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
   const [isActive, setIsActive] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
@@ -313,6 +313,35 @@ function JarvisAI() {
     if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
   }, [messages]);
 
+  // Auto-send message from homepage chat redirect
+  const initialMsgRef = useRef(initialMessage);
+
+  useEffect(() => {
+    const msg = initialMsgRef.current;
+    if (!msg) return;
+    // Clear so it only fires once, even in StrictMode double-mount
+    initialMsgRef.current = null;
+    
+    const timer = setTimeout(async () => {
+      setIsActive(true);
+      setIsThinking(true);
+      setMessages(prev => [...prev, { role: 'user', text: msg }]);
+      try {
+        const response = await callFreeAI(msg);
+        setMessages(prev => [...prev, { role: 'ai', text: response }]);
+        speak(response);
+      } catch {
+        const fallback = getFallbackResponse(msg);
+        setMessages(prev => [...prev, { role: 'ai', text: fallback }]);
+        speak(fallback);
+      } finally {
+        setIsThinking(false);
+      }
+    }, 1200);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="relative">
       {error && (
@@ -450,6 +479,21 @@ function AISolutionsPage() {
   const animationRef = useRef<number | null>(null);
   const isVisibleRef = useRef(true);
 
+  // Read the ?msg= query param passed from the homepage chat
+  // HashRouter puts params inside the hash, so we parse window.location.hash directly
+  const [initialMessage] = useState<string | null>(() => {
+    const hash = window.location.hash; // e.g. "#/services/ai-solutions?msg=Hello"
+    const qIndex = hash.indexOf('?');
+    if (qIndex === -1) return null;
+    const params = new URLSearchParams(hash.substring(qIndex));
+    const msg = params.get('msg');
+    if (msg) {
+      // Clean up the URL by removing the query params from the hash
+      window.history.replaceState(null, '', hash.substring(0, qIndex));
+    }
+    return msg;
+  });
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -569,7 +613,7 @@ function AISolutionsPage() {
           </div>
 
           <div className="hero-title mt-6 md:mt-8">
-            <JarvisAI />
+            <JarvisAI initialMessage={initialMessage} />
           </div>
         </div>
       </section>
