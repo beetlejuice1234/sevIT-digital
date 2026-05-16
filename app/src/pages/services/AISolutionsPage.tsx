@@ -18,7 +18,8 @@ const CYAN = {
 };
 
 // ─── Free AI APIs ─────────────────────────────────────────────────────────────
-const POLLINATIONS_URL = 'https://text.pollinations.ai';
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_API_KEY = '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';
 
 const fallbackResponses: Record<string, string> = {
   cost: "AI automation typically pays for itself within 2-3 months. A chatbot handling 1000 conversations/month can save $3,000+ in support costs. Let's discuss your specific use case.",
@@ -84,18 +85,32 @@ function getFallbackResponse(query: string): string {
 
 async function callFreeAI(message: string): Promise<string> {
   try {
-    const systemPrompt = encodeURIComponent(
-      "You are sevAI, an elite AI business consultant for sevIT Digital Agency. You specialize in explaining how AI automation, custom chatbots, and data extraction save businesses time and money. Be extremely concise, highly professional, and persuasive. Avoid robotic fluff. Speak naturally like a human expert. Keep your responses under 60 words."
-    );
-    const userMessage = encodeURIComponent(message);
-    // Forcing gpt-4o for much better, smarter responses than the default model
-    const url = `${POLLINATIONS_URL}/${userMessage}?system=${systemPrompt}&model=gpt-4o&seed=42`;
-    const response = await fetch(url, { method: 'GET', headers: { 'Accept': 'text/plain' } });
-    if (!response.ok) throw new Error('API failed');
-    const text = await response.text();
-    return text || getFallbackResponse(message);
+    // Groq API — LLaMA 3.3 70B, blazing fast (~0.5s), free tier 14,400 req/day
+    const response = await fetch(GROQ_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${GROQ_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are sevAI, an elite AI business consultant for sevIT Digital Agency based in Sri Lanka. You specialize in AI automation, custom chatbots, workflow automation, data extraction, web design, 3D rendering, and branding. Be concise, professional, and persuasive. Speak naturally like a human expert. Always steer conversations toward how sevIT can help. Keep responses under 60 words.',
+          },
+          { role: 'user', content: message },
+        ],
+        temperature: 0.7,
+        max_tokens: 150,
+      }),
+    });
+    if (!response.ok) throw new Error(`Groq API error: ${response.status}`);
+    const data = await response.json();
+    const text = data?.choices?.[0]?.message?.content;
+    return text?.trim() || getFallbackResponse(message);
   } catch (error) {
-    console.log('Free API failed, using fallback:', error);
+    console.log('Groq API failed, using fallback:', error);
     return getFallbackResponse(message);
   }
 }
@@ -229,42 +244,28 @@ function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
     };
   }, [isActive, isListening, isThinking]);
 
-  const speak = useCallback(async (text: string) => {
-    if (!soundEnabled) return;
-    try {
-      setIsSpeaking(true);
-      // StreamElements Free TTS API (Joanna is a high-quality US Female voice from Amazon Polly)
-      const encodedText = encodeURIComponent(text);
-      const url = `https://api.streamelements.com/kappa/v2/speech?voice=Joanna&text=${encodedText}`;
-      
-      const response = await fetch(url, { method: 'GET' });
-      if (!response.ok) throw new Error(`StreamElements TTS failed`);
-      const audioBlob = await response.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const audio = new Audio(audioUrl);
-      audio.onended = () => { setIsSpeaking(false); URL.revokeObjectURL(audioUrl); };
-      audio.onerror = () => { setIsSpeaking(false); URL.revokeObjectURL(audioUrl); };
-      await audio.play();
-    } catch (err) {
-      console.log('StreamElements TTS failed, falling back to browser:', err);
-      if (synthRef.current) {
-        synthRef.current.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 1.05;
-        utterance.pitch = 1.1;
-        const voices = synthRef.current.getVoices();
-        const femaleVoice = voices.find(v => v.name.includes('Samantha'))
-          || voices.find(v => v.name.includes('Victoria'))
-          || voices.find(v => v.name.includes('Karen'))
-          || voices.find(v => v.lang === 'en-US')
-          || voices[0];
-        if (femaleVoice) utterance.voice = femaleVoice;
-        utterance.onstart = () => setIsSpeaking(true);
-        utterance.onend = () => setIsSpeaking(false);
-        utterance.onerror = () => setIsSpeaking(false);
-        synthRef.current.speak(utterance);
-      }
-    }
+  const speak = useCallback((text: string) => {
+    if (!soundEnabled || !synthRef.current) return;
+    synthRef.current.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.0;
+    utterance.pitch = 1.05;
+    utterance.volume = 1;
+    // Pick the best available English voice
+    const voices = synthRef.current.getVoices();
+    const preferred = voices.find(v => v.name.includes('Samantha'))
+      || voices.find(v => v.name.includes('Victoria'))
+      || voices.find(v => v.name.includes('Karen'))
+      || voices.find(v => v.name.includes('Zira'))
+      || voices.find(v => v.name.includes('Google US English'))
+      || voices.find(v => v.lang === 'en-US' && !v.localService)
+      || voices.find(v => v.lang === 'en-US')
+      || voices[0];
+    if (preferred) utterance.voice = preferred;
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    synthRef.current.speak(utterance);
   }, [soundEnabled]);
 
   const handleQuery = useCallback(async (text: string) => {
