@@ -447,7 +447,7 @@ function MarketingPage() {
             Free conversation. Zero obligation.
           </p>
           <Link
-            to="/#chat"
+            to={{ pathname: '/', hash: '#chat' }}
             className="inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-emerald-500 text-white rounded-full font-bold text-base md:text-lg uppercase tracking-wider hover:bg-white hover:text-black transition-all group"
           >
             <span>Let's Have That Conversation</span>

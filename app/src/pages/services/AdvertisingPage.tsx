@@ -532,7 +532,7 @@ function AdvertisingPage() {
             Free. No obligation. Real feedback.
           </p>
           <Link
-            to="/#chat"
+            to={{ pathname: '/', hash: '#chat' }}
             className="inline-flex items-center gap-3 px-8 md:px-12 py-5 md:py-6 bg-violet-500 text-white rounded-full font-bold text-base md:text-xl uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300 group"
           >
             <span>Get a Free Ad Review</span>

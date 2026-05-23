@@ -83,17 +83,11 @@ function Footer() {
       if (isHomePage) {
         const target = document.getElementById(sectionId);
         if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
+          const y = window.scrollY + target.getBoundingClientRect().top - 80;
+          window.scrollTo({ top: y, behavior: 'smooth' });
         }
       } else {
-        // Navigate home first, then scroll
-        navigate('/');
-        setTimeout(() => {
-          const target = document.getElementById(sectionId);
-          if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
-          }
-        }, 100);
+        navigate({ pathname: '/', hash: `#${sectionId}` });
       }
     }
   }, [isHomePage, navigate]);

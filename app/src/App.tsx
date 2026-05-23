@@ -35,7 +35,7 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
  * - Navigating BACK to home: Restore saved position
  */
 function ScrollRestoration() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   const navigationType = useNavigationType();
   const savedPositionsRef = useRef<Record<string, number>>({});
 
@@ -54,7 +54,17 @@ function ScrollRestoration() {
     const isHomePage = pathname === '/';
     const isPopNavigation = navigationType === 'POP';
 
-    if (isHomePage && isPopNavigation) {
+    if (hash) {
+      // If there's a hash, scroll to that element
+      setTimeout(() => {
+        const id = hash.replace('#', '');
+        const element = document.getElementById(id);
+        if (element) {
+          const y = window.scrollY + element.getBoundingClientRect().top - 80;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 100);
+    } else if (isHomePage && isPopNavigation) {
       // BACK button to home - restore position
       const savedY = savedPositionsRef.current['/'] || 0;
       setTimeout(() => {
@@ -66,7 +76,7 @@ function ScrollRestoration() {
         window.scrollTo({ top: 0, behavior: 'instant' });
       }, 50);
     }
-  }, [pathname, navigationType]);
+  }, [pathname, hash, navigationType]);
 
   // Save scroll position when on home page
   useEffect(() => {

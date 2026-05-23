@@ -118,14 +118,7 @@ function Navbar() {
       const path = href.replace('#', '');
       navigate(path);
     } else if (sectionId) {
-      navigate('/');
-      setTimeout(() => {
-        const target = document.getElementById(sectionId);
-        if (target) {
-          const y = window.scrollY + target.getBoundingClientRect().top - 80;
-          window.scrollTo({ top: y, behavior: 'smooth' });
-        }
-      }, 600);
+      navigate({ pathname: '/', hash: `#${sectionId}` });
     }
   }, [isHomePage, navigate]);
 

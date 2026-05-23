@@ -779,7 +779,10 @@ function WebDesignPage() {
               Let's discuss your project and create a website that drives results.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/#chat" className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black rounded-full font-medium hover:bg-red-500 hover:text-white transition-all">
+              <Link
+                to={{ pathname: '/', hash: '#chat' }}
+                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black rounded-full font-medium hover:bg-red-500 hover:text-white transition-all"
+              >
                 <span>Get a Free Quote</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
