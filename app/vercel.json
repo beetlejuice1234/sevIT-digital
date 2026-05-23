@@ -11,6 +11,10 @@
     {
       "src": "api/tts.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "api/ai.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -19,11 +23,16 @@
       "dest": "/api/tts.js"
     },
     {
+      "src": "/api/ai",
+      "dest": "/api/ai.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "/dist/$1"
     }
   ],
   "env": {
-    "ELEVENLABS_API_KEY": "sk_ca7a1ada957133f0a9bf4616d970141eacca37d757fcc414"
+    "ELEVENLABS_API_KEY": "YOUR_ELEVENLABS_API_KEY",
+    "GROQ_API_KEY": "YOUR_GROQ_API_KEY"
   }
 }

@@ -84,7 +84,7 @@ function getFallbackResponse(query: string): string {
   return "That's a great question about AI for business. At sevIT, we build custom AI solutions tailored to your specific needs. Would you like to schedule a call to discuss your use case?";
 }
 
-async function callFreeAI(message: string): Promise<string> {
+async function callFreeAI(message: string): Promise<{ text: string; error?: string }> {
   try {
     const response = await fetch(AI_API_URL, {
       method: 'POST',
@@ -101,13 +101,21 @@ async function callFreeAI(message: string): Promise<string> {
         ],
       }),
     });
-    if (!response.ok) throw new Error(`AI API error: ${response.status}`);
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `AI API error: ${response.status}`);
+    }
+    
     const data = await response.json();
     const text = data?.choices?.[0]?.message?.content;
-    return text?.trim() || getFallbackResponse(message);
+    return { text: text?.trim() || getFallbackResponse(message) };
   } catch (error) {
-    console.log('AI API failed, using fallback:', error);
-    return getFallbackResponse(message);
+    console.error('AI API failed:', error);
+    return { 
+      text: getFallbackResponse(message), 
+      error: error instanceof Error ? error.message : 'Failed to connect to AI' 
+    };
   }
 }
 
@@ -133,13 +141,13 @@ function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
   const isVisibleRef = useRef(true);
 
   useEffect(() => {
-    const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (SpeechRecognitionAPI) {
       recognitionRef.current = new SpeechRecognitionAPI();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = false;
       recognitionRef.current.lang = 'en-US';
-      recognitionRef.current.onresult = (event: any) => {
+      recognitionRef.current.onresult = (event: { results: { transcript: string }[][] }) => {
         const transcript = event.results[0][0].transcript;
         handleQuery(transcript);
       };
@@ -149,7 +157,7 @@ function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
       setSpeechSupported(false);
     }
     synthRef.current = window.speechSynthesis;
-  }, []);
+  }, [handleQuery]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -290,13 +298,17 @@ function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
     setError(null);
     setMessages(prev => [...prev, { role: 'user', text }]);
     try {
-      const response = await callFreeAI(text);
-      setMessages(prev => [...prev, { role: 'ai', text: response }]);
-      await speak(response);
-    } catch {
+      const result = await callFreeAI(text);
+      if (result.error) {
+        setError(result.error);
+      }
+      setMessages(prev => [...prev, { role: 'ai', text: result.text }]);
+      await speak(result.text);
+    } catch (err) {
       const fallback = getFallbackResponse(text);
       setMessages(prev => [...prev, { role: 'ai', text: fallback }]);
       await speak(fallback);
+      setError('Something went wrong. Using fallback responses.');
     } finally {
       setIsThinking(false);
       setIsActive(true);
@@ -342,22 +354,27 @@ function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
     const timer = setTimeout(async () => {
       setIsActive(true);
       setIsThinking(true);
+      setError(null);
       setMessages(prev => [...prev, { role: 'user', text: msg }]);
       try {
-        const response = await callFreeAI(msg);
-        setMessages(prev => [...prev, { role: 'ai', text: response }]);
-        speak(response);
-      } catch {
+        const result = await callFreeAI(msg);
+        if (result.error) {
+          setError(result.error);
+        }
+        setMessages(prev => [...prev, { role: 'ai', text: result.text }]);
+        speak(result.text);
+      } catch (err) {
         const fallback = getFallbackResponse(msg);
         setMessages(prev => [...prev, { role: 'ai', text: fallback }]);
         speak(fallback);
+        setError('Something went wrong. Using fallback responses.');
       } finally {
         setIsThinking(false);
       }
     }, 1200);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [handleQuery, speak]);
 
   return (
     <div className="relative">
