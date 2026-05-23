@@ -140,6 +140,73 @@ function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
   const ringRotationRef = useRef(0);
   const isVisibleRef = useRef(true);
 
+  const speak = useCallback(async (text: string) => {
+    if (!soundEnabled) return;
+    setIsSpeaking(true);
+    try {
+      const res = await fetch(TTS_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text,
+          voiceId: ELEVEN_VOICE_ID,
+        }),
+      });
+      if (!res.ok) throw new Error(`TTS API ${res.status}`);
+      const blob = await res.blob();
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      await new Promise<void>((resolve) => {
+        audio.onended = () => { setIsSpeaking(false); URL.revokeObjectURL(audioUrl); resolve(); };
+        audio.onerror = () => { setIsSpeaking(false); URL.revokeObjectURL(audioUrl); resolve(); };
+        audio.play().catch(() => { setIsSpeaking(false); resolve(); });
+      });
+    } catch (err) {
+      console.log('TTS API failed, using browser fallback:', err);
+      setIsSpeaking(false);
+      // Browser speech fallback
+      if (synthRef.current) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.0; utterance.pitch = 1.05;
+        const voices = synthRef.current.getVoices();
+        const v = voices.find(v => v.name.includes('Samantha'))
+          || voices.find(v => v.name.includes('Karen'))
+          || voices.find(v => v.lang === 'en-US')
+          || voices[0];
+        if (v) utterance.voice = v;
+        utterance.onstart = () => setIsSpeaking(true);
+        utterance.onend = () => setIsSpeaking(false);
+        synthRef.current.speak(utterance);
+      }
+    }
+  }, [soundEnabled]);
+
+  const handleQuery = useCallback(async (text: string) => {
+    if (!text.trim()) return;
+    setIsListening(false);
+    setIsThinking(true);
+    setError(null);
+    setMessages(prev => [...prev, { role: 'user', text }]);
+    try {
+      const result = await callFreeAI(text);
+      if (result.error) {
+        setError(result.error);
+      }
+      setMessages(prev => [...prev, { role: 'ai', text: result.text }]);
+      await speak(result.text);
+    } catch (err) {
+      const fallback = getFallbackResponse(text);
+      setMessages(prev => [...prev, { role: 'ai', text: fallback }]);
+      await speak(fallback);
+      setError('Something went wrong. Using fallback responses.');
+    } finally {
+      setIsThinking(false);
+      setIsActive(true);
+    }
+  }, [speak]);
+
   useEffect(() => {
     const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (SpeechRecognitionAPI) {
@@ -247,73 +314,6 @@ function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
       observer.disconnect();
     };
   }, [isActive, isListening, isThinking]);
-
-  const speak = useCallback(async (text: string) => {
-    if (!soundEnabled) return;
-    setIsSpeaking(true);
-    try {
-      const res = await fetch(TTS_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text,
-          voiceId: ELEVEN_VOICE_ID,
-        }),
-      });
-      if (!res.ok) throw new Error(`TTS API ${res.status}`);
-      const blob = await res.blob();
-      const audioUrl = URL.createObjectURL(blob);
-      const audio = new Audio(audioUrl);
-      await new Promise<void>((resolve) => {
-        audio.onended = () => { setIsSpeaking(false); URL.revokeObjectURL(audioUrl); resolve(); };
-        audio.onerror = () => { setIsSpeaking(false); URL.revokeObjectURL(audioUrl); resolve(); };
-        audio.play().catch(() => { setIsSpeaking(false); resolve(); });
-      });
-    } catch (err) {
-      console.log('TTS API failed, using browser fallback:', err);
-      setIsSpeaking(false);
-      // Browser speech fallback
-      if (synthRef.current) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 1.0; utterance.pitch = 1.05;
-        const voices = synthRef.current.getVoices();
-        const v = voices.find(v => v.name.includes('Samantha'))
-          || voices.find(v => v.name.includes('Karen'))
-          || voices.find(v => v.lang === 'en-US')
-          || voices[0];
-        if (v) utterance.voice = v;
-        utterance.onstart = () => setIsSpeaking(true);
-        utterance.onend = () => setIsSpeaking(false);
-        synthRef.current.speak(utterance);
-      }
-    }
-  }, [soundEnabled]);
-
-  const handleQuery = useCallback(async (text: string) => {
-    if (!text.trim()) return;
-    setIsListening(false);
-    setIsThinking(true);
-    setError(null);
-    setMessages(prev => [...prev, { role: 'user', text }]);
-    try {
-      const result = await callFreeAI(text);
-      if (result.error) {
-        setError(result.error);
-      }
-      setMessages(prev => [...prev, { role: 'ai', text: result.text }]);
-      await speak(result.text);
-    } catch (err) {
-      const fallback = getFallbackResponse(text);
-      setMessages(prev => [...prev, { role: 'ai', text: fallback }]);
-      await speak(fallback);
-      setError('Something went wrong. Using fallback responses.');
-    } finally {
-      setIsThinking(false);
-      setIsActive(true);
-    }
-  }, [speak]);
 
   const toggleListening = () => {
     if (!recognitionRef.current) return;
