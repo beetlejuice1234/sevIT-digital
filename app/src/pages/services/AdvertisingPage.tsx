@@ -533,10 +533,10 @@ function AdvertisingPage() {
           </p>
           <Link
             to="/#chat"
-            className="inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-red-500 text-white rounded-full font-bold text-base md:text-lg uppercase tracking-wider hover:bg-white hover:text-black transition-all group"
+            className="inline-flex items-center gap-3 px-8 md:px-12 py-5 md:py-6 bg-violet-500 text-white rounded-full font-bold text-base md:text-xl uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300 group"
           >
             <span>Get a Free Ad Review</span>
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-5 md:w-6 h-5 md:h-6 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
       </section>

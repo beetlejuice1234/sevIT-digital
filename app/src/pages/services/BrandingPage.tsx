@@ -157,10 +157,10 @@ function BrandingPage() {
           <div className="hero-cta opacity-0">
             <Link
               to="/#chat"
-              className="inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-pink-500 text-white rounded-full font-bold text-base md:text-lg uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300 group"
+              className="inline-flex items-center gap-3 px-8 md:px-12 py-5 md:py-6 bg-violet-500 text-white rounded-full font-bold text-base md:text-xl uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300 group"
             >
-              <span>Initiate Brand Overhaul</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <span>Book Your Branding Audit</span>
+              <ArrowRight className="w-5 md:w-6 h-5 md:h-6 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
         </div>
@@ -319,9 +319,9 @@ function BrandingPage() {
 
           <Link
             to="/#chat"
-            className="inline-flex items-center gap-3 px-8 md:px-12 py-5 md:py-6 bg-pink-500 text-white rounded-full font-bold text-base md:text-xl uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300 group"
+            className="inline-flex items-center gap-3 px-8 md:px-12 py-5 md:py-6 bg-violet-500 text-white rounded-full font-bold text-base md:text-xl uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300 group"
           >
-            <span>Book Your Domination Session</span>
+            <span>Book Your Branding Audit</span>
             <ArrowRight className="w-5 md:w-6 h-5 md:h-6 group-hover:translate-x-1 transition-transform" />
           </Link>
 
