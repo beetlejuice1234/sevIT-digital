@@ -439,11 +439,11 @@ function RenderingPage() {
                   {/* Carousel buttons */}
                   <button onClick={() => { pauseAndResume(korloffTimer, korloffResume, setKorloffIdx, korloffImages.length); setKorloffIdx(i => (i - 1 + korloffImages.length) % korloffImages.length); }}
                     className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
-                    ◀
+                    <ChevronLeft className="w-4 h-4" />
                   </button>
                   <button onClick={() => { pauseAndResume(korloffTimer, korloffResume, setKorloffIdx, korloffImages.length); setKorloffIdx(i => (i + 1) % korloffImages.length); }}
                     className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
-                    ▶
+                    <ChevronRight className="w-4 h-4" />
                   </button>
                   {/* Dot indicators */}
                   <div className="absolute bottom-16 right-5 z-20 flex gap-1.5">
@@ -542,11 +542,11 @@ function RenderingPage() {
                   {/* Carousel buttons */}
                   <button onClick={() => { pauseAndResume(elkaduwaTimer, elkaduwaResume, setElkaduwaIdx, elkaduwaImages.length); setElkaduwaIdx(i => (i - 1 + elkaduwaImages.length) % elkaduwaImages.length); }}
                     className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
-                    ◀
+                    <ChevronLeft className="w-4 h-4" />
                   </button>
                   <button onClick={() => { pauseAndResume(elkaduwaTimer, elkaduwaResume, setElkaduwaIdx, elkaduwaImages.length); setElkaduwaIdx(i => (i + 1) % elkaduwaImages.length); }}
                     className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
-                    ▶
+                    <ChevronRight className="w-4 h-4" />
                   </button>
                   {/* Dot indicators */}
                   <div className="absolute bottom-16 right-4 z-20 flex gap-1.5">
@@ -711,16 +711,20 @@ function RenderingPage() {
                 {/* FRAGRANCE PERFECTION (carousel) */}
                 <div
                   ref={(el) => { masonryRefs.current[1] = el; }}
-                  className="relative overflow-hidden rounded-2xl bg-black/60 border border-white/10"
+                  className="relative overflow-hidden rounded-2xl bg-indigo-500/10 border border-white/10"
                   style={{ aspectRatio: '3/4' }}
                 >
                   <img src={fragranceImages[fragranceIdx]} alt={showcaseItems[1].title}
                     className="absolute inset-0 w-full h-full object-contain" loading="lazy" decoding="async" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                   <button onClick={() => { pauseAndResume(fragranceTimer, fragranceResume, setFragranceIdx, fragranceImages.length); setFragranceIdx(i => (i - 1 + fragranceImages.length) % fragranceImages.length); }}
-                    className="absolute left-1.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white text-[10px]">◀</button>
+                    className="absolute left-1.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transition-colors hover:bg-black/80">
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                  </button>
                   <button onClick={() => { pauseAndResume(fragranceTimer, fragranceResume, setFragranceIdx, fragranceImages.length); setFragranceIdx(i => (i + 1) % fragranceImages.length); }}
-                    className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white text-[10px]">▶</button>
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-6 sm:h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transition-colors hover:bg-black/80">
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
                   <div className="absolute bottom-0 left-0 right-0 p-3">
                     <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[1].tag}</span>
                     <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[1].title}</h3>
