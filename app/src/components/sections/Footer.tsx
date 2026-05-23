@@ -247,7 +247,7 @@ function Footer() {
         {/* Bottom Bar - Stacked on mobile */}
         <div className="pt-6 sm:pt-8 border-t border-border/50 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
           <p className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
-            Â© {new Date().getFullYear()} sevIT Digital Agency. All rights reserved.
+            © {new Date().getFullYear()} sevIT Digital Agency. All rights reserved.
           </p>
 
         </div>
