@@ -28,24 +28,14 @@ function TextScramble({ text, className = '', triggerPoint = 'top 80%' }: TextSc
     }
     return scrambled;
   });
-  const [isScrambling, setIsScrambling] = useState(false);
-
-  // Stable container size - prevents layout shift
-  const containerStyle: React.CSSProperties = {
-    display: 'inline-block',
-    minWidth: '100%',
-    // Use opacity to hide/show without affecting layout
-    opacity: isScrambling ? 1 : 0.99,
-  };
 
   const scramble = useCallback(() => {
     if (hasAnimated.current) return;
     hasAnimated.current = true;
-    setIsScrambling(true);
 
     const textLength = text.length;
-    const scrambleDuration = 5000; // 5 seconds total - MUCH SLOWER
-    const charRevealDelay = 80; // ms between each character - SLOWER
+    const scrambleDuration = 1500; // Snappier for better UX
+    const charRevealDelay = 30; 
     
     const startTime = Date.now();
     const revealedChars = new Set<number>();
@@ -54,20 +44,17 @@ function TextScramble({ text, className = '', triggerPoint = 'top 80%' }: TextSc
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / scrambleDuration, 1);
       
-      // Determine how many characters should be revealed
       const shouldBeRevealed = Math.floor((elapsed / charRevealDelay));
       
       let newText = '';
       for (let i = 0; i < textLength; i++) {
         const char = text[i];
         
-        // Space always stays space
         if (char === ' ') {
           newText += ' ';
           continue;
         }
         
-        // Reveal character if its time has come
         if (i < shouldBeRevealed || Math.random() < progress) {
           revealedChars.add(i);
         }
@@ -75,7 +62,6 @@ function TextScramble({ text, className = '', triggerPoint = 'top 80%' }: TextSc
         if (revealedChars.has(i)) {
           newText += char;
         } else {
-          // Random scramble character
           newText += chars[Math.floor(Math.random() * chars.length)];
         }
       }
@@ -85,9 +71,7 @@ function TextScramble({ text, className = '', triggerPoint = 'top 80%' }: TextSc
       if (progress < 1 || revealedChars.size < textLength) {
         requestAnimationFrame(animate);
       } else {
-        // Ensure final text is correct
         setDisplayText(text);
-        setIsScrambling(false);
       }
     };
 
@@ -98,7 +82,6 @@ function TextScramble({ text, className = '', triggerPoint = 'top 80%' }: TextSc
     const container = containerRef.current;
     if (!container) return;
 
-    // Create ScrollTrigger
     const trigger = ScrollTrigger.create({
       trigger: container,
       start: triggerPoint,
@@ -113,22 +96,35 @@ function TextScramble({ text, className = '', triggerPoint = 'top 80%' }: TextSc
   return (
     <span 
       ref={containerRef} 
-      className={`relative inline-block ${className}`}
-      style={containerStyle}
+      className={`inline-grid grid-cols-1 grid-rows-1 ${className}`}
+      style={{
+        verticalAlign: 'bottom',
+        transform: 'translateZ(0)',
+      }}
     >
-      {/* The scrambled text */}
+      {/* Ghost text - defines the stable size */}
       <span 
-        className="font-mono tracking-tight"
+        className="invisible select-none pointer-events-none"
         style={{ 
-          fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-          whiteSpace: 'pre-wrap',
+          gridArea: '1 / 1 / 2 / 2',
+          whiteSpace: 'pre-wrap'
+        }}
+        aria-hidden="true"
+      >
+        {text}
+      </span>
+
+      {/* Scrambled text - overlays the ghost */}
+      <span 
+        style={{ 
+          gridArea: '1 / 1 / 2 / 2',
+          whiteSpace: 'pre-wrap'
         }}
         aria-hidden="true"
       >
         {displayText}
       </span>
       
-      {/* Hidden real text for SEO/accessibility */}
       <span className="sr-only">{text}</span>
     </span>
   );

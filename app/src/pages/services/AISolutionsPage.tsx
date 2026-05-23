@@ -18,9 +18,8 @@ const CYAN = {
 };
 
 // ─── AI & Voice APIs ──────────────────────────────────────────────────────────
-const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_API_KEY = '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';
-const ELEVEN_API_KEY = '061bf5a739e1196f314f02be58b9fbf43fb91715b44f11d32b5aca93b934e753';
+const AI_API_URL = '/api/ai';
+const TTS_API_URL = '/api/tts';
 const ELEVEN_VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; // Bella — sultry, warm, natural
 
 const fallbackResponses: Record<string, string> = {
@@ -87,15 +86,12 @@ function getFallbackResponse(query: string): string {
 
 async function callFreeAI(message: string): Promise<string> {
   try {
-    // Groq API — LLaMA 3.3 70B, blazing fast (~0.5s), free tier 14,400 req/day
-    const response = await fetch(GROQ_API_URL, {
+    const response = await fetch(AI_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
         messages: [
           {
             role: 'system',
@@ -103,16 +99,14 @@ async function callFreeAI(message: string): Promise<string> {
           },
           { role: 'user', content: message },
         ],
-        temperature: 0.7,
-        max_tokens: 150,
       }),
     });
-    if (!response.ok) throw new Error(`Groq API error: ${response.status}`);
+    if (!response.ok) throw new Error(`AI API error: ${response.status}`);
     const data = await response.json();
     const text = data?.choices?.[0]?.message?.content;
     return text?.trim() || getFallbackResponse(message);
   } catch (error) {
-    console.log('Groq API failed, using fallback:', error);
+    console.log('AI API failed, using fallback:', error);
     return getFallbackResponse(message);
   }
 }
@@ -250,20 +244,17 @@ function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
     if (!soundEnabled) return;
     setIsSpeaking(true);
     try {
-      // ElevenLabs — Bella voice (sultry, warm, natural)
-      const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVEN_VOICE_ID}`, {
+      const res = await fetch(TTS_API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'xi-api-key': ELEVEN_API_KEY,
         },
         body: JSON.stringify({
           text,
-          model_id: 'eleven_turbo_v2_5',
-          voice_settings: { stability: 0.4, similarity_boost: 0.85, use_speaker_boost: true },
+          voiceId: ELEVEN_VOICE_ID,
         }),
       });
-      if (!res.ok) throw new Error(`ElevenLabs ${res.status}`);
+      if (!res.ok) throw new Error(`TTS API ${res.status}`);
       const blob = await res.blob();
       const audioUrl = URL.createObjectURL(blob);
       const audio = new Audio(audioUrl);
@@ -273,7 +264,7 @@ function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
         audio.play().catch(() => { setIsSpeaking(false); resolve(); });
       });
     } catch (err) {
-      console.log('ElevenLabs TTS failed, using browser fallback:', err);
+      console.log('TTS API failed, using browser fallback:', err);
       setIsSpeaking(false);
       // Browser speech fallback
       if (synthRef.current) {
@@ -302,7 +293,7 @@ function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
       const response = await callFreeAI(text);
       setMessages(prev => [...prev, { role: 'ai', text: response }]);
       await speak(response);
-    } catch (err) {
+    } catch {
       const fallback = getFallbackResponse(text);
       setMessages(prev => [...prev, { role: 'ai', text: fallback }]);
       await speak(fallback);

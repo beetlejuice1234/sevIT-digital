@@ -66,7 +66,11 @@ function MobilePortfolioDeck({ websites }: { websites: typeof portfolioWebsites 
   const handleTouchEnd = () => {
     setIsDragging(false);
     if (Math.abs(dragDeltaX) > SWIPE_THRESHOLD) {
-      dragDeltaX < 0 ? goNext() : goPrev();
+      if (dragDeltaX < 0) {
+        goNext();
+      } else {
+        goPrev();
+      }
     } else {
       if (phoneRef.current) gsap.to(phoneRef.current, { x: 0, duration: 0.3, ease: 'elastic.out(1, 0.7)' });
       setDragDeltaX(0);
@@ -131,58 +135,34 @@ function MobilePortfolioDeck({ websites }: { websites: typeof portfolioWebsites 
             </div>
           </div>
 
-          {/* Website "screenshot" area */}
+          {/* Website "Visual Preview" area */}
           <div
-            className="relative overflow-hidden"
-            style={{ height: 340, background: `linear-gradient(160deg, ${site.color}28 0%, #050505 60%)` }}
+            className="relative overflow-hidden group/mobile-preview flex items-center justify-center"
+            style={{ height: 420, background: '#080808' }}
           >
-            {/* Simulated website layout */}
-            <div className="absolute inset-0 p-4 flex flex-col gap-3">
-              {/* Simulated hero area */}
-              <div
-                className="rounded-xl flex-1 flex flex-col items-center justify-center gap-3 relative overflow-hidden"
-                style={{ background: `linear-gradient(135deg, ${site.color}20, ${site.color}05)`, border: `1px solid ${site.color}20` }}
-              >
-                {/* Simulated nav dots */}
-                <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
-                  <div className="flex gap-1.5">
-                    {[0,1,2].map(i => <div key={i} className="h-1.5 bg-white/20 rounded-full" style={{ width: i === 0 ? 24 : 12 }} />)}
-                  </div>
-                  <div className="w-5 h-5 rounded bg-white/10" />
-                </div>
+            {/* Visual Snapshot */}
+            <img
+              key={site.url + '-mobile-final'}
+              src={site.mobilePreview}
+              alt={site.title}
+              className="w-full h-full object-contain transition-transform duration-500 group-hover/mobile-preview:scale-[1.02]"
+            />
 
-                {/* Big title sim */}
-                <div className="space-y-2 text-center px-4">
-                  <div className="h-4 bg-white/30 rounded-full w-32 mx-auto" />
-                  <div className="h-2.5 bg-white/15 rounded-full w-24 mx-auto" />
-                  <div className="h-2.5 bg-white/10 rounded-full w-20 mx-auto" />
-                </div>
-
-                {/* CTA sim */}
-                <div
-                  className="h-7 w-24 rounded-full flex items-center justify-center"
-                  style={{ background: site.color }}
-                >
-                  <div className="h-1.5 w-12 bg-white/60 rounded-full" />
-                </div>
+            {/* Concept Badge - Mobile */}
+            {site.isConcept && (
+              <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10 flex items-center gap-1.5 shadow-xl">
+                <Sparkles className="w-3 h-3 text-orange-400" />
+                <span className="text-[9px] text-white/90 font-bold uppercase tracking-widest">Concept</span>
               </div>
+            )}
 
-              {/* Simulated content cards */}
-              <div className="grid grid-cols-2 gap-2">
-                {[0, 1].map(i => (
-                  <div key={i} className="rounded-lg p-2.5 flex flex-col gap-1.5" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                    <div className="w-6 h-6 rounded" style={{ background: `${site.color}40` }} />
-                    <div className="h-2 bg-white/20 rounded-full w-full" />
-                    <div className="h-1.5 bg-white/10 rounded-full w-3/4" />
-                  </div>
-                ))}
-              </div>
-            </div>
+            {/* Link Overlay - Mobile */}
+            <div className="absolute inset-0 bg-black/0 active:bg-black/20 transition-colors" />
 
             {/* Scan line shimmer effect */}
             <div
               className="absolute inset-0 pointer-events-none"
-              style={{ background: 'linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.15) 100%)' }}
+              style={{ background: 'linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.2) 100%)' }}
             />
           </div>
 
@@ -279,36 +259,48 @@ const portfolioWebsites = [
     title: 'ClickZone',
     category: 'E-Commerce',
     url: 'https://clickzonemobiles.com',
-    description: 'Sleek iPhone e-commerce platform with 3D product showcase and dark theme.',
+    description: 'Premier iPhone retail destination in Sri Lanka with a focus on certified pre-owned quality and seamless user experience.',
     stats: { loadTime: '0.9s', conversion: '+220%' },
     color: '#3B82F6',
+    previewImage: 'https://image.thum.io/get/width/1280/crop/800/https://clickzonemobiles.com?v=4',
+    mobilePreview: '/images/mobile-previews/clickzone-mobile.png',
+    isConcept: false,
   },
   {
     id: 2,
-    title: 'TechFlow Solutions',
-    category: 'Corporate',
-    url: 'https://example.com/techflow',
-    description: 'Modern corporate website with dynamic animations and seamless UX.',
-    stats: { loadTime: '0.8s', conversion: '+150%' },
-    color: '#10B981',
+    title: 'Golden Cafe',
+    category: 'Dining & Hospitality',
+    url: 'https://goldencafe.vercel.app',
+    description: 'A conceptual digital menu and brand experience designed to showcase high-end hospitality UI/UX. (Conceptual Project)',
+    stats: { loadTime: '0.7s', conversion: '+180%' },
+    color: '#F59E0B',
+    previewImage: 'https://image.thum.io/get/width/1280/crop/800/https://goldencafe.vercel.app?v=4',
+    mobilePreview: '/images/mobile-previews/goldencafe-mobile.png',
+    isConcept: true,
   },
   {
     id: 3,
-    title: 'Bloom Boutique',
-    category: 'E-Commerce',
-    url: 'https://example.com/bloom',
-    description: 'Fashion e-commerce with smooth checkout and 3D product views.',
-    stats: { loadTime: '1.2s', conversion: '+200%' },
-    color: '#EC4899',
+    title: 'BodyLab Fitness',
+    category: 'Health & Wellness',
+    url: 'https://bodylabfitness.vercel.app',
+    description: 'An advanced platform concept for a premier fitness network, featuring member tools and performance tracking. (Conceptual Project)',
+    stats: { loadTime: '1.1s', conversion: '+210%' },
+    color: '#EF4444',
+    previewImage: 'https://image.thum.io/get/width/1280/crop/800/https://bodylabfitness.vercel.app?v=4',
+    mobilePreview: '/images/mobile-previews/bodylab-mobile.png',
+    isConcept: true,
   },
   {
     id: 4,
     title: 'GrowthLabs',
     category: 'SaaS Platform',
     url: 'https://example.com/growthlabs',
-    description: 'Dashboard-focused SaaS with real-time data visualization.',
+    description: 'A demonstration of advanced data visualization and real-time analytics dashboard design. (Demonstration)',
     stats: { loadTime: '0.9s', conversion: '+180%' },
     color: '#8B5CF6',
+    previewImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1280',
+    mobilePreview: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=375',
+    isConcept: true,
   },
 ];
 
@@ -521,13 +513,13 @@ function WebDesignPage() {
             </p>
           </div>
 
-          {/* Mobile: Swipe Deck */}
-          <div className="md:hidden">
+          {/* Mobile/Tablet: Swipe Deck */}
+          <div className="lg:hidden">
             <MobilePortfolioDeck websites={portfolioWebsites} />
           </div>
 
-          {/* Desktop: macOS Mockup - Unchanged */}
-          <div className="hidden md:flex relative items-center justify-center gap-4 lg:gap-8">
+          {/* Desktop: macOS Mockup */}
+          <div className="hidden lg:flex relative items-center justify-center gap-4 lg:gap-8">
             {/* Left Arrow */}
             <button 
               onClick={() => navigate('left')}
@@ -563,51 +555,52 @@ function WebDesignPage() {
                 </div>
               </div>
 
-              {/* Website Preview Content with Iframe */}
+              {/* Website Preview Content Container */}
               <div className="relative flex-1 h-[calc(100%-40px)] md:h-[calc(100%-48px)] overflow-hidden">
-                <div ref={contentRef} className="w-full h-full">
-                  {/* Loading Spinner */}
+                <div ref={contentRef} className="w-full h-full relative group/preview">
+                  {/* Visual Snapshot */}
+                  <img
+                    key={currentWebsite.url}
+                    src={currentWebsite.previewImage}
+                    alt={`${currentWebsite.title} Preview`}
+                    className={`w-full h-full object-cover object-top transition-opacity duration-700 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+                    onLoad={() => setIsLoading(false)}
+                    onError={() => setIsLoading(false)}
+                  />
+
+                  {/* Loading Overlay */}
                   {isLoading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#0a0a0a] z-10">
                       <div className="flex flex-col items-center gap-4">
                         <div className="w-10 h-10 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
-                        <span className="text-white/40 text-sm">Loading {currentWebsite.title}...</span>
+                        <span className="text-white/40 text-sm tracking-widest uppercase">Initializing...</span>
                       </div>
                     </div>
                   )}
-                  
-                  {/* Iframe - Actual Website */}
-                  {currentWebsite.id === 1 ? (
-                    <iframe
-                      src={currentWebsite.url}
-                      title={currentWebsite.title}
-                      className="w-full h-full border-0"
-                      onLoad={() => setIsLoading(false)}
-                      sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-                    />
-                  ) : (
-                    <div 
-                      className="w-full h-full flex items-center justify-center"
-                      style={{ background: `linear-gradient(135deg, ${currentWebsite.color}20, transparent)` }}
-                    >
-                      <div className="text-center p-8">
-                        <div 
-                          className="w-32 h-32 mx-auto rounded-2xl mb-6 flex items-center justify-center"
-                          style={{ background: currentWebsite.color }}
-                        >
-                          <Monitor className="w-16 h-16 text-white" />
-                        </div>
-                        <h3 className="text-3xl font-bold mb-2">{currentWebsite.title}</h3>
-                        <p className="text-white/50 mb-4">{currentWebsite.category}</p>
+
+                  {/* Interactive Overlay - Desktop Only */}
+                  {!isLoading && (
+                    <div className="absolute inset-0 bg-black/0 group-hover/preview:bg-black/20 transition-colors duration-500 flex items-center justify-center pointer-events-none group-hover/preview:pointer-events-auto">
+                      <div className="opacity-0 group-hover/preview:opacity-100 transition-all duration-300 transform translate-y-4 group-hover/preview:translate-y-0">
                         <a 
                           href={currentWebsite.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 px-5 py-3 bg-white text-black rounded-full text-sm font-medium hover:bg-red-500 hover:text-white transition-all"
+                          className="px-8 py-4 bg-white text-black rounded-full font-bold shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all"
                         >
-                          <span>Visit Live Site</span>
-                          <ExternalLink className="w-4 h-4" />
+                          <span>Launch Live Experience</span>
+                          <ExternalLink className="w-5 h-5" />
                         </a>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Status Badge */}
+                  {!isLoading && (
+                    <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-2">
+                      <div className="bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-[10px] text-white/80 font-bold uppercase tracking-widest">Visual Verified</span>
                       </div>
                     </div>
                   )}
