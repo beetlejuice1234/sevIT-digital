@@ -29,7 +29,7 @@ const footerLinks = {
     { label: 'About Us', href: '#manifesto', sectionId: 'manifesto' },
     { label: 'Our Process', href: '#process', sectionId: 'process' },
     { label: 'Testimonials', href: '#testimonials', sectionId: 'testimonials' },
-    { label: 'Careers', href: '#chat', sectionId: 'chat' },
+    { label: 'Careers', href: '#/careers' },
     { label: 'Contact', href: '#chat', sectionId: 'chat' },
   ],
 };

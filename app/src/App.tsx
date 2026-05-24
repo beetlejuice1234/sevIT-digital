@@ -23,6 +23,7 @@ const RenderingPage = lazy(() => import('./pages/services/RenderingPage'));
 const AdvertisingPage = lazy(() => import('./pages/services/AdvertisingPage'));
 const MarketingPage = lazy(() => import('./pages/services/MarketingPage'));
 const AISolutionsPage = lazy(() => import('./pages/services/AISolutionsPage'));
+const CareersPage = lazy(() => import('./pages/CareersPage'));
 
 // Error and 404 Pages
 import ErrorBoundary from './components/ui/ErrorBoundary';
@@ -185,6 +186,7 @@ function App() {
                 <Route path="/services/advertising" element={<ServicePageWrapper><AdvertisingPage /></ServicePageWrapper>} />
                 <Route path="/services/marketing" element={<ServicePageWrapper><MarketingPage /></ServicePageWrapper>} />
                 <Route path="/services/ai-solutions" element={<ServicePageWrapper><AISolutionsPage /></ServicePageWrapper>} />
+                <Route path="/careers" element={<ServicePageWrapper><CareersPage /></ServicePageWrapper>} />
                 
                 {/* 404 Route */}
                 <Route path="*" element={<ServicePageWrapper><NotFoundPage /></ServicePageWrapper>} />
