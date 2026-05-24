@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { 
@@ -202,6 +203,14 @@ function CareersPage() {
 
   return (
     <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden">
+      <Helmet>
+        <title>Careers & Elite Opportunities | sevIT Digital</title>
+        <meta name="description" content="Join the next generation of digital pioneers. We are looking for elite specialists in UI/UX, Frontend Engineering, AI Automation, and 3D Rendering. Build the future with us." />
+        <meta property="og:title" content="Careers & Elite Opportunities | sevIT Digital" />
+        <meta property="og:description" content="We're building a team of extraordinary builders. Explore our open roles and launch your career into the digital cosmos." />
+        <meta property="og:image" content="https://sevitdigital.com/images/3dlogo.webp" />
+        <link rel="canonical" href="https://sevitdigital.com/#/careers" />
+      </Helmet>
       <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-0" />
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}

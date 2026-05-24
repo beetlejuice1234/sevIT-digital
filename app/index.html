@@ -3,124 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="googlebot" content="index, follow" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' ws: wss: https://api.groq.com https://api.elevenlabs.io; media-src 'self' blob:; object-src 'none'; base-uri 'self';" />
-
-    <title>sevIT Digital | AI Agents for Sri Lanka, Web Design & 3D Renders</title>
-    <meta name="description" content="sevIT is an AI-powered digital agency specializing in Web Designing, 3D Renders, Branding, and custom AI Agents for Sri Lanka. Build a brand that scales with us." />
-    <meta name="keywords" content="digital agency, AI agency, web design, web development, branding, brand identity, 3D rendering, architectural visualization, product rendering, digital advertising, performance marketing, SEO, AI solutions, generative AI, custom AI tools, creative agency, UI UX design, landing page design, React developers, Sri Lanka digital agency, sevIT, sevIT digital, AI agents for Sri Lanka, web designing, 3D renders" />
-    <meta name="author" content="sevIT Digital" />
-    <meta name="theme-color" content="#050505" />
-    <link rel="canonical" href="https://sevitdigital.com/" />
-
-    <!-- Favicon -->
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="apple-touch-icon" href="/favicon.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-
+    
+    <title>sevIT Digital | Elite Web Design, AI Automation & 3D Rendering</title>
+    <meta name="description" content="We engineer digital dominance. High-performance web design, custom AI solutions, and photorealistic 3D rendering for brands that command authority." />
+    <meta name="keywords" content="web design, AI automation, 3D rendering, brand identity, digital agency, Sri Lanka, high-performance websites" />
+    
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="sevIT Digital" />
     <meta property="og:url" content="https://sevitdigital.com/" />
-    <meta property="og:title" content="sevIT Digital | AI Agents for Sri Lanka, Web Design & 3D Renders" />
-    <meta property="og:description" content="sevIT is an AI-powered digital agency specializing in Web Designing, 3D Renders, Branding, and custom AI Agents for Sri Lanka. Build a brand that scales with us." />
+    <meta property="og:title" content="sevIT Digital | Elite Web Design & AI Automation" />
+    <meta property="og:description" content="We engineer digital dominance. High-performance web design, custom AI solutions, and photorealistic 3D rendering." />
     <meta property="og:image" content="https://sevitdigital.com/images/sevIT_3d_sparkle_transparent_1.webp" />
-    <meta property="og:image:width" content="512" />
-    <meta property="og:image:height" content="512" />
-    <meta property="og:locale" content="en_US" />
 
     <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="sevIT Digital | AI Agents for Sri Lanka, Web Design & 3D Renders" />
-    <meta name="twitter:description" content="sevIT is an AI-powered digital agency specializing in Web Designing, 3D Renders, Branding, and custom AI Agents for Sri Lanka." />
-    <meta name="twitter:image" content="https://sevitdigital.com/images/sevIT_3d_sparkle_transparent_1.webp" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://sevitdigital.com/" />
+    <meta property="twitter:title" content="sevIT Digital | Elite Web Design & AI Automation" />
+    <meta property="twitter:description" content="We engineer digital dominance. High-performance web design, custom AI solutions, and photorealistic 3D rendering." />
+    <meta property="twitter:image" content="https://sevitdigital.com/images/sevIT_3d_sparkle_transparent_1.webp" />
 
-    <!-- Structured data: Organization -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "sevIT Digital",
-      "alternateName": "sevIT",
-      "url": "https://sevitdigital.com/",
-      "logo": "https://sevitdigital.com/images/sevIT_3d_sparkle_transparent_1.webp",
-      "email": "sevit@sevitdigital.com",
-      "description": "sevIT is an AI-powered digital agency specializing in Web Designing, 3D Renders, Branding, and custom AI Agents for Sri Lanka.",
-      "sameAs": []
-    }
-    </script>
-
-    <!-- Structured data: WebSite (sitelinks search) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "sevIT Digital",
-      "url": "https://sevitdigital.com/"
-    }
-    </script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.vercel.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self' https:; connect-src 'self' https:;">
     
-    <!-- Preconnect to critical origins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="manifest" href="/site.webmanifest" />
     
-    <!-- DNS Prefetch for external resources -->
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-    
-    <!-- Preload critical fonts -->
-    <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
-    
-    <!-- Preload critical CSS -->
-    <link rel="preload" href="/src/index.css" as="style" />
-    
-    <!-- Critical CSS inline for above-the-fold content -->
-    <style>
-      /* Critical CSS - Above the fold styles */
-      *, *::before, *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-      
-      html {
-        scroll-behavior: smooth;
-      }
-      
-      body {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background-color: #050505;
-        color: #ffffff;
-        line-height: 1.5;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-rendering: optimizeLegibility;
-      }
-      
-      #root {
-        min-height: 100vh;
-      }
-      
-      /* Prevent FOUC */
-      .loading {
-        opacity: 0;
-      }
-      
-      /* GPU acceleration for animated elements */
-      .gpu-layer {
-        transform: translateZ(0);
-        backface-visibility: hidden;
-        perspective: 1000px;
-      }
-    </style>
-    
-    <!-- Resource hints for route prefetching -->
+    <!-- Prefetch critical assets -->
     <link rel="prefetch" href="/src/pages/services/BrandingPage.tsx" as="script" />
-    <link rel="prefetch" href="/src/pages/services/RenderingPage.tsx" as="script" />
-    <link rel="prefetch" href="/src/pages/services/AdvertisingPage.tsx" as="script" />
     <link rel="prefetch" href="/src/pages/services/MarketingPage.tsx" as="script" />
+    <link rel="prefetch" href="/src/pages/services/AdvertisingPage.tsx" as="script" />
     <link rel="prefetch" href="/src/pages/services/AISolutionsPage.tsx" as="script" />
+    <link rel="prefetch" href="/src/pages/services/RenderingPage.tsx" as="script" />
     <link rel="prefetch" href="/src/pages/services/WebDesignPage.tsx" as="script" />
   </head>
   <body>

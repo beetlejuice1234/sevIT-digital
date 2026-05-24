@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Helmet } from 'react-helmet-async';
 
 function useLazyVideo(src: string) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -280,6 +281,14 @@ function AdvertisingPage() {
 
   return (
     <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden">
+      <Helmet>
+        <title>Performance Advertising & ROI Strategy | sevIT Digital</title>
+        <meta name="description" content="Ads that actually work. We engineer high-performance Google and Social Media ad campaigns focused on leads, sales, and real ROI. No vanity metrics." />
+        <meta property="og:title" content="Performance Advertising & ROI Strategy | sevIT Digital" />
+        <meta property="og:description" content="Stop wasting ad spend. We build data-driven campaigns that connect your product with buyer intent." />
+        <meta property="og:image" content="https://sevitdigital.com/images/renders/perf1.webp" />
+        <link rel="canonical" href="https://sevitdigital.com/#/services/advertising" />
+      </Helmet>
       <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-0" />
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
@@ -356,7 +365,16 @@ function AdvertisingPage() {
               onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
             >
               <div className="aspect-[21/9] relative overflow-hidden bg-black">
-                <video ref={bergamoodRef} className="absolute inset-0 w-full h-full object-cover" muted loop playsInline preload="none" />
+                <video 
+                  ref={bergamoodRef} 
+                  className="absolute inset-0 w-full h-full object-cover" 
+                  muted 
+                  loop 
+                  playsInline 
+                  autoPlay
+                  poster="/images/posters/bergamood-poster.webp"
+                  preload="metadata" 
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/5 to-transparent" />
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
@@ -376,7 +394,16 @@ function AdvertisingPage() {
               onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
             >
               <div className="aspect-video relative overflow-hidden">
-                <video ref={chocolateRef} className="absolute inset-0 w-full h-full object-cover" muted loop playsInline preload="none" />
+                <video 
+                  ref={chocolateRef} 
+                  className="absolute inset-0 w-full h-full object-cover" 
+                  muted 
+                  loop 
+                  playsInline 
+                  autoPlay
+                  poster="/images/posters/chocolate-poster.webp"
+                  preload="metadata" 
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/5 to-transparent" />
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">

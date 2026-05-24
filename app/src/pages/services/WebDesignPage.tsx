@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { Helmet } from 'react-helmet-async';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Code2, Zap, Smartphone, Search, Shield, Layers, Monitor, Sparkles, CheckCircle2 } from 'lucide-react';
@@ -444,6 +445,14 @@ function WebDesignPage() {
 
   return (
     <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden">
+      <Helmet>
+        <title>Premium Web Design & High-Performance Development | sevIT Digital</title>
+        <meta name="description" content="We build websites that convert. Get blazing-fast, SEO-optimized, and mobile-first web experiences designed to turn visitors into loyal customers." />
+        <meta property="og:title" content="Premium Web Design & High-Performance Development | sevIT Digital" />
+        <meta property="og:description" content="Don't just launch a website. Build a digital empire with our conversion-focused design and engineering." />
+        <meta property="og:image" content="https://sevitdigital.com/images/clickzone.webp" />
+        <link rel="canonical" href="https://sevitdigital.com/#/services/web-design" />
+      </Helmet>
       {/* Animated Starfield Background */}
       <canvas 
         ref={canvasRef} 

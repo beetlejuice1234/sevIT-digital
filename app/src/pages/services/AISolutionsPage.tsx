@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { Helmet } from 'react-helmet-async';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Mic, Send, Bot, Sparkles, Cpu, MessageSquare, Zap, Volume2, VolumeX, Loader2 } from 'lucide-react';
@@ -623,6 +624,14 @@ function AISolutionsPage() {
 
   return (
     <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden">
+      <Helmet>
+        <title>AI Solutions & Business Automation | sevIT Digital</title>
+        <meta name="description" content="Transform your business with custom AI. From intelligent chatbots to automated data extraction and elite AI workflows, we engineer your digital future." />
+        <meta property="og:title" content="AI Solutions & Business Automation | sevIT Digital" />
+        <meta property="og:description" content="Meet sevAI, your intelligent business consultant. We build custom AI agents that drive real efficiency and growth." />
+        <meta property="og:image" content="https://sevitdigital.com/images/renders/perf2.webp" />
+        <link rel="canonical" href="https://sevitdigital.com/#/services/ai-solutions" />
+      </Helmet>
       <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-0" />
 
       {/* ── HERO — AI Takes Center Stage ─────────────────────────────────────── */}

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Helmet } from 'react-helmet-async';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Search, Mail, BarChart3, Rocket, Target, TrendingUp, Users, RefreshCw, Layers } from 'lucide-react';
@@ -244,6 +245,14 @@ function MarketingPage() {
 
   return (
     <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden">
+      <Helmet>
+        <title>Growth Marketing & SEO Strategy | sevIT Digital</title>
+        <meta name="description" content="Dominate your market with compounding growth. We engineer systematic audience accumulation through data-driven SEO, CRO, and email marketing." />
+        <meta property="og:title" content="Growth Marketing & SEO Strategy | sevIT Digital" />
+        <meta property="og:description" content="Stop buying traffic. Start building compounding growth assets that consistently convert visitors into loyal customers." />
+        <meta property="og:image" content="https://sevitdigital.com/images/3d-portfolio-1.jpg" />
+        <link rel="canonical" href="https://sevitdigital.com/#/services/marketing" />
+      </Helmet>
       <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-0" />
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}

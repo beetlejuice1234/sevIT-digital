@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { Helmet } from 'react-helmet-async';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Target, BookOpen, Crown, BarChart3, Shield, TrendingUp } from 'lucide-react';
@@ -130,6 +131,14 @@ function BrandingPage() {
 
   return (
     <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden">
+      <Helmet>
+        <title>Brand Engineering & Identity Design | sevIT Digital</title>
+        <meta name="description" content="We engineer visual dominance. Get mathematically precise logo design and comprehensive brand strategies that command authority and outpace competition." />
+        <meta property="og:title" content="Brand Engineering & Identity Design | sevIT Digital" />
+        <meta property="og:description" content="Your brand is your greatest weapon. We architect digital empires through strategic brand warfare and precision identity design." />
+        <meta property="og:image" content="https://sevitdigital.com/images/3d-portfolio-3.jpg" />
+        <link rel="canonical" href="https://sevitdigital.com/#/services/branding" />
+      </Helmet>
       <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-0" />
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
