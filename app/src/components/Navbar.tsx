@@ -189,7 +189,7 @@ function Navbar() {
               <img
                 src="/images/sevIT_horizontal_logo_transparent.png"
                 alt="sevIT"
-                className="h-20 lg:h-28 w-auto object-contain"
+                className="h-12 sm:h-14 lg:h-28 w-auto object-contain"
                 draggable={false}
               />
             </a>
@@ -244,18 +244,27 @@ function Navbar() {
           }}
         >
           <div className="flex flex-col gap-6 pt-6 pb-6 border-t border-border/20">
-            {/* Services Grid Pill Style */}
+            {/* Primary Action at top on Mobile */}
+            <a
+              href="#chat"
+              onClick={(e) => handleNavClick(e, '#chat', 'chat')}
+              className="flex items-center justify-center gap-2 w-full py-4 bg-foreground text-background rounded-xl font-bold uppercase tracking-widest text-sm active:scale-[0.98] transition-transform min-h-[56px] shadow-lg shadow-black/20"
+            >
+              Start a Project <ArrowUpRight className="w-5 h-5" />
+            </a>
+
+            {/* Services Grid - Better spacing/size */}
             <div>
-              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/50 mb-4 block px-2">
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 mb-4 block px-2">
                 Expertise
               </span>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 {serviceLinks.map((link) => (
                   <a
                     key={link.label}
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
-                    className="text-sm px-4 py-2 border border-border/40 rounded-full text-foreground/80 hover:text-foreground hover:bg-white/10 active:bg-white/10 transition-all min-h-[44px] flex items-center justify-center"
+                    className="text-xs px-4 py-3 border border-border/40 rounded-xl text-foreground/80 hover:text-foreground hover:bg-white/10 active:bg-white/10 transition-all min-h-[48px] flex items-center justify-center text-center leading-tight"
                   >
                     {link.label}
                   </a>
@@ -267,7 +276,7 @@ function Navbar() {
 
             {/* Menu Links */}
             <div>
-              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/50 mb-4 block px-2">
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 mb-4 block px-2">
                 Company
               </span>
               <div className="flex flex-col gap-1">
@@ -276,21 +285,13 @@ function Navbar() {
                     key={link.label}
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.href, link.sectionId)}
-                    className="text-lg font-medium py-3 px-2 text-foreground hover:text-accent transition-colors min-h-[44px] flex items-center"
+                    className="text-lg font-black py-4 px-2 text-foreground hover:text-accent transition-colors min-h-[44px] flex items-center uppercase tracking-tighter"
                   >
                     {link.label}
                   </a>
                 ))}
               </div>
             </div>
-            
-            <a
-              href="#chat"
-              onClick={(e) => handleNavClick(e, '#chat', 'chat')}
-              className="mt-4 flex items-center justify-center gap-2 w-full py-4 bg-foreground text-background rounded-xl font-medium active:scale-[0.98] transition-transform min-h-[44px]"
-            >
-              Start a Project <ArrowUpRight className="w-5 h-5" />
-            </a>
           </div>
         </div>
       </div>

@@ -393,17 +393,17 @@ function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
             ref={canvasRef}
             width={400}
             height={400}
-            className="w-40 h-40 sm:w-52 sm:h-52 lg:w-80 lg:h-80 cursor-pointer"
+            className="w-28 h-28 sm:w-40 sm:h-40 lg:w-80 lg:h-80 cursor-pointer"
             onClick={() => !isListening && toggleListening()}
           />
 
           {/* Status text */}
           <div className="text-center mt-2 lg:mt-4">
-            <p className="text-sm lg:text-lg font-medium text-white/80">
+            <p className="text-xs sm:text-sm lg:text-lg font-medium text-white/80">
               {isListening ? 'Listening...' : isThinking ? 'Processing...' : isSpeaking ? 'Speaking...' : 'Tap orb to speak'}
             </p>
             {!speechSupported && (
-              <p className="text-xs text-white/40 mt-1">Voice not supported. Use text input.</p>
+              <p className="text-[10px] text-white/40 mt-1">Voice not supported. Use text input.</p>
             )}
           </div>
 
@@ -411,13 +411,13 @@ function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
           {speechSupported && (
             <button
               onClick={toggleListening}
-              className={`absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-10 lg:translate-y-12 w-10 h-10 lg:w-14 lg:h-14 rounded-full flex items-center justify-center transition-all ${
+              className={`absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-8 lg:translate-y-12 w-8 h-8 lg:w-14 lg:h-14 rounded-full flex items-center justify-center transition-all ${
                 isListening
                   ? 'bg-red-500 animate-pulse shadow-lg shadow-red-500/50'
                   : 'bg-white/10 hover:bg-white/20'
               }`}
             >
-              <Mic className="w-4 h-4 lg:w-6 lg:h-6 text-white" />
+              <Mic className="w-3.5 h-3.5 lg:w-6 lg:h-6 text-white" />
             </button>
           )}
         </div>

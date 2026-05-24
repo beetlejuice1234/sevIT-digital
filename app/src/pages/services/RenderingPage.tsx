@@ -666,7 +666,7 @@ function RenderingPage() {
                     className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[2].tag}</span>
+                    <span className="text-[11px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[2].tag}</span>
                     <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[2].title}</h3>
                   </div>
                   <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[2].glow}, transparent)` }} />
@@ -682,7 +682,7 @@ function RenderingPage() {
                     className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[5].tag}</span>
+                    <span className="text-[11px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[5].tag}</span>
                     <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[5].title}</h3>
                     <p className="text-white/40 text-[8px] uppercase tracking-widest mt-1 italic">Concept ad by <span className="normal-case">sev</span>IT.</p>
                   </div>
@@ -699,7 +699,7 @@ function RenderingPage() {
                     className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[7].tag}</span>
+                    <span className="text-[11px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[7].tag}</span>
                     <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[7].title}</h3>
                   </div>
                   <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[7].glow}, transparent)` }} />
@@ -726,7 +726,7 @@ function RenderingPage() {
                     <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                   <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[1].tag}</span>
+                    <span className="text-[11px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[1].tag}</span>
                     <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[1].title}</h3>
                     <p className="text-white/40 text-[8px] uppercase tracking-widest mt-1 italic">Concept ad by <span className="normal-case">sev</span>IT.</p>
                   </div>
@@ -751,7 +751,7 @@ function RenderingPage() {
                     <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                   <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[4].tag}</span>
+                    <span className="text-[11px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[4].tag}</span>
                     <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[4].title}</h3>
                   </div>
                   <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[4].glow}, transparent)` }} />
@@ -767,7 +767,7 @@ function RenderingPage() {
                     className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <span className="text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[6].tag}</span>
+                    <span className="text-[11px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[6].tag}</span>
                     <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[6].title}</h3>
                     <p className="text-white/40 text-[8px] uppercase tracking-widest mt-1 italic">Concept ad by <span className="normal-case">sev</span>IT.</p>
                   </div>
@@ -807,8 +807,9 @@ function RenderingPage() {
             muted
             loop
             playsInline
-            preload="none"
-            poster="/images/renders/collage1.webp"
+            autoPlay
+            preload="metadata"
+            poster="/images/posters/showreel-poster.webp"
             aria-label="sevIT 3D rendering showreel"
           />
 

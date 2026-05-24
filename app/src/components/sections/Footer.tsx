@@ -50,10 +50,10 @@ function MagneticSocialIcon({ social }: { social: typeof socialLinks[0] }) {
       ref={magneticRef}
       href={social.href}
       aria-label={social.label}
-      className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-surface border border-border/50 flex items-center justify-center text-muted-foreground transition-all duration-300 hover:text-foreground hover:border-foreground/20"
+      className="w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-surface border border-border/50 flex items-center justify-center text-muted-foreground transition-all duration-300 hover:text-foreground hover:border-foreground/20 active:scale-90"
       style={{ willChange: 'transform' }}
     >
-      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+      <Icon className="w-5 h-5 sm:w-4 sm:h-4" />
     </a>
   );
 }
@@ -190,7 +190,7 @@ function Footer() {
             </div>
 
             {/* Social Links - Smaller on mobile */}
-            <div className="flex gap-2 sm:gap-3">
+            <div className="flex gap-4 sm:gap-3">
               {socialLinks.map((social) => (
                 <MagneticSocialIcon key={social.label} social={social} />
               ))}

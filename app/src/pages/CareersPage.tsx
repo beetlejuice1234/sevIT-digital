@@ -352,32 +352,36 @@ function CareersPage() {
                     <label className="text-xs uppercase tracking-widest text-white/40 font-bold ml-1">CV / Resume (PDF Only)</label>
                     <div className="relative group/upload">
                       <input 
+                        required
                         type="file" 
-                        accept=".pdf"
+                        accept="application/pdf"
                         onChange={handleFileChange}
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                        aria-label="Upload your CV in PDF format"
                       />
                       <div className={`w-full border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center gap-3 transition-all ${file ? 'border-accent/50 bg-accent/5' : 'border-white/10 hover:border-white/20'}`}>
                         {file ? (
                           <>
                             <div className="flex items-center gap-3 bg-white/10 px-4 py-2 rounded-xl">
                               <FileText className="w-5 h-5 text-accent" />
-                              <span className="text-sm font-medium">{file.name}</span>
+                              <span className="text-sm font-medium truncate max-w-[150px]">{file.name}</span>
                               <button 
-                                onClick={(e) => { e.preventDefault(); setFile(null); }}
-                                className="p-1 hover:bg-white/10 rounded-full transition-colors"
+                                type="button"
+                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setFile(null); }}
+                                className="p-2 hover:bg-white/10 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+                                aria-label="Remove selected file"
                               >
                                 <X className="w-4 h-4" />
                               </button>
                             </div>
-                            <span className="text-[10px] text-white/30 uppercase tracking-widest">Click or drag to replace</span>
+                            <span className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Tap to Replace</span>
                           </>
                         ) : (
                           <>
                             <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center group-hover/upload:scale-110 transition-transform">
                               <Upload className="w-6 h-6 text-white/40" />
                             </div>
-                            <span className="text-sm text-white/40 font-medium">Click or drag your PDF here</span>
+                            <span className="text-sm text-white/40 font-medium">Tap to select PDF</span>
                             <span className="text-[10px] text-white/20 uppercase tracking-widest">Max size 5MB</span>
                           </>
                         )}

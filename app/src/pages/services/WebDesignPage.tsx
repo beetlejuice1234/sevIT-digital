@@ -203,7 +203,7 @@ function MobilePortfolioDeck({ websites }: { websites: typeof portfolioWebsites 
           href={site.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl font-bold text-sm transition-all active:scale-95"
+          className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl font-bold text-sm transition-all active:scale-95 shadow-lg shadow-black/20"
           style={{ background: site.color, color: '#fff' }}
         >
           <span>Open Live Site</span>
@@ -211,24 +211,24 @@ function MobilePortfolioDeck({ websites }: { websites: typeof portfolioWebsites 
         </a>
       </div>
 
-      {/* Dot nav */}
-      <div className="flex items-center justify-center gap-2 mt-5">
+      {/* Dot nav — increased margin for safety */}
+      <div className="flex items-center justify-center gap-2 mt-8 lg:mt-10">
         <button
           onClick={goPrev}
           disabled={isAnimating}
-          className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 active:scale-90 transition-all disabled:opacity-40"
+          className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 active:scale-90 transition-all disabled:opacity-40"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="w-5 h-5" />
         </button>
-        <div className="flex gap-1.5">
+        <div className="flex gap-2 mx-2">
           {websites.map((_, idx) => (
             <button
               key={idx}
               onClick={() => !isAnimating && animateTo(idx > currentIndex ? 'left' : 'right', idx)}
-              className="h-1.5 rounded-full transition-all duration-300"
+              className="h-2 rounded-full transition-all duration-300"
               style={{
-                width: idx === currentIndex ? 20 : 6,
-                background: idx === currentIndex ? site.color : 'rgba(255,255,255,0.2)',
+                width: idx === currentIndex ? 24 : 8,
+                background: idx === currentIndex ? site.color : 'rgba(255,255,255,0.15)',
               }}
             />
           ))}
@@ -236,9 +236,9 @@ function MobilePortfolioDeck({ websites }: { websites: typeof portfolioWebsites 
         <button
           onClick={goNext}
           disabled={isAnimating}
-          className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 active:scale-90 transition-all disabled:opacity-40"
+          className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 active:scale-90 transition-all disabled:opacity-40"
         >
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-5 h-5" />
         </button>
       </div>
     </div>

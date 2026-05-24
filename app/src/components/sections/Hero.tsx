@@ -138,14 +138,14 @@ function Hero() {
 
         {/* Main Heading - Fixed dimensions, GPU accelerated */}
         <h2 
-          className="mb-8"
+          className="mb-6 sm:mb-8"
           style={{ 
-            minHeight: 'clamp(120px, 18vw, 200px)',
+            minHeight: 'clamp(100px, 20vw, 200px)',
           }}
         >
           <span
             ref={heading1Ref}
-            className="block text-[12vw] sm:text-[10vw] lg:text-[8vw] font-bold leading-[0.9] text-white opacity-0"
+            className="block text-[clamp(2.5rem,14vw,8vw)] sm:text-[10vw] lg:text-[8vw] font-black leading-[0.85] text-white opacity-0 uppercase tracking-tighter"
             style={{
               willChange: 'transform, opacity',
               transform: 'translateZ(0)',
@@ -156,7 +156,7 @@ function Hero() {
           </span>
           <span
             ref={heading2Ref}
-            className="block text-[12vw] sm:text-[10vw] lg:text-[8vw] font-bold leading-[0.9] text-white opacity-0"
+            className="block text-[clamp(2.5rem,14vw,8vw)] sm:text-[10vw] lg:text-[8vw] font-black leading-[0.85] text-white opacity-0 uppercase tracking-tighter"
             style={{
               willChange: 'transform, opacity',
               transform: 'translateZ(0)',
@@ -174,9 +174,9 @@ function Hero() {
             (subheadingRef as React.MutableRefObject<HTMLParagraphElement | null>).current = node;
             (subRevealRef as React.MutableRefObject<HTMLParagraphElement | null>).current = node;
           }}
-          className="max-w-xl mx-auto text-sm sm:text-base lg:text-lg text-muted-foreground leading-relaxed opacity-0 px-2 sm:px-0"
+          className="max-w-md sm:max-w-xl mx-auto text-sm sm:text-base lg:text-lg text-muted-foreground leading-relaxed opacity-0 px-4 sm:px-0"
           style={{
-            minHeight: '56px',
+            minHeight: '48px',
             willChange: 'transform, opacity',
             transform: 'translateZ(0)',
             backfaceVisibility: 'hidden',
@@ -189,7 +189,7 @@ function Hero() {
         {/* CTA Buttons - GPU accelerated */}
         <div 
           ref={ctaRef}
-          className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center opacity-0"
+          className="mt-12 flex flex-col sm:flex-row gap-4 justify-center items-center opacity-0"
           style={{
             willChange: 'transform, opacity',
             transform: 'translateZ(0)',
@@ -200,7 +200,7 @@ function Hero() {
             ref={magneticCta1}
             href="#chat"
             onClick={(e) => scrollToSection(e, 'chat')}
-            className="group relative inline-flex items-center justify-center px-8 py-4 min-h-[44px] text-sm font-medium text-background bg-foreground rounded-full overflow-hidden transition-transform duration-300 hover:scale-105"
+            className="group relative inline-flex items-center justify-center w-[240px] sm:w-auto px-8 py-5 sm:py-4 min-h-[56px] sm:min-h-[44px] text-sm font-bold uppercase tracking-widest text-background bg-foreground rounded-full overflow-hidden transition-transform duration-300 hover:scale-105 active:scale-95 shadow-xl shadow-black/20"
             style={{
               willChange: 'transform',
               transform: 'translateZ(0)',
@@ -216,7 +216,7 @@ function Hero() {
             ref={magneticCta2}
             href="#services"
             onClick={(e) => scrollToSection(e, 'services')}
-            className="inline-flex items-center justify-center px-8 py-4 min-h-[44px] text-sm font-medium text-foreground border border-border rounded-full transition-all duration-300 hover:bg-surface hover:border-foreground/20"
+            className="inline-flex items-center justify-center w-[240px] sm:w-auto px-8 py-5 sm:py-4 min-h-[56px] sm:min-h-[44px] text-sm font-bold uppercase tracking-widest text-foreground border border-white/10 rounded-full transition-all duration-300 hover:bg-white/5 active:scale-95"
             style={{
               willChange: 'transform',
               transform: 'translateZ(0)',
@@ -230,15 +230,15 @@ function Hero() {
       {/* Scroll Hint - always shown, GPU accelerated */}
       <div
         ref={scrollHintRef}
-        className="absolute bottom-6 sm:bottom-8 left-1/2 flex flex-col items-center gap-2 opacity-0"
+        className="absolute bottom-4 sm:bottom-8 left-1/2 flex flex-col items-center gap-1 opacity-0"
         style={{
           willChange: 'opacity',
           transform: 'translateX(-50%) translateZ(0)',
           backfaceVisibility: 'hidden',
         }}
       >
-        <span className="text-[10px] sm:text-xs text-muted-foreground tracking-wider uppercase">Scroll</span>
-        <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground animate-scroll-bounce" />
+        <span className="text-[9px] sm:text-xs text-muted-foreground/30 tracking-[0.3em] uppercase">Scroll</span>
+        <ChevronDown className="w-4 h-4 text-muted-foreground/30 animate-scroll-bounce" />
       </div>
     </section>
   );
