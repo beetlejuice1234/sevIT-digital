@@ -113,7 +113,7 @@ function CareersPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSubmittingSuccess] = useState(false);
 
-  const titleRef = useTextReveal<HTMLHeadingElement>();
+  const titleRef = useTextReveal<HTMLHeadingElement>('careers-hero');
 
   // ─── Animations ───────────────────────────────────────────────────────────
   useEffect(() => {

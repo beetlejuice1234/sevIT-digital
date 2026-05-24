@@ -1,5 +1,5 @@
 import { useRef, useMemo, useEffect, memo } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 interface ParticleSystemProps {
@@ -9,7 +9,6 @@ interface ParticleSystemProps {
 
 const ParticleSystem = memo(({ count = 100, mousePosition }: ParticleSystemProps) => {
   const pointsRef = useRef<THREE.Points>(null);
-  const { viewport } = useThree();
 
   // Stable random positions and phases to avoid hydration mismatch
   const positions = useMemo(() => {
@@ -33,23 +32,25 @@ const ParticleSystem = memo(({ count = 100, mousePosition }: ParticleSystemProps
   useFrame((state) => {
     if (!pointsRef.current) return;
     const time = state.clock.getElapsedTime();
+    const posAttr = pointsRef.current.geometry.attributes.position;
+    const array = posAttr.array as Float32Array;
 
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
       // Subtle float motion using stable phase
-      pointsRef.current.geometry.attributes.position.array[i3 + 1] += Math.sin(time + phases[i]) * 0.002;
+      array[i3 + 1] += Math.sin(time + phases[i]) * 0.002;
       
       // Mouse interaction
-      const dx = pointsRef.current.geometry.attributes.position.array[i3] - mousePosition.current[0] * 5;
-      const dy = pointsRef.current.geometry.attributes.position.array[i3 + 1] - mousePosition.current[1] * 5;
+      const dx = array[i3] - mousePosition.current[0] * 5;
+      const dy = array[i3 + 1] - mousePosition.current[1] * 5;
       const dist = Math.sqrt(dx * dx + dy * dy);
       
       if (dist < 2) {
-        pointsRef.current.geometry.attributes.position.array[i3] += dx * 0.01;
-        pointsRef.current.geometry.attributes.position.array[i3 + 1] += dy * 0.01;
+        array[i3] += dx * 0.01;
+        array[i3 + 1] += dy * 0.01;
       }
     }
-    pointsRef.current.geometry.attributes.position.needsUpdate = true;
+    posAttr.needsUpdate = true;
   });
 
   return (
@@ -60,6 +61,7 @@ const ParticleSystem = memo(({ count = 100, mousePosition }: ParticleSystemProps
           count={count}
           array={positions}
           itemSize={3}
+          args={[positions, 3]}
         />
       </bufferGeometry>
       <pointsMaterial
