@@ -5,6 +5,7 @@ import { ArrowRight, Box, Layers, Sparkles, Camera, Cpu, Globe, Play, Zap, Chevr
 import { Link } from 'react-router-dom';
 import MobileAccordionCards from '../../components/ui/MobileAccordionCards';
 import type { AccordionCardItem } from '../../components/ui/MobileAccordionCards';
+import MobileDeepExplorer from '../../components/ui/MobileDeepExplorer';
 
 function useLazyVideo(src: string) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -166,7 +167,6 @@ const elkaduwaImages = [
 
 function RenderingPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number | null>(null);
   const isVisibleRef = useRef(true);
   const masonryRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -227,7 +227,7 @@ function RenderingPage() {
     }
 
     const animate = () => {
-      if (!isVisibleRef.current) { animationRef.current = requestAnimationFrame(animate); return; }
+      if (!isVisibleRef.current) { requestAnimationFrame(animate); return; }
       ctx.fillStyle = 'rgba(5, 5, 5, 0.15)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       stars.forEach((star) => {
@@ -238,7 +238,7 @@ function RenderingPage() {
         star.y += star.speed;
         if (star.y > canvas.height) { star.y = 0; star.x = Math.random() * canvas.width; }
       });
-      animationRef.current = requestAnimationFrame(animate);
+      requestAnimationFrame(animate);
     };
     animate();
 
@@ -249,7 +249,6 @@ function RenderingPage() {
     observer.observe(canvas);
 
     return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
       window.removeEventListener('resize', resize);
       observer.disconnect();
     };
@@ -354,7 +353,7 @@ function RenderingPage() {
 
           <div className="hero-cta opacity-0">
             <Link
-              to="/#chat"
+              to={{ pathname: '/', hash: '#chat' }}
               className="inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-violet-500 text-white rounded-full font-bold text-base md:text-lg uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300 group"
             >
               <span>Request a Custom Visual Strategy Session</span>
@@ -368,20 +367,10 @@ function RenderingPage() {
           <span className="text-[10px] uppercase tracking-widest">Scroll</span>
           <div className="w-px h-6 bg-gradient-to-b from-violet-500 to-transparent" />
         </div>
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 text-white/40">
-          <span className="text-xs uppercase tracking-widest">Scroll</span>
-          <div className="w-px h-8 bg-gradient-to-b from-violet-500 to-transparent" />
-        </div>
       </section>
 
       {/* ── DIMENSIONAL GALLERY ───────────────────────────────────────────────── */}
       <section className="showcase-section relative py-24 md:py-32 px-6 lg:px-12 z-10 border-t border-white/10 overflow-hidden">
-        {/* Ambient gradient washes */}
-        <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-          <div className="absolute top-[10%] left-[-5%] w-[500px] h-[500px] rounded-full opacity-20" style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.3) 0%, transparent 70%)' }} />
-          <div className="absolute bottom-[10%] right-[-5%] w-[600px] h-[600px] rounded-full opacity-15" style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.25) 0%, transparent 70%)' }} />
-        </div>
-
         {/* Floating decorative orbs */}
         {[...Array(12)].map((_, i) => (
           <div
@@ -410,14 +399,9 @@ function RenderingPage() {
             <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight">
               TECHNICAL DOMINANCE
             </h2>
-            <p className="text-xl sm:text-2xl md:text-3xl text-violet-500 font-bold mt-2 uppercase tracking-wider">
+            <p className="text-xl sm:text-2xl md:text-3xl text-violet-500 font-bold mt-2 uppercase tracking-wider text-center">
               On Display
             </p>
-            <div className="flex items-center justify-center gap-3 mt-8">
-              <div className="h-px w-16 bg-gradient-to-r from-transparent to-violet-500/50" />
-              <div className="w-2 h-2 rounded-full bg-violet-500/60" />
-              <div className="h-px w-16 bg-gradient-to-l from-transparent to-violet-500/50" />
-            </div>
           </div>
 
           {/* Desktop Gallery — 8 cards, 4 rows */}
@@ -619,162 +603,18 @@ function RenderingPage() {
             </div>
           </div>
 
-          {/* ── Mobile Masonry Gallery ─────────────────────────────────────────── */}
+          {/* ── Mobile Creative Gallery ─────────────────────────────────────────── */}
           <div className="lg:hidden">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {/* Column A */}
-              <div className="flex flex-col gap-3">
-                {/* VIRTUAL PRODUCT SHOOT (carousel) */}
-                <div
-                  ref={(el) => { masonryRefs.current[0] = el; }}
-                  className="relative overflow-hidden rounded-2xl border border-white/10 aspect-[3/4]"
-                  style={{ background: '#6e8c6b' }}
-                >
-                  <img src={korloffImages[korloffIdx]} alt={showcaseItems[0].title}
-                    className="absolute inset-0 w-full h-full object-contain" loading="lazy" decoding="async" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-                  <button onClick={() => { pauseAndResume(korloffTimer, korloffResume, setKorloffIdx, korloffImages.length); setKorloffIdx(i => (i - 1 + korloffImages.length) % korloffImages.length); }}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-6 sm:h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transition-colors hover:bg-black/80">
-                    <ChevronLeft className="w-4 h-4 sm:w-3 sm:h-3" />
-                  </button>
-                  <button onClick={() => { pauseAndResume(korloffTimer, korloffResume, setKorloffIdx, korloffImages.length); setKorloffIdx(i => (i + 1) % korloffImages.length); }}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-6 sm:h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transition-colors hover:bg-black/80">
-                    <ChevronRight className="w-4 h-4 sm:w-3 sm:h-3" />
-                  </button>
-                  {/* Dot indicators */}
-                  <div className="absolute bottom-12 right-3 z-20 flex gap-1.5">
-                    {korloffImages.map((_, i) => (
-                      <div key={i} className="w-1.5 h-1.5 rounded-full transition-all duration-300"
-                        style={{ background: i === korloffIdx ? 'rgba(139,92,246,1)' : 'rgba(255,255,255,0.3)' }} />
-                    ))}
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-3">
-                    <span className="text-[10px] sm:text-[9px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[0].tag}</span>
-                    <h3 className="text-sm sm:text-[11px] font-black leading-tight text-white">{showcaseItems[0].title}</h3>
-                    <p className="text-white/40 text-[9px] sm:text-[8px] uppercase tracking-widest mt-1 italic">Concept ad by <span className="normal-case">sev</span>IT.</p>
-                  </div>
-                  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[0].glow}, transparent)` }} />
-                </div>
-
-                {/* ORIGAMI INTERIOR (idx 2) */}
-                <div
-                  ref={(el) => { masonryRefs.current[2] = el; }}
-                  className="relative overflow-hidden rounded-2xl bg-black/20 border border-white/10"
-                  style={{ aspectRatio: '3/4' }}
-                >
-                  <img src={showcaseItems[2].image} alt={showcaseItems[2].title}
-                    className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <span className="text-[11px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[2].tag}</span>
-                    <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[2].title}</h3>
-                  </div>
-                  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[2].glow}, transparent)` }} />
-                </div>
-
-                {/* TOM FORD (idx 5) */}
-                <div
-                  ref={(el) => { masonryRefs.current[5] = el; }}
-                  className="relative overflow-hidden rounded-2xl bg-black/20 border border-white/10"
-                  style={{ aspectRatio: '3/4' }}
-                >
-                  <img src={showcaseItems[5].image} alt={showcaseItems[5].title}
-                    className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <span className="text-[11px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[5].tag}</span>
-                    <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[5].title}</h3>
-                    <p className="text-white/40 text-[8px] uppercase tracking-widest mt-1 italic">Concept ad by <span className="normal-case">sev</span>IT.</p>
-                  </div>
-                  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[5].glow}, transparent)` }} />
-                </div>
-
-                {/* WATCH (idx 7) */}
-                <div
-                  ref={(el) => { masonryRefs.current[7] = el; }}
-                  className="relative overflow-hidden rounded-2xl bg-black/20 border border-white/10"
-                  style={{ aspectRatio: '4/5' }}
-                >
-                  <img src={showcaseItems[7].image} alt={showcaseItems[7].title}
-                    className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <span className="text-[11px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[7].tag}</span>
-                    <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[7].title}</h3>
-                  </div>
-                  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[7].glow}, transparent)` }} />
-                </div>
-              </div>
-
-              {/* Column B */}
-              <div className="flex flex-col gap-3 sm:mt-6">
-                {/* FRAGRANCE PERFECTION (carousel) */}
-                <div
-                  ref={(el) => { masonryRefs.current[1] = el; }}
-                  className="relative overflow-hidden rounded-2xl bg-indigo-500/10 border border-white/10"
-                  style={{ aspectRatio: '3/4' }}
-                >
-                  <img src={fragranceImages[fragranceIdx]} alt={showcaseItems[1].title}
-                    className="absolute inset-0 w-full h-full object-contain" loading="lazy" decoding="async" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                  <button onClick={() => { pauseAndResume(fragranceTimer, fragranceResume, setFragranceIdx, fragranceImages.length); setFragranceIdx(i => (i - 1 + fragranceImages.length) % fragranceImages.length); }}
-                    className="absolute left-1.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transition-colors hover:bg-black/80">
-                    <ChevronLeft className="w-3.5 h-3.5" />
-                  </button>
-                  <button onClick={() => { pauseAndResume(fragranceTimer, fragranceResume, setFragranceIdx, fragranceImages.length); setFragranceIdx(i => (i + 1) % fragranceImages.length); }}
-                    className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-6 sm:h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transition-colors hover:bg-black/80">
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                  <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <span className="text-[11px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[1].tag}</span>
-                    <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[1].title}</h3>
-                    <p className="text-white/40 text-[8px] uppercase tracking-widest mt-1 italic">Concept ad by <span className="normal-case">sev</span>IT.</p>
-                  </div>
-                  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[1].glow}, transparent)` }} />
-                </div>
-
-                {/* ELKADUWA SPRINGS (carousel) */}
-                <div
-                  ref={(el) => { masonryRefs.current[4] = el; }}
-                  className="relative overflow-hidden rounded-2xl bg-black/20 border border-white/10"
-                  style={{ aspectRatio: '3/4' }}
-                >
-                  <img src={elkaduwaImages[elkaduwaIdx]} alt={showcaseItems[4].title}
-                    className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                  <button onClick={() => { pauseAndResume(elkaduwaTimer, elkaduwaResume, setElkaduwaIdx, elkaduwaImages.length); setElkaduwaIdx(i => (i - 1 + elkaduwaImages.length) % elkaduwaImages.length); }}
-                    className="absolute left-1.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transition-colors hover:bg-black/80">
-                    <ChevronLeft className="w-3.5 h-3.5" />
-                  </button>
-                  <button onClick={() => { pauseAndResume(elkaduwaTimer, elkaduwaResume, setElkaduwaIdx, elkaduwaImages.length); setElkaduwaIdx(i => (i + 1) % elkaduwaImages.length); }}
-                    className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transition-colors hover:bg-black/80">
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                  <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <span className="text-[11px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[4].tag}</span>
-                    <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[4].title}</h3>
-                  </div>
-                  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[4].glow}, transparent)` }} />
-                </div>
-
-                {/* THE SCENT OF BERGAMOOD (idx 6) */}
-                <div
-                  ref={(el) => { masonryRefs.current[6] = el; }}
-                  className="relative overflow-hidden rounded-2xl bg-black/20 border border-white/10"
-                  style={{ aspectRatio: '3/4' }}
-                >
-                  <img src={showcaseItems[6].image} alt={showcaseItems[6].title}
-                    className="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <span className="text-[11px] uppercase tracking-widest text-violet-400 font-bold block mb-1">{showcaseItems[6].tag}</span>
-                    <h3 className="text-[11px] font-black leading-tight text-white">{showcaseItems[6].title}</h3>
-                    <p className="text-white/40 text-[8px] uppercase tracking-widest mt-1 italic">Concept ad by <span className="normal-case">sev</span>IT.</p>
-                  </div>
-                  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(to right, ${showcaseItems[6].glow}, transparent)` }} />
-                </div>
-              </div>
-            </div>
+            <MobileDeepExplorer 
+              items={showcaseItems.map(item => ({
+                id: item.id,
+                title: item.title,
+                tag: item.tag,
+                description: item.description,
+                image: item.image,
+                glow: item.glow
+              }))} 
+            />
           </div>
         </div>
 
@@ -850,10 +690,10 @@ function RenderingPage() {
               <Cpu className="w-3 h-3 text-violet-400" />
               <span className="text-xs uppercase tracking-[0.2em] text-white/40">Technical Stack</span>
             </span>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-center">
               THE RENDERING
             </h2>
-            <p className="text-xl sm:text-2xl md:text-3xl text-violet-500 font-bold mt-2 uppercase tracking-wider">
+            <p className="text-xl sm:text-2xl md:text-3xl text-violet-500 font-bold mt-2 uppercase tracking-wider text-center">
               Engineering Stack
             </p>
           </div>
@@ -888,28 +728,28 @@ function RenderingPage() {
       <section className="method-section relative py-24 md:py-32 px-6 lg:px-12 z-10 border-t border-white/10">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12 md:mb-16">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-4">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-4 text-center">
               WHY OUR RENDERS
             </h2>
-            <p className="text-2xl sm:text-3xl md:text-4xl text-violet-500 font-bold uppercase tracking-wider">
+            <p className="text-2xl sm:text-3xl md:text-4xl text-violet-500 font-bold uppercase tracking-wider text-center">
               LOOK "OVER-THE-TOP"
             </p>
           </div>
 
           <div className="text-center mb-14 md:mb-20">
-            <p className="text-lg sm:text-xl md:text-2xl text-white/70 leading-relaxed max-w-4xl mx-auto">
+            <p className="text-lg sm:text-xl md:text-2xl text-white/70 leading-relaxed max-w-4xl mx-auto text-center">
               Because we sweat the <span className="text-violet-500 font-bold">details</span>.
             </p>
-            <p className="text-white/50 leading-relaxed max-w-3xl mx-auto mt-6">
+            <p className="text-white/50 leading-relaxed max-w-3xl mx-auto mt-6 text-center">
               We don't just push a button and hope for the best. We meticulously craft every texture, light, and angle to make sure your product looks exactly how you want it to.
             </p>
-            <p className="text-white/50 leading-relaxed max-w-3xl mx-auto mt-4">
+            <p className="text-white/50 leading-relaxed max-w-3xl mx-auto mt-4 text-center">
               Behind the scenes, we keep our files clean and our processes tight. This means we can iterate quickly, hit your deadlines, and deliver image files that are ready to use everywhere—from your website to massive billboards.
             </p>
-            <p className="text-xl md:text-2xl font-bold text-white mt-8 uppercase tracking-wider">
+            <p className="text-xl md:text-2xl font-bold text-white mt-8 uppercase tracking-wider text-center">
               The result? Visuals that actually grab attention and drive sales—
             </p>
-            <p className="text-2xl md:text-3xl font-black text-violet-500 mt-4 uppercase tracking-widest">
+            <p className="text-2xl md:text-3xl font-black text-violet-500 mt-4 uppercase tracking-widest text-center">
               Without the massive photoshoot budget.
             </p>
           </div>
@@ -964,30 +804,33 @@ function RenderingPage() {
         `}</style>
 
         <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight mb-8">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight mb-8 text-center">
             READY TO STOP USING
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-purple-500">
               STOCK PHOTOS?
             </span>
           </h2>
 
-          <p className="text-base sm:text-lg md:text-xl text-white/60 leading-relaxed max-w-2xl mx-auto mb-6">
+          <p className="text-base sm:text-lg md:text-xl text-white/60 leading-relaxed max-w-2xl mx-auto mb-6 text-center">
             Your competitors are still shooting on white backgrounds.
             Your products deserve better. Your brand demands better.
           </p>
 
-          <p className="text-lg sm:text-xl md:text-2xl text-white font-bold mb-10 md:mb-12">
+          <p className="text-lg sm:text-xl md:text-2xl text-white font-bold mb-10 md:mb-12 text-center">
             It's time to <span className="text-violet-500">dominate</span>.
           </p>
 
-          <Link
-            to={{ pathname: '/', hash: '#chat' }}
-            className="inline-flex items-center gap-3 px-8 md:px-12 py-5 md:py-6 bg-violet-500 text-white rounded-full font-bold text-base md:text-xl uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300 group"
-          >            <span>Book Your Visual Strategy Session</span>
-            <ArrowRight className="w-5 md:w-6 h-5 md:h-6 group-hover:translate-x-1 transition-transform" />
-          </Link>
+          <div className="flex justify-center">
+            <Link
+              to={{ pathname: '/', hash: '#chat' }}
+              className="inline-flex items-center gap-3 px-8 md:px-12 py-5 md:py-6 bg-violet-500 text-white rounded-full font-bold text-base md:text-xl uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300 group"
+            >
+              <span>Book Your Visual Strategy Session</span>
+              <ArrowRight className="w-5 md:w-6 h-5 md:h-6 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
 
-          <p className="text-white/30 text-sm mt-8 uppercase tracking-widest">
+          <p className="text-white/30 text-sm mt-8 uppercase tracking-widest text-center">
             No commitment required. We'll analyze your current visual strategy and show you exactly
             where 3D renders and virtual ads can replace costly production.
           </p>
