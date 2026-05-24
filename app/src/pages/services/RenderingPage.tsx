@@ -5,7 +5,7 @@ import { ArrowRight, Box, Layers, Sparkles, Camera, Cpu, Globe, Play, Zap, Chevr
 import { Link } from 'react-router-dom';
 import MobileAccordionCards from '../../components/ui/MobileAccordionCards';
 import type { AccordionCardItem } from '../../components/ui/MobileAccordionCards';
-import MobileDeepExplorer from '../../components/ui/MobileDeepExplorer';
+import MobilePerspectiveGallery from '../../components/ui/MobilePerspectiveGallery';
 
 function useLazyVideo(src: string) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -217,7 +217,12 @@ function RenderingPage() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    const resize = () => { 
+      if (canvas) {
+        canvas.width = window.innerWidth; 
+        canvas.height = window.innerHeight; 
+      }
+    };
     resize();
     window.addEventListener('resize', resize);
 
@@ -323,35 +328,35 @@ function RenderingPage() {
       <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-0" />
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center justify-center px-6 lg:px-12 pt-28 pb-32 md:pt-32 md:pb-40 z-10">
+      <section className="relative min-h-screen flex items-center justify-center px-6 lg:px-12 pt-28 pb-32 md:pt-32 md:pb-40 z-10 text-center">
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 60%)' }} />
 
-        <div className="relative z-10 max-w-6xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-violet-500/10 border border-violet-500/30 rounded-full mb-8 md:mb-10">
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-violet-500/10 border border-violet-500/30 rounded-full mb-8 md:mb-10 mx-auto">
             <Layers className="w-4 h-4 text-violet-500" />
             <span className="text-xs uppercase tracking-[0.3em] text-violet-400">3D Render & Virtual Ads</span>
           </div>
 
-          <h1 className="text-5xl sm:text-7xl lg:text-9xl font-black leading-[0.85] tracking-tighter mb-8 md:mb-10">
+          <h1 className="text-5xl sm:text-7xl lg:text-9xl font-black leading-[0.85] tracking-tighter mb-8 md:mb-10 uppercase text-center">
             <span className="hero-line block opacity-0">REPLACE</span>
-            <span className="hero-line block text-transparent bg-clip-text bg-gradient-to-r from-violet-500 via-purple-500 to-violet-500 opacity-0">
+            <span className="hero-line block text-transparent bg-clip-text bg-gradient-to-r from-violet-500 via-purple-500 to-violet-500 opacity-0 text-center">
               REALITY.
             </span>
             <span className="hero-line block opacity-0">COMMAND</span>
-            <span className="hero-line block text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-violet-500 to-purple-500 opacity-0">
+            <span className="hero-line block text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-violet-500 to-purple-500 opacity-0 text-center">
               ATTENTION.
             </span>
           </h1>
 
-          <p className="hero-sub text-sm sm:text-base text-violet-300/80 font-semibold uppercase tracking-[0.2em] max-w-2xl mx-auto mb-5 opacity-0">
+          <p className="hero-sub text-sm sm:text-base text-violet-300/80 font-semibold uppercase tracking-[0.2em] max-w-2xl mx-auto mb-5 opacity-0 text-center">
             Studio-quality product photography and lifestyle ads. No camera. No studio. Fraction of the cost.
           </p>
 
-          <p className="hero-sub text-base sm:text-lg md:text-xl text-white/60 max-w-3xl mx-auto mb-10 md:mb-12 leading-relaxed opacity-0">
+          <p className="hero-sub text-base sm:text-lg md:text-xl text-white/60 max-w-3xl mx-auto mb-10 md:mb-12 leading-relaxed opacity-0 text-center text-center">
             We create photorealistic 3D visuals and AI-powered virtual ad campaigns that look indistinguishable from real photography — no studio, no crew, no scheduling. Show off your products from every angle, in any setting, before they even exist.
           </p>
 
-          <div className="hero-cta opacity-0">
+          <div className="hero-cta opacity-0 flex justify-center text-center">
             <Link
               to={{ pathname: '/', hash: '#chat' }}
               className="inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-violet-500 text-white rounded-full font-bold text-base md:text-lg uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300 group"
@@ -392,14 +397,14 @@ function RenderingPage() {
         <div className="max-w-7xl mx-auto relative z-10">
           {/* Section Header */}
           <div className="text-center mb-16 md:mb-24">
-            <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full mb-6">
+            <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full mb-6 mx-auto">
               <Sparkles className="w-3 h-3 text-violet-400" />
               <span className="text-xs uppercase tracking-[0.2em] text-white/40">Dimensional Exhibit</span>
             </span>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight uppercase text-center text-center">
               TECHNICAL DOMINANCE
             </h2>
-            <p className="text-xl sm:text-2xl md:text-3xl text-violet-500 font-bold mt-2 uppercase tracking-wider text-center">
+            <p className="text-xl sm:text-2xl md:text-3xl text-violet-500 font-bold mt-2 uppercase tracking-wider text-center text-center">
               On Display
             </p>
           </div>
@@ -442,9 +447,8 @@ function RenderingPage() {
                     <div className="w-1 h-7 rounded-full" style={{ background: showcaseItems[0].glow }} />
                     <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[0].tag}</span>
                   </div>
-                  <h3 className="text-2xl lg:text-3xl font-black tracking-tight mb-2 group-hover:text-violet-200 transition-colors">{showcaseItems[0].title}</h3>
+                  <h3 className="text-2xl lg:text-3xl font-black tracking-tight mb-2 group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[0].title}</h3>
                   <p className="text-white/50 text-sm leading-relaxed">{showcaseItems[0].description}</p>
-                  <p className="text-white/30 text-[10px] uppercase tracking-widest mt-2 italic">Concept ad created by <span className="normal-case">sev</span>IT.</p>
                 </div>
               </div>
 
@@ -481,8 +485,7 @@ function RenderingPage() {
                     <div className="w-1 h-6 rounded-full" style={{ background: showcaseItems[1].glow }} />
                     <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[1].tag}</span>
                   </div>
-                  <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[1].title}</h3>
-                  <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept ad created by <span className="normal-case">sev</span>IT.</p>
+                  <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[1].title}</h3>
                 </div>
               </div>
             </div>
@@ -507,7 +510,7 @@ function RenderingPage() {
                     <div className="w-1 h-5 rounded-full" style={{ background: showcaseItems[2].glow }} />
                     <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400">{showcaseItems[2].tag}</span>
                   </div>
-                  <h3 className="text-base font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[2].title}</h3>
+                  <h3 className="text-base font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[2].title}</h3>
                 </div>
               </div>
 
@@ -545,7 +548,7 @@ function RenderingPage() {
                     <div className="w-1 h-5 rounded-full" style={{ background: showcaseItems[4].glow }} />
                     <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400">{showcaseItems[4].tag}</span>
                   </div>
-                  <h3 className="text-base font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[4].title}</h3>
+                  <h3 className="text-base font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[4].title}</h3>
                 </div>
               </div>
             </div>
@@ -571,9 +574,7 @@ function RenderingPage() {
                       <div className="w-1 h-6 rounded-full" style={{ background: showcaseItems[idx].glow }} />
                       <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[idx].tag}</span>
                     </div>
-                    <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[idx].title}</h3>
-                    <p className="text-white/40 text-xs leading-relaxed mt-1">{showcaseItems[idx].description}</p>
-                    <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept ad created by <span className="normal-case">sev</span>IT.</p>
+                    <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[idx].title}</h3>
                   </div>
                 </div>
               ))}
@@ -592,20 +593,20 @@ function RenderingPage() {
                   loading="lazy" decoding="async" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
               </div>
-              <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10">
-                <div className="flex items-center gap-3 mb-3">
+              <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10 text-center sm:text-left">
+                <div className="flex items-center gap-3 mb-3 justify-center sm:justify-start">
                   <div className="w-1 h-8 rounded-full" style={{ background: showcaseItems[7].glow }} />
                   <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[7].tag}</span>
                 </div>
-                <h3 className="text-2xl lg:text-3xl font-black tracking-tight group-hover:text-violet-200 transition-colors">{showcaseItems[7].title}</h3>
-                <p className="text-white/40 text-sm leading-relaxed mt-2 max-w-lg">{showcaseItems[7].description}</p>
+                <h3 className="text-2xl lg:text-3xl font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[7].title}</h3>
+                <p className="text-white/40 text-sm leading-relaxed mt-2 max-w-lg mx-auto sm:mx-0">{showcaseItems[7].description}</p>
               </div>
             </div>
           </div>
 
           {/* ── Mobile Creative Gallery ─────────────────────────────────────────── */}
           <div className="lg:hidden">
-            <MobileDeepExplorer 
+            <MobilePerspectiveGallery 
               items={showcaseItems.map(item => ({
                 id: item.id,
                 title: item.title,
@@ -661,14 +662,14 @@ function RenderingPage() {
 
           {/* Floating centre label */}
           <div className="absolute inset-0 flex flex-col items-center justify-center z-10 text-center px-6">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-sm rounded-full mb-5 border border-white/10">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-sm rounded-full mb-5 border border-white/10 mx-auto">
               <Play className="w-3 h-3 text-violet-400" />
               <span className="text-xs uppercase tracking-[0.25em] text-white/50">Motion Showreel</span>
             </span>
-            <h2 className="text-4xl xs:text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter drop-shadow-2xl">
+            <h2 className="text-4xl xs:text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter drop-shadow-2xl uppercase text-center">
               SEE IT IN
             </h2>
-            <p className="text-3xl xs:text-4xl sm:text-5xl md:text-7xl font-black text-violet-400 uppercase tracking-wider drop-shadow-2xl">
+            <p className="text-3xl xs:text-4xl sm:text-5xl md:text-7xl font-black text-violet-400 uppercase tracking-wider drop-shadow-2xl text-center">
               MOTION
             </p>
           </div>
@@ -683,14 +684,14 @@ function RenderingPage() {
 
 
       {/* ── SERVICES SECTION ─────────────────────────────────────────────────── */}
-      <section className="services-section relative py-24 md:py-32 px-6 lg:px-12 z-10 border-t border-white/10">
+      <section className="services-section relative py-24 md:py-32 px-6 lg:px-12 z-10 border-t border-white/10 text-center">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-14 md:mb-20">
-            <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full mb-6">
+          <div className="mb-14 md:mb-20 text-center">
+            <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full mb-6 mx-auto">
               <Cpu className="w-3 h-3 text-violet-400" />
               <span className="text-xs uppercase tracking-[0.2em] text-white/40">Technical Stack</span>
             </span>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-center">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight uppercase text-center">
               THE RENDERING
             </h2>
             <p className="text-xl sm:text-2xl md:text-3xl text-violet-500 font-bold mt-2 uppercase tracking-wider text-center">
@@ -704,13 +705,13 @@ function RenderingPage() {
               const Icon = service.icon;
               return (
                 <div key={index} className="service-card group relative opacity-0 h-full">
-                  <div className="relative h-full p-8 lg:p-10 rounded-3xl bg-white/[0.02] border border-white/10 hover:border-violet-500/50 transition-all duration-500 overflow-hidden flex flex-col">
+                  <div className="relative h-full p-8 lg:p-10 rounded-3xl bg-white/[0.02] border border-white/10 hover:border-violet-500/50 transition-all duration-500 overflow-hidden flex flex-col text-center">
                     <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-violet-500/20 blur-3xl opacity-20 group-hover:opacity-40 transition-opacity" />
-                    <div className="relative w-16 h-16 rounded-2xl bg-violet-500/20 flex items-center justify-center mb-8 shrink-0">
+                    <div className="relative w-16 h-16 rounded-2xl bg-violet-500/20 flex items-center justify-center mb-8 shrink-0 mx-auto">
                       <Icon className="w-8 h-8 text-violet-500" />
                     </div>
                     <span className="text-xs uppercase tracking-[0.2em] text-violet-400 mb-4 block">{service.subtitle}</span>
-                    <h3 className="text-2xl lg:text-3xl font-black mb-6">{service.title}</h3>
+                    <h3 className="text-2xl lg:text-3xl font-black mb-6 uppercase">{service.title}</h3>
                     <div className="text-white/60 text-sm leading-relaxed whitespace-pre-line flex-1">{service.description}</div>
                     <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-violet-500 to-transparent" />
                   </div>
@@ -725,28 +726,28 @@ function RenderingPage() {
       </section>
 
       {/* ── METHODOLOGY ───────────────────────────────────────────────────────── */}
-      <section className="method-section relative py-24 md:py-32 px-6 lg:px-12 z-10 border-t border-white/10">
+      <section className="method-section relative py-24 md:py-32 px-6 lg:px-12 z-10 border-t border-white/10 text-center">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12 md:mb-16">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-4 text-center">
+          <div className="mb-12 md:mb-16">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-4 uppercase">
               WHY OUR RENDERS
             </h2>
-            <p className="text-2xl sm:text-3xl md:text-4xl text-violet-500 font-bold uppercase tracking-wider text-center">
+            <p className="text-2xl sm:text-3xl md:text-4xl text-violet-500 font-bold uppercase tracking-wider">
               LOOK "OVER-THE-TOP"
             </p>
           </div>
 
-          <div className="text-center mb-14 md:mb-20">
-            <p className="text-lg sm:text-xl md:text-2xl text-white/70 leading-relaxed max-w-4xl mx-auto text-center">
+          <div className="mb-14 md:mb-20">
+            <p className="text-lg sm:text-xl md:text-2xl text-white/70 leading-relaxed max-w-4xl mx-auto">
               Because we sweat the <span className="text-violet-500 font-bold">details</span>.
             </p>
-            <p className="text-white/50 leading-relaxed max-w-3xl mx-auto mt-6 text-center">
+            <p className="text-white/50 leading-relaxed max-w-3xl mx-auto mt-6">
               We don't just push a button and hope for the best. We meticulously craft every texture, light, and angle to make sure your product looks exactly how you want it to.
             </p>
-            <p className="text-white/50 leading-relaxed max-w-3xl mx-auto mt-4 text-center">
+            <p className="text-white/50 leading-relaxed max-w-3xl mx-auto mt-4">
               Behind the scenes, we keep our files clean and our processes tight. This means we can iterate quickly, hit your deadlines, and deliver image files that are ready to use everywhere—from your website to massive billboards.
             </p>
-            <p className="text-xl md:text-2xl font-bold text-white mt-8 uppercase tracking-wider text-center">
+            <p className="text-xl md:text-2xl font-bold text-white mt-8 uppercase tracking-wider">
               The result? Visuals that actually grab attention and drive sales—
             </p>
             <p className="text-2xl md:text-3xl font-black text-violet-500 mt-4 uppercase tracking-widest text-center">
@@ -755,7 +756,7 @@ function RenderingPage() {
           </div>
 
           {/* Desktop Grid */}
-          <div className="hidden lg:grid grid-cols-3 gap-8">
+          <div className="hidden lg:grid grid-cols-3 gap-8 text-center">
             {methodologyPoints.map((point, index) => {
               const Icon = point.icon;
               return (
@@ -775,7 +776,7 @@ function RenderingPage() {
             {methodologyPoints.map((point, index) => {
               const Icon = point.icon;
               return (
-                <div key={index} className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.03] border border-white/10">
+                <div key={index} className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.03] border border-white/10 text-left">
                   <div className="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center shrink-0">
                     <Icon className="w-6 h-6 text-violet-500" />
                   </div>
@@ -791,7 +792,7 @@ function RenderingPage() {
       </section>
 
       {/* ── FINAL CTA ─────────────────────────────────────────────────────────── */}
-      <section className="relative py-24 md:py-32 px-6 lg:px-12 z-10 border-t border-white/10 overflow-hidden">
+      <section className="relative py-24 md:py-32 px-6 lg:px-12 z-10 border-t border-white/10 overflow-hidden text-center">
         <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] pointer-events-none"
           style={{ background: 'radial-gradient(ellipse at center, rgba(139, 92, 246, 0.25) 0%, transparent 60%)', animation: 'pulse 4s ease-in-out infinite' }}
@@ -803,8 +804,8 @@ function RenderingPage() {
           }
         `}</style>
 
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight mb-8 text-center">
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight mb-8 uppercase text-center">
             READY TO STOP USING
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-purple-500">
               STOCK PHOTOS?
