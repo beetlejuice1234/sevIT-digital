@@ -1,27 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 
-function useLazyVideo(src: string) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  useEffect(() => {
-    const el = videoRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !el.src) {
-          el.src = src;
-          el.load();
-          el.play().catch(() => {});
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [src]);
-  return videoRef;
-}
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, TrendingUp, Search, Share2, Target, Zap, MousePointer, BarChart2, Layers } from 'lucide-react';
@@ -126,9 +105,6 @@ function AdvertisingPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
   const isVisibleRef = useRef(true);
-
-  const bergamoodRef = useLazyVideo('/images/renders/bergamood.mov');
-  const chocolateRef = useLazyVideo('/images/renders/chocolate.mov');
 
   // Starfield background
   useEffect(() => {
@@ -341,10 +317,13 @@ function AdvertisingPage() {
         </div>
       </section>
 
-      {/* ── VIDEO SHOWCASE ───────────────────────────────────────────────────── */}
-      <section className="video-showcase-section relative py-20 md:py-24 px-6 lg:px-12 z-10 border-t border-white/10">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10 md:mb-14">
+      {/* ── VIDEO SHOWCASE — Cinematic Theater ─────────────────────────────── */}
+      <section className="video-showcase-section relative py-20 md:py-28 px-0 md:px-6 lg:px-12 z-10 border-t border-white/10 overflow-hidden">
+        {/* Background ambient glow */}
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(239, 68, 68, 0.08) 0%, transparent 70%)' }} />
+
+        <div className="max-w-6xl mx-auto relative z-10">
+          <div className="text-center mb-10 md:mb-16 px-6 md:px-0">
             <span className="text-sm text-red-400 uppercase tracking-wider">Our Work</span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mt-2">
               Ads We've Built.
@@ -357,62 +336,122 @@ function AdvertisingPage() {
             </p>
           </div>
 
-          <div className="flex flex-col md:flex-row items-start gap-5 lg:gap-6">
-            {/* Bergamood */}
+          {/* ── Desktop: Cinematic staggered layout ── */}
+          <div className="hidden md:block space-y-6">
+            {/* Hero spotlight — Bergamood */}
             <div
-              className="video-card group relative w-full md:flex-1 opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500 bg-black"
-              onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 55px rgba(239,68,68,0.35)')}
+              className="video-card group relative opacity-0 rounded-3xl overflow-hidden border border-white/10 transition-all duration-500 bg-black"
+              onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 80px rgba(239,68,68,0.3)')}
               onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
             >
-              <div className="aspect-[21/9] relative overflow-hidden bg-black">
-                <video 
-                  ref={bergamoodRef} 
-                  className="absolute inset-0 w-full h-full object-cover" 
-                  muted 
-                  loop 
-                  playsInline 
-                  autoPlay
+              <div className="aspect-[21/9] relative overflow-hidden">
+                <video
+                  src="/images/renders/bergamood.mov"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  muted loop playsInline autoPlay
                   poster="/images/posters/bergamood-poster.webp"
-                  preload="metadata" 
+                  preload="auto"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/5 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-black/60 to-transparent" />
+                <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-black/60 to-transparent" />
               </div>
-              <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-1 h-5 rounded-full bg-red-500/80" />
+              {/* Floating center title */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
+                <div className="px-4 py-2 bg-black/40 backdrop-blur-md rounded-full border border-white/10 mb-4">
                   <span className="text-[10px] uppercase tracking-[0.3em] text-red-400 font-medium">Fragrance • Lifestyle</span>
                 </div>
-                <h3 className="text-lg md:text-xl font-black tracking-tight group-hover:text-red-200 transition-colors">THE SCENT OF BERGAMOOD</h3>
-                <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept ad created by <span className="normal-case">sev</span>IT.</p>
+                <h3 className="text-4xl lg:text-5xl font-black tracking-tighter text-white drop-shadow-2xl uppercase">BERGAMOOD</h3>
+                <p className="text-lg text-white/40 font-medium mt-1">Concept Ad</p>
+              </div>
+              {/* Bottom info bar */}
+              <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-medium">Playing • 00:30</span>
+                </div>
+                <p className="text-white/25 text-[10px] uppercase tracking-widest italic">Concept ad created by <span className="normal-case">sev</span>IT.</p>
               </div>
             </div>
 
-            {/* Chocolate */}
-            <div
-              className="video-card group relative w-full md:flex-1 opacity-0 md:mt-10 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500 bg-black"
-              onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 55px rgba(249,115,22,0.35)')}
-              onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
-            >
-              <div className="aspect-video relative overflow-hidden">
-                <video 
-                  ref={chocolateRef} 
-                  className="absolute inset-0 w-full h-full object-cover" 
-                  muted 
-                  loop 
-                  playsInline 
-                  autoPlay
-                  poster="/images/posters/chocolate-poster.webp"
-                  preload="metadata" 
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/5 to-transparent" />
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-1 h-5 rounded-full bg-orange-500/80" />
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-orange-400 font-medium">Food & Beverage • Product</span>
+            {/* Offset card — Sev's Chocolà */}
+            <div className="flex justify-end">
+              <div
+                className="video-card group relative w-[75%] opacity-0 rounded-3xl overflow-hidden border border-white/10 transition-all duration-500 bg-black -mt-8"
+                style={{ transform: 'rotate(-0.5deg)' }}
+                onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 60px rgba(249,115,22,0.3)')}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; }}
+              >
+                <div className="aspect-video relative overflow-hidden">
+                  <video
+                    src="/images/renders/chocolate.mov"
+                    className="absolute inset-0 w-full h-full object-cover"
+                    muted loop playsInline autoPlay
+                    poster="/images/posters/chocolate-poster.webp"
+                    preload="auto"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/15 to-transparent" />
                 </div>
-                <h3 className="text-lg md:text-xl font-black tracking-tight group-hover:text-orange-200 transition-colors">CHOCOLATE</h3>
-                <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept ad created by <span className="normal-case">sev</span>IT.</p>
+                {/* Bottom overlay */}
+                <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-1 h-5 rounded-full bg-orange-500/80" />
+                      <span className="text-[10px] uppercase tracking-[0.3em] text-orange-400 font-medium">Food & Beverage • Product</span>
+                    </div>
+                    <h3 className="text-2xl font-black tracking-tight group-hover:text-orange-200 transition-colors uppercase">SEV'S CHOCOLÀ</h3>
+                  </div>
+                  <p className="text-white/25 text-[10px] uppercase tracking-widest italic">Concept ad created by <span className="normal-case">sev</span>IT.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Mobile: Full-bleed cards — text at bottom only ── */}
+          <div className="md:hidden space-y-4">
+            {/* Bergamood — full bleed */}
+            <div className="video-card group relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] opacity-0 overflow-hidden bg-black">
+              <div className="aspect-[16/10] relative overflow-hidden">
+                <video
+                  src="/images/renders/bergamood.mov"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  muted loop playsInline autoPlay
+                  poster="/images/posters/bergamood-poster.webp"
+                  preload="auto"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+              </div>
+              {/* Bottom-only overlay — no center text blocking the ad */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                  <span className="text-[8px] uppercase tracking-widest text-red-400/70">Fragrance • Lifestyle</span>
+                </div>
+                <h3 className="text-xl font-black tracking-tight text-white uppercase">BERGAMOOD</h3>
+                <p className="text-white/20 text-[8px] uppercase tracking-widest mt-1 italic">Concept ad by <span className="normal-case">sev</span>IT</p>
+              </div>
+            </div>
+
+            {/* Sev's Chocolà — full bleed */}
+            <div className="video-card group relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] opacity-0 overflow-hidden bg-black">
+              <div className="aspect-video relative overflow-hidden">
+                <video
+                  src="/images/renders/chocolate.mov"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  muted loop playsInline autoPlay
+                  poster="/images/posters/chocolate-poster.webp"
+                  preload="auto"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+              </div>
+              {/* Bottom-only overlay — no center text blocking the ad */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+                  <span className="text-[8px] uppercase tracking-widest text-orange-400/70">Food & Beverage • Product</span>
+                </div>
+                <h3 className="text-xl font-black tracking-tight text-white uppercase">SEV'S CHOCOLÀ</h3>
+                <p className="text-white/20 text-[8px] uppercase tracking-widest mt-1 italic">Concept ad by <span className="normal-case">sev</span>IT</p>
               </div>
             </div>
           </div>

@@ -108,7 +108,7 @@ const showcaseItems = [
   },
   {
     id: 6,
-    title: 'TOM FORD — LOST CHERRY',
+    title: 'LUXURY FRAGRANCE — CONCEPT',
     tag: 'Luxury • Mood',
     description: 'Warm ambient storytelling with reflective surfaces and botanical elements.',
     images: [
@@ -121,7 +121,7 @@ const showcaseItems = [
   },
   {
     id: 7,
-    title: 'THE SCENT OF BERGAMOOD',
+    title: 'BERGAMOOD — CONCEPT AD',
     tag: 'Studio • Dramatic',
     description: 'Dark moody product photography with atmospheric smoke and citrus elements.',
     images: [
@@ -474,6 +474,7 @@ function RenderingPage() {
                     <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[0].tag}</span>
                   </div>
                   <h3 className="text-2xl lg:text-3xl font-black tracking-tight mb-2 group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[0].title}</h3>
+                  <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
                   <p className="text-white/50 text-sm leading-relaxed">{showcaseItems[0].description}</p>
                 </div>
               </div>
@@ -512,6 +513,7 @@ function RenderingPage() {
                     <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[1].tag}</span>
                   </div>
                   <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase text-center text-center">{showcaseItems[1].title}</h3>
+                  <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
                 </div>
               </div>
             </div>
@@ -537,6 +539,7 @@ function RenderingPage() {
                     <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400">{showcaseItems[2].tag}</span>
                   </div>
                   <h3 className="text-base font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase text-center text-center">{showcaseItems[2].title}</h3>
+                  <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
                 </div>
               </div>
 
@@ -575,6 +578,7 @@ function RenderingPage() {
                     <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400">{showcaseItems[4].tag}</span>
                   </div>
                   <h3 className="text-base font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase text-center text-center">{showcaseItems[4].title}</h3>
+                  <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
                 </div>
               </div>
             </div>
@@ -601,6 +605,7 @@ function RenderingPage() {
                       <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[idx].tag}</span>
                     </div>
                     <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase text-center text-center">{showcaseItems[idx].title}</h3>
+                    <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
                   </div>
                 </div>
               ))}
@@ -625,6 +630,7 @@ function RenderingPage() {
                   <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[7].tag}</span>
                 </div>
                 <h3 className="text-2xl lg:text-3xl font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase text-center text-center">{showcaseItems[7].title}</h3>
+                <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
                 <p className="text-white/40 text-sm leading-relaxed mt-2 max-w-lg mx-auto sm:mx-0 text-center text-center">
                   {showcaseItems[7].description}
                 </p>

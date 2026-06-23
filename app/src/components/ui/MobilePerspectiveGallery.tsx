@@ -1,7 +1,5 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import type { PanInfo } from 'framer-motion';
-import { Cpu, Zap, Target, MousePointer2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 export interface PerspectiveProject {
   id: number;
@@ -16,193 +14,111 @@ interface Props {
   items: PerspectiveProject[];
 }
 
-/**
- * Advanced Interactive 3D Exhibit
- * 
- * Cinematic 82vh showcase with:
- * - Auto-cycle projects (Autonomous Sweep)
- * - Tap-to-cycle project images (Angle Switch)
- * - Technical HUD with rolling status hints
- */
-export default function MobilePerspectiveGallery({ items }: Props) {
-  const [index, setIndex] = useState(0);
-  const [imgIndex, setImgIndex] = useState(0);
-  const [statusIdx, setStatusIdx] = useState(0);
-  const [isUserInteracting, setIsUserInteracting] = useState(false);
-  
-  const x = useMotionValue(0);
-  const rotateY = useTransform(x, [-200, 0, 200], [45, 0, -45]);
-  const autoPlayRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const activeItem = items[index];
-  
-  const statusHints = [
-    "SYSTEM_STATUS: NOMINAL",
-    "G_INPUT: SWIPE_TO_NAVIGATE",
-    "G_INPUT: TAP_RENDER_FOR_ANGLES",
-    "HUD_READY: EXHIBIT_ACTIVE",
-    "PBR_ENGINE: RESOLVED_4K"
-  ];
-
-  const startAutoPlay = useCallback(() => {
-    if (autoPlayRef.current) clearInterval(autoPlayRef.current);
-    autoPlayRef.current = setInterval(() => {
-      if (!isUserInteracting) {
-        setIndex((prev) => (prev + 1) % items.length);
-        setImgIndex(0);
-      }
-    }, 6000);
-  }, [items.length, isUserInteracting]);
+function AutoCycleImage({ images, alt, glow }: { images: string[]; alt: string; glow: string }) {
+  const [idx, setIdx] = useState(0);
 
   useEffect(() => {
-    startAutoPlay();
-    return () => { if (autoPlayRef.current) clearInterval(autoPlayRef.current); };
-  }, [startAutoPlay]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setStatusIdx((prev) => (prev + 1) % statusHints.length);
-    }, 3000);
+    if (images.length <= 1) return;
+    const timer = setInterval(() => setIdx(prev => (prev + 1) % images.length), 3000);
     return () => clearInterval(timer);
-  }, []);
-
-  const pauseAutoPlay = () => {
-    setIsUserInteracting(true);
-    if (autoPlayRef.current) clearInterval(autoPlayRef.current);
-    setTimeout(() => setIsUserInteracting(false), 10000);
-  };
-
-  const handleDragEnd = (_: any, info: PanInfo) => {
-    pauseAutoPlay();
-    if (info.offset.x < -100 && index < items.length - 1) {
-      setIndex(index + 1);
-      setImgIndex(0);
-    } else if (info.offset.x > 100 && index > 0) {
-      setIndex(index - 1);
-      setImgIndex(0);
-    }
-    x.set(0);
-  };
-
-  const cycleImage = (e: React.MouseEvent | React.TouchEvent) => {
-    e.stopPropagation();
-    pauseAutoPlay();
-    setImgIndex((prev) => (prev + 1) % activeItem.images.length);
-  };
+  }, [images.length]);
 
   return (
-    <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] h-[82vh] flex flex-col items-center justify-center overflow-hidden bg-[#050505] mt-2 mb-12 select-none">
-      
-      <div className="absolute inset-0 pointer-events-none">
-        <motion.div 
-          animate={{ background: `radial-gradient(circle at 50% 40%, ${activeItem.glow} 0%, transparent 85%)` }}
-          transition={{ duration: 1.2 }}
-          className="absolute inset-0 opacity-15"
+    <div className="relative w-full h-full overflow-hidden">
+      {images.map((src, i) => (
+        <img
+          key={src}
+          src={src}
+          alt={alt}
+          loading="lazy"
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+            i === idx ? 'opacity-100' : 'opacity-0'
+          }`}
         />
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 mix-blend-overlay" />
-        <div className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] select-none">
-          <span className="text-[35vh] font-black leading-none">0{index + 1}</span>
-        </div>
-      </div>
-
-      <div className="relative z-10 w-full flex flex-col items-center justify-center perspective-[1500px]">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={`${activeItem.id}-${imgIndex}`}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            onDragEnd={handleDragEnd}
-            onClick={cycleImage}
-            initial={{ opacity: 0, scale: 0.85, rotateY: -25, z: -300 }}
-            animate={{ opacity: 1, scale: 1, rotateY: 0, z: 0 }}
-            exit={{ opacity: 0, scale: 1.1, rotateY: 25, z: 300 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 120 }}
-            className="relative w-[82%] max-w-[340px] aspect-[3/4.2] rounded-[2rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.8)] border border-white/15 touch-none active:cursor-grabbing group"
-            style={{ x, rotateY }}
-          >
-            <img 
-              src={activeItem.images[imgIndex]} 
-              alt={activeItem.title}
-              className="w-full h-full object-cover pointer-events-none"
+      ))}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-1" style={{ background: glow }} />
+      {images.length > 1 && (
+        <div className="absolute top-4 right-4 flex gap-1.5">
+          {images.map((_, i) => (
+            <div
+              key={i}
+              className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                i === idx ? 'bg-white scale-125' : 'bg-white/25'
+              }`}
             />
-            <div className="absolute inset-0 bg-gradient-to-tr from-black/80 via-transparent to-white/5 pointer-events-none" />
-            
-            {activeItem.images.length > 1 && (
-              <div className="absolute top-6 right-6 flex gap-1">
-                {activeItem.images.map((_, i) => (
-                  <div key={i} className={`h-1 rounded-full transition-all duration-300 ${i === imgIndex ? 'w-4 bg-white' : 'w-1 bg-white/20'}`} />
-                ))}
-              </div>
-            )}
-            <div className="absolute top-0 left-0 right-0 h-1.5" style={{ background: activeItem.glow }} />
-          </motion.div>
-        </AnimatePresence>
-        
-        {!isUserInteracting && (
-           <motion.div 
-             animate={{ opacity: [0, 1, 0], y: [10, 0, 10] }}
-             transition={{ duration: 3, repeat: Infinity }}
-             className="mt-6 flex items-center gap-2 text-white/20"
-           >
-             <MousePointer2 className="w-3 h-3" />
-             <span className="text-[8px] uppercase tracking-[0.3em]">Interact to Explore</span>
-           </motion.div>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
-      <div className="absolute bottom-10 left-0 right-0 px-8 z-20 pointer-events-none text-center">
-        <div className="mb-4 overflow-hidden h-4 flex items-center justify-center">
-          <AnimatePresence mode="wait">
-            <motion.span
-              key={statusHints[statusIdx]}
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -20, opacity: 0 }}
-              className="text-[7px] font-mono tracking-[0.5em] text-violet-500/60 uppercase"
+export default function MobilePerspectiveGallery({ items }: Props) {
+  return (
+    <div className="space-y-4">
+      {items.map((item, i) => {
+        const isFullWidth = i === 0 || i === 3 || i === 4 || i === 7;
+        const isPairStart = i === 1 || i === 5;
+        const isPairEnd = i === 2 || i === 6;
+
+        if (isPairEnd) return null;
+
+        if (isPairStart && items[i + 1]) {
+          const item2 = items[i + 1];
+          return (
+            <div key={item.id} className="grid grid-cols-2 gap-3">
+              {[item, item2].map((proj) => (
+                <motion.div
+                  key={proj.id}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-50px' }}
+                  transition={{ duration: 0.6, ease: 'easeOut' }}
+                  className="group relative rounded-2xl overflow-hidden border border-white/10 bg-black"
+                >
+                  <div className="aspect-[3/4] relative">
+                    <AutoCycleImage images={proj.images} alt={proj.title} glow={proj.glow} />
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                    <span className="text-[8px] uppercase tracking-[0.3em] text-violet-400 font-medium block mb-1">{proj.tag}</span>
+                    <h3 className="text-xs font-black tracking-tight uppercase leading-tight">{proj.title}</h3>
+                    <p className="text-white/25 text-[7px] uppercase tracking-widest mt-1 italic">Concept by <span className="normal-case">sev</span>IT</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          );
+        }
+
+        if (isFullWidth) {
+          return (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.7, ease: 'easeOut' }}
+              className="group relative rounded-2xl overflow-hidden border border-white/10 bg-black"
             >
-              {statusHints[statusIdx]}
-            </motion.span>
-          </AnimatePresence>
-        </div>
+              <div className={`${i === 7 ? 'aspect-[16/9]' : 'aspect-[4/3]'} relative`}>
+                <AutoCycleImage images={item.images} alt={item.title} glow={item.glow} />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-1 h-5 rounded-full" style={{ background: item.glow }} />
+                  <span className="text-[9px] uppercase tracking-[0.3em] text-violet-400 font-medium">{item.tag}</span>
+                </div>
+                <h3 className="text-lg font-black tracking-tight uppercase">{item.title}</h3>
+                <p className="text-white/40 text-xs leading-relaxed mt-1.5 line-clamp-2">{item.description}</p>
+                <p className="text-white/25 text-[8px] uppercase tracking-widest mt-2 italic">Concept visualization by <span className="normal-case">sev</span>IT</p>
+              </div>
+            </motion.div>
+          );
+        }
 
-        <span className="text-[10px] uppercase tracking-[0.4em] text-violet-400 font-black mb-3 block">
-          {activeItem.tag}
-        </span>
-        <h3 className="text-3xl font-black tracking-tighter text-white uppercase leading-[0.9] mb-4">
-          {activeItem.title}
-        </h3>
-        
-        <div className="flex items-center justify-center gap-4 mt-8">
-           <div className="flex flex-col items-center gap-1.5">
-              <Cpu className="w-3.5 h-3.5 text-white/10" />
-              <span className="text-[7px] text-white/30 font-mono tracking-widest uppercase">PHYSICAL_SHDR</span>
-           </div>
-           <div className="h-8 w-px bg-white/5" />
-           <div className="flex flex-col items-center gap-1.5">
-              <Target className="w-3.5 h-3.5 text-white/10" />
-              <span className="text-[7px] text-white/30 font-mono tracking-widest uppercase">PBR_CAMERA</span>
-           </div>
-           <div className="h-8 w-px bg-white/5" />
-           <div className="flex flex-col items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-white/10" />
-              <span className="text-[7px] text-white/30 font-mono tracking-widest uppercase">UNRL_LUMEN</span>
-           </div>
-        </div>
-      </div>
-
-      <div className="absolute bottom-6 flex gap-1 items-center">
-        {items.map((_, i) => (
-          <motion.div
-            key={i}
-            animate={{ 
-              width: i === index ? 24 : 4,
-              opacity: i === index ? 1 : 0.15,
-              backgroundColor: i === index ? activeItem.glow : 'rgba(255,255,255,1)'
-            }}
-            className="h-1 rounded-full"
-          />
-        ))}
-      </div>
+        return null;
+      })}
     </div>
   );
 }
