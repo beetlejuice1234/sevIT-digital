@@ -77,7 +77,7 @@ export default function MobilePerspectiveGallery({ items }: Props) {
                   transition={{ duration: 0.6, ease: 'easeOut' }}
                   className="group relative rounded-2xl overflow-hidden border border-white/10 bg-black"
                 >
-                  <div className="aspect-[3/4] relative">
+                  <div className="relative w-full" style={{ aspectRatio: '2/3' }}>
                     <AutoCycleImage images={proj.images} alt={proj.title} glow={proj.glow} />
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-3">
@@ -101,7 +101,10 @@ export default function MobilePerspectiveGallery({ items }: Props) {
               transition={{ duration: 0.7, ease: 'easeOut' }}
               className="group relative rounded-2xl overflow-hidden border border-white/10 bg-black"
             >
-              <div className={`${i === 7 ? 'aspect-[16/9]' : 'aspect-[4/3]'} relative`}>
+              <div 
+                className="relative w-full" 
+                style={{ aspectRatio: i === 7 ? '4/3' : (i === 0 || i === 3 || i === 4 ? '3/4' : '4/3') }}
+              >
                 <AutoCycleImage images={item.images} alt={item.title} glow={item.glow} />
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-5">
