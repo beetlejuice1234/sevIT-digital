@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Mic, Send, Bot, Sparkles, Cpu, MessageSquare, Zap, Volume2, VolumeX, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import MobileAccordionCards from '../../components/ui/MobileAccordionCards';
 import type { AccordionCardItem } from '../../components/ui/MobileAccordionCards';
 import MobileTimeline from '../../components/ui/MobileTimeline';
@@ -427,57 +428,79 @@ function JarvisAI({ initialMessage }: { initialMessage?: string | null }) {
           {/* Messages */}
           <div
             id="chat-messages"
-            className="h-48 lg:h-64 overflow-y-auto space-y-3 mb-4 pr-2"
+            className="h-48 lg:h-64 overflow-y-auto space-y-3 mb-4 pr-2 scroll-smooth"
           >
-            {messages.map((msg, i) => (
-              <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div
-                  className={`max-w-[85%] px-3 lg:px-4 py-2.5 lg:py-3 rounded-2xl ${
-                    msg.role === 'user'
-                      ? 'bg-cyan-500 text-white rounded-br-md'
-                      : 'bg-white/10 text-white rounded-bl-md border border-white/10'
-                  }`}
+            <AnimatePresence initial={false}>
+              {messages.map((msg, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 12, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <p className="text-sm leading-relaxed">{msg.text}</p>
-                </div>
-              </div>
-            ))}
-            {isThinking && (
-              <div className="flex justify-start">
-                <div className="bg-white/10 border border-white/10 px-4 py-3 rounded-2xl rounded-bl-md">
-                  <div className="flex gap-1">
-                    <span className="w-2 h-2 bg-white/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-2 h-2 bg-white/50 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-2 h-2 bg-white/50 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <div
+                    className={`max-w-[85%] px-3 lg:px-4 py-2.5 lg:py-3 rounded-2xl ${
+                      msg.role === 'user'
+                        ? 'bg-cyan-500 text-white rounded-br-md'
+                        : 'bg-white/10 text-white rounded-bl-md border border-white/10'
+                    }`}
+                  >
+                    <p className="text-sm leading-relaxed">{msg.text}</p>
                   </div>
-                </div>
-              </div>
-            )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+            <AnimatePresence>
+              {isThinking && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="flex justify-start"
+                >
+                  <div className="bg-white/10 border border-white/10 px-4 py-3 rounded-2xl rounded-bl-md">
+                    <div className="flex gap-1">
+                      <span className="w-2 h-2 bg-white/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <span className="w-2 h-2 bg-white/50 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <span className="w-2 h-2 bg-white/50 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Input */}
           <div className="flex items-center gap-2 lg:gap-3">
-            <input
-              type="text"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Type your question..."
-              className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2.5 lg:px-5 lg:py-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-cyan-500/50"
-            />
-            <button
+            <div className="flex-1 relative flex items-center">
+              <input
+                type="text"
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                placeholder="Type your question..."
+                className="w-full bg-white/5 border border-white/10 rounded-full px-4 py-2.5 lg:px-5 lg:py-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-cyan-500/50 transition-all duration-300 focus:bg-white/[0.08] focus:shadow-[0_0_20px_rgba(6,182,212,0.15)]"
+              />
+            </div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={handleSend}
               disabled={!inputText.trim() || isThinking}
               className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-cyan-500 flex items-center justify-center disabled:opacity-50 hover:bg-cyan-600 transition-colors shrink-0"
             >
               {isThinking ? <Loader2 className="w-4 h-4 lg:w-5 lg:h-5 text-white animate-spin" /> : <Send className="w-4 h-4 lg:w-5 lg:h-5 text-white" />}
-            </button>
-            <button
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setSoundEnabled(!soundEnabled)}
               className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors shrink-0"
             >
               {soundEnabled ? <Volume2 className="w-4 h-4 lg:w-5 lg:h-5 text-white/50" /> : <VolumeX className="w-4 h-4 lg:w-5 lg:h-5 text-white/50" />}
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>
