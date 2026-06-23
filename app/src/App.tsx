@@ -2,6 +2,7 @@ import { useState, useEffect, Suspense, lazy, useRef } from 'react';
 import { HashRouter, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Lenis from 'lenis';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -61,20 +62,32 @@ function ScrollRestoration() {
         const id = hash.replace('#', '');
         const element = document.getElementById(id);
         if (element) {
-          const y = window.scrollY + element.getBoundingClientRect().top - 80;
-          window.scrollTo({ top: y, behavior: 'smooth' });
+          if ((window as any).lenis) {
+            (window as any).lenis.scrollTo(element, { offset: -80, immediate: true });
+          } else {
+            const y = window.scrollY + element.getBoundingClientRect().top - 80;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+          }
         }
       }, 100);
     } else if (isHomePage && isPopNavigation) {
       // BACK button to home - restore position
       const savedY = savedPositionsRef.current['/'] || 0;
       setTimeout(() => {
-        window.scrollTo({ top: savedY, behavior: 'instant' });
+        if ((window as any).lenis) {
+          (window as any).lenis.scrollTo(savedY, { immediate: true });
+        } else {
+          window.scrollTo({ top: savedY, behavior: 'instant' });
+        }
       }, 50);
     } else {
       // All other navigation (forward, direct link click) - go to top
       setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'instant' });
+        if ((window as any).lenis) {
+          (window as any).lenis.scrollTo(0, { immediate: true });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        }
       }, 50);
     }
   }, [pathname, hash, navigationType]);
@@ -128,8 +141,29 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Setup smooth scroll behavior for anchor links only
-    document.documentElement.style.scrollBehavior = 'smooth';
+    // Setup Lenis smooth scroll
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Custom exponential easeOut
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1.0,
+      touchMultiplier: 1.5, // Highly responsive touch scrolling
+    });
+
+    // Synchronize Lenis scroll updates with GSAP ScrollTrigger
+    lenis.on('scroll', ScrollTrigger.update);
+
+    // Sync animation loop with GSAP ticker
+    const tickHandler = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+    gsap.ticker.add(tickHandler);
+    gsap.ticker.lagSmoothing(0);
+
+    // Bind to window to allow interaction from scroll restorer and navigation click handlers
+    (window as any).lenis = lenis;
 
     // Refresh ScrollTrigger on resize - debounced
     let resizeTimeout: ReturnType<typeof setTimeout>;
@@ -143,6 +177,8 @@ function App() {
     window.addEventListener('resize', handleResize, { passive: true });
 
     return () => {
+      lenis.destroy();
+      gsap.ticker.remove(tickHandler);
       window.removeEventListener('resize', handleResize);
       clearTimeout(resizeTimeout);
     };
