@@ -4,6 +4,7 @@ interface LazyImageProps {
   src: string;
   alt: string;
   className?: string;
+  objectClass?: string;
   placeholderColor?: string;
   loading?: 'eager' | 'lazy';
   onLoad?: () => void;
@@ -20,6 +21,7 @@ const LazyImage = memo(function LazyImage({
   src,
   alt,
   className = '',
+  objectClass = 'object-cover',
   placeholderColor = '#0a0a0a',
   loading = 'lazy',
   onLoad,
@@ -86,7 +88,7 @@ const LazyImage = memo(function LazyImage({
           src={src}
           alt={alt}
           onLoad={handleLoad}
-          className="w-full h-full object-cover"
+          className={`w-full h-full ${objectClass}`}
           style={{
             opacity: isLoaded ? 1 : 0,
             transform: isLoaded ? 'scale(1)' : 'scale(1.05)',
