@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import MobileAccordionCards from '../../components/ui/MobileAccordionCards';
 import type { AccordionCardItem } from '../../components/ui/MobileAccordionCards';
 import MobilePerspectiveGallery from '../../components/ui/MobilePerspectiveGallery';
+import LazyImage from '../../components/ui/LazyImage';
 
 function useLazyVideo(src: string) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -447,10 +448,10 @@ function RenderingPage() {
                 onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
               >
                 <div className="aspect-[4/3] relative overflow-hidden" style={{ background: '#6e8c6b' }}>
-                  <img src={korloffImages[korloffIdx]} alt={showcaseItems[0].title}
+                  <LazyImage src={korloffImages[korloffIdx]} alt={showcaseItems[0].title}
                     className="absolute inset-0 w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.03]"
-                    loading="eager" decoding="async" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent" />
+                    loading="eager" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent pointer-events-none" />
                   {/* Carousel buttons */}
                   <button onClick={() => { pauseAndResume(korloffTimer, korloffResume, setKorloffIdx, korloffImages.length); setKorloffIdx(i => (i - 1 + korloffImages.length) % korloffImages.length); }}
                     className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
@@ -486,10 +487,10 @@ function RenderingPage() {
                 onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
               >
                 <div className="aspect-[3/4] relative overflow-hidden bg-black/60">
-                  <img src={fragranceImages[fragranceIdx]} alt={showcaseItems[1].title}
+                  <LazyImage src={fragranceImages[fragranceIdx]} alt={showcaseItems[1].title}
                     className="absolute inset-0 w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.04]"
-                    loading="eager" decoding="async" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                    loading="eager" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
                   {/* Carousel buttons */}
                   <button onClick={() => { pauseAndResume(fragranceTimer, fragranceResume, setFragranceIdx, fragranceImages.length); setFragranceIdx(i => (i - 1 + fragranceImages.length) % fragranceImages.length); }}
                     className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
@@ -528,10 +529,10 @@ function RenderingPage() {
                 onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
               >
                 <div className="aspect-[3/4] relative overflow-hidden">
-                  <img src={showcaseItems[2].images[0]} alt={showcaseItems[2].title}
+                  <LazyImage src={showcaseItems[2].images[0]} alt={showcaseItems[2].title}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                    loading="lazy" decoding="async" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
+                    loading="lazy" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent pointer-events-none" />
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-5 text-left">
                   <div className="flex items-center gap-2 mb-2">
@@ -551,10 +552,10 @@ function RenderingPage() {
                 onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
               >
                 <div className="aspect-[3/4] relative overflow-hidden">
-                  <img src={elkaduwaImages[elkaduwaIdx]} alt={showcaseItems[4].title}
+                  <LazyImage src={elkaduwaImages[elkaduwaIdx]} alt={showcaseItems[4].title}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                    loading="lazy" decoding="async" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
+                    loading="lazy" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent pointer-events-none" />
                   {/* Carousel buttons */}
                   <button onClick={() => { pauseAndResume(elkaduwaTimer, elkaduwaResume, setElkaduwaIdx, elkaduwaImages.length); setElkaduwaIdx(i => (i - 1 + elkaduwaImages.length) % elkaduwaImages.length); }}
                     className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
@@ -594,10 +595,10 @@ function RenderingPage() {
                   onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
                 >
                   <div className="aspect-[3/4] relative overflow-hidden">
-                    <img src={showcaseItems[idx].images[0]} alt={showcaseItems[idx].title}
+                    <LazyImage src={showcaseItems[idx].images[0]} alt={showcaseItems[idx].title}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                      loading="lazy" decoding="async" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+                      loading="lazy" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none" />
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-6 text-left">
                     <div className="flex items-center gap-2 mb-2">
@@ -619,10 +620,10 @@ function RenderingPage() {
               onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
             >
               <div className="aspect-[21/9] relative overflow-hidden">
-                <img src={showcaseItems[7].images[0]} alt={showcaseItems[7].title}
+                <LazyImage src={showcaseItems[7].images[0]} alt={showcaseItems[7].title}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-                  loading="lazy" decoding="async" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+                  loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10 text-center sm:text-left text-center">
                 <div className="flex items-center gap-3 mb-3 justify-center sm:justify-start">
