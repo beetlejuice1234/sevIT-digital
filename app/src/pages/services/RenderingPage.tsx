@@ -442,7 +442,7 @@ function RenderingPage() {
             {/* Row 1 — wide hero (Korloff) + portrait (Fragrance) */}
             <div className="flex items-start gap-5 mb-5 text-center">
               <div
-                className="showcase-item group relative w-[60%] flex-shrink-0 opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
+                className="showcase-item gpu-accelerated group relative w-[60%] flex-shrink-0 opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
                 style={{ transform: `rotate(${showcaseItems[0].rotation}deg)`, zIndex: 10 }}
                 onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 60px ${showcaseItems[0].glow}`)}
                 onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
@@ -481,7 +481,7 @@ function RenderingPage() {
               </div>
 
               <div
-                className="showcase-item group relative flex-1 opacity-0 mt-12 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
+                className="showcase-item gpu-accelerated group relative flex-1 opacity-0 mt-12 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
                 style={{ transform: `rotate(${showcaseItems[1].rotation}deg)`, zIndex: 9 }}
                 onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 50px ${showcaseItems[1].glow}`)}
                 onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
@@ -523,7 +523,7 @@ function RenderingPage() {
             <div className="flex items-start gap-5 mb-5 text-center">
               {/* ORIGAMI INTERIOR — wider */}
               <div
-                className="showcase-item group relative flex-[1.7] opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
+                className="showcase-item gpu-accelerated group relative flex-[1.7] opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
                 style={{ transform: `rotate(${showcaseItems[2].rotation}deg)`, zIndex: 8 }}
                 onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 50px ${showcaseItems[2].glow}`)}
                 onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
@@ -546,7 +546,7 @@ function RenderingPage() {
 
               {/* ELKADUWA SPRINGS — carousel */}
               <div
-                className="showcase-item group relative flex-1 opacity-0 mt-10 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
+                className="showcase-item gpu-accelerated group relative flex-1 opacity-0 mt-10 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
                 style={{ transform: `rotate(${showcaseItems[4].rotation}deg)`, zIndex: 8 }}
                 onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 50px ${showcaseItems[4].glow}`)}
                 onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
@@ -589,7 +589,7 @@ function RenderingPage() {
               {[5, 6].map((idx, i) => (
                 <div
                   key={idx}
-                  className="showcase-item group relative flex-1 opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
+                  className="showcase-item gpu-accelerated group relative flex-1 opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
                   style={{ transform: `rotate(${showcaseItems[idx].rotation}deg)`, marginTop: i === 1 ? '32px' : '0', zIndex: 10 }}
                   onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 55px ${showcaseItems[idx].glow}`)}
                   onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
@@ -614,7 +614,7 @@ function RenderingPage() {
 
             {/* Row 4 — cinematic watch strip */}
             <div
-              className="showcase-item group relative w-[88%] mx-auto opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500 text-center"
+              className="showcase-item gpu-accelerated group relative w-[88%] mx-auto opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500 text-center"
               style={{ transform: `rotate(${showcaseItems[7].rotation}deg)`, zIndex: 12 }}
               onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 70px ${showcaseItems[7].glow}`)}
               onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
