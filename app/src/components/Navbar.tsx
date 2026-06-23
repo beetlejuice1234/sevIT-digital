@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { Menu, X, ArrowLeft, ArrowUpRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const navLinks = [
   { label: 'Services', href: '#services', sectionId: 'services' },
@@ -111,8 +112,12 @@ function Navbar() {
     if (isHomePage && sectionId) {
       const target = document.getElementById(sectionId);
       if (target) {
-        const y = window.scrollY + target.getBoundingClientRect().top - 80;
-        window.scrollTo({ top: y, behavior: 'smooth' });
+        if ((window as any).lenis) {
+          (window as any).lenis.scrollTo(target, { offset: -80, duration: 1.2 });
+        } else {
+          const y = window.scrollY + target.getBoundingClientRect().top - 80;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
       }
     } else if (href.startsWith('#/')) {
       const path = href.replace('#', '');
@@ -235,65 +240,68 @@ function Navbar() {
         </div>
 
         {/* Mobile Menu - GPU accelerated. Placed BELOW the main row so it expands DOWNWARDS */}
-        <div
-          className="lg:hidden overflow-hidden transition-all duration-500 ease-out"
-          style={{
-            maxHeight: isMobileMenuOpen ? '700px' : '0',
-            opacity: isMobileMenuOpen ? 1 : 0,
-            willChange: 'max-height, opacity',
-          }}
-        >
-          <div className="flex flex-col gap-6 pt-6 pb-6 border-t border-border/20">
-            {/* Primary Action at top on Mobile */}
-            <a
-              href="#chat"
-              onClick={(e) => handleNavClick(e, '#chat', 'chat')}
-              className="flex items-center justify-center gap-2 w-full py-4 bg-foreground text-background rounded-xl font-bold uppercase tracking-widest text-sm active:scale-[0.98] transition-transform min-h-[56px] shadow-lg shadow-black/20"
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="lg:hidden overflow-hidden"
             >
-              Start a Project <ArrowUpRight className="w-5 h-5" />
-            </a>
+              <div className="flex flex-col gap-6 pt-6 pb-6 border-t border-border/20">
+                {/* Primary Action at top on Mobile */}
+                <a
+                  href="#chat"
+                  onClick={(e) => handleNavClick(e, '#chat', 'chat')}
+                  className="flex items-center justify-center gap-2 w-full py-4 bg-foreground text-background rounded-xl font-bold uppercase tracking-widest text-sm active:scale-[0.98] transition-transform min-h-[56px] shadow-lg shadow-black/20"
+                >
+                  Start a Project <ArrowUpRight className="w-5 h-5" />
+                </a>
 
-            {/* Services Grid - Better spacing/size */}
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 mb-4 block px-2">
-                Expertise
-              </span>
-              <div className="grid grid-cols-2 gap-2">
-                {serviceLinks.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    onClick={(e) => handleNavClick(e, link.href)}
-                    className="text-xs px-4 py-3 border border-border/40 rounded-xl text-foreground/80 hover:text-foreground hover:bg-white/10 active:bg-white/10 transition-all min-h-[48px] flex items-center justify-center text-center leading-tight"
-                  >
-                    {link.label}
-                  </a>
-                ))}
+                {/* Services Grid - Better spacing/size */}
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 mb-4 block px-2">
+                    Expertise
+                  </span>
+                  <div className="grid grid-cols-2 gap-2">
+                    {serviceLinks.map((link) => (
+                      <a
+                        key={link.label}
+                        href={link.href}
+                        onClick={(e) => handleNavClick(e, link.href)}
+                        className="text-xs px-4 py-3 border border-border/40 rounded-xl text-foreground/80 hover:text-foreground hover:bg-white/10 active:bg-white/10 transition-all min-h-[48px] flex items-center justify-center text-center leading-tight"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="h-px bg-border/20 w-full rounded-full" />
+
+                {/* Menu Links */}
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 mb-4 block px-2">
+                    Company
+                  </span>
+                  <div className="flex flex-col gap-1">
+                    {navLinks.filter(l => l.label !== 'Services').map((link) => (
+                      <a
+                        key={link.label}
+                        href={link.href}
+                        onClick={(e) => handleNavClick(e, link.href, link.sectionId)}
+                        className="text-lg font-black py-4 px-2 text-foreground hover:text-accent transition-colors min-h-[44px] flex items-center uppercase tracking-tighter"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div className="h-px bg-border/20 w-full rounded-full" />
-
-            {/* Menu Links */}
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 mb-4 block px-2">
-                Company
-              </span>
-              <div className="flex flex-col gap-1">
-                {navLinks.filter(l => l.label !== 'Services').map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    onClick={(e) => handleNavClick(e, link.href, link.sectionId)}
-                    className="text-lg font-black py-4 px-2 text-foreground hover:text-accent transition-colors min-h-[44px] flex items-center uppercase tracking-tighter"
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </nav>
   );
