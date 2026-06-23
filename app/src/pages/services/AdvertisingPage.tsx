@@ -341,7 +341,7 @@ function AdvertisingPage() {
           <div className="hidden md:block space-y-6">
             {/* Hero spotlight — Bergamood */}
             <div
-              className="video-card group relative opacity-0 rounded-3xl overflow-hidden border border-white/10 transition-all duration-500 bg-black"
+              className="video-card gpu-accelerated group relative opacity-0 rounded-3xl overflow-hidden border border-white/10 transition-all duration-500 bg-black"
               onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 80px rgba(239,68,68,0.3)')}
               onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
             >
@@ -377,7 +377,7 @@ function AdvertisingPage() {
             {/* Offset card — Sev's Chocolà */}
             <div className="flex justify-end">
               <div
-                className="video-card group relative w-[75%] opacity-0 rounded-3xl overflow-hidden border border-white/10 transition-all duration-500 bg-black -mt-8"
+                className="video-card gpu-accelerated group relative w-[75%] opacity-0 rounded-3xl overflow-hidden border border-white/10 transition-all duration-500 bg-black -mt-8"
                 style={{ transform: 'rotate(-0.5deg)' }}
                 onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 60px rgba(249,115,22,0.3)')}
                 onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; }}
@@ -409,7 +409,7 @@ function AdvertisingPage() {
           {/* ── Mobile: Full-bleed cards — text at bottom only ── */}
           <div className="md:hidden space-y-4">
             {/* Bergamood — full bleed */}
-            <div className="video-card group relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] opacity-0 overflow-hidden bg-black">
+            <div className="video-card gpu-accelerated group relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] opacity-0 overflow-hidden bg-black">
               <div className="aspect-[16/10] relative overflow-hidden">
                 <LazyVideo
                   src="/images/renders/bergamood.mov"
@@ -431,7 +431,7 @@ function AdvertisingPage() {
             </div>
 
             {/* Sev's Chocolà — full bleed */}
-            <div className="video-card group relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] opacity-0 overflow-hidden bg-black">
+            <div className="video-card gpu-accelerated group relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] opacity-0 overflow-hidden bg-black">
               <div className="aspect-video relative overflow-hidden">
                 <LazyVideo
                   src="/images/renders/chocolate.mov"
