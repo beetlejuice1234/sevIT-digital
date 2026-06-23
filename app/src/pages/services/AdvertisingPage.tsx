@@ -11,6 +11,7 @@ import MobileTimeline from '../../components/ui/MobileTimeline';
 import type { TimelineStep } from '../../components/ui/MobileTimeline';
 import MobileFlipCards from '../../components/ui/MobileFlipCards';
 import type { FlipCardItem } from '../../components/ui/MobileFlipCards';
+import LazyVideo from '../../components/ui/LazyVideo';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -345,12 +346,11 @@ function AdvertisingPage() {
               onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
             >
               <div className="aspect-[21/9] relative overflow-hidden">
-                <video
+                <LazyVideo
                   src="/images/renders/bergamood.mov"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full"
                   muted loop playsInline autoPlay
                   poster="/images/posters/bergamood-poster.webp"
-                  preload="auto"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
                 <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-black/60 to-transparent" />
@@ -383,12 +383,11 @@ function AdvertisingPage() {
                 onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; }}
               >
                 <div className="aspect-video relative overflow-hidden">
-                  <video
+                  <LazyVideo
                     src="/images/renders/chocolate.mov"
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full"
                     muted loop playsInline autoPlay
                     poster="/images/posters/chocolate-poster.webp"
-                    preload="auto"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/15 to-transparent" />
                 </div>
@@ -412,12 +411,11 @@ function AdvertisingPage() {
             {/* Bergamood — full bleed */}
             <div className="video-card group relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] opacity-0 overflow-hidden bg-black">
               <div className="aspect-[16/10] relative overflow-hidden">
-                <video
+                <LazyVideo
                   src="/images/renders/bergamood.mov"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full"
                   muted loop playsInline autoPlay
                   poster="/images/posters/bergamood-poster.webp"
-                  preload="auto"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               </div>
@@ -435,12 +433,11 @@ function AdvertisingPage() {
             {/* Sev's Chocolà — full bleed */}
             <div className="video-card group relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] opacity-0 overflow-hidden bg-black">
               <div className="aspect-video relative overflow-hidden">
-                <video
+                <LazyVideo
                   src="/images/renders/chocolate.mov"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full"
                   muted loop playsInline autoPlay
                   poster="/images/posters/chocolate-poster.webp"
-                  preload="auto"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               </div>
