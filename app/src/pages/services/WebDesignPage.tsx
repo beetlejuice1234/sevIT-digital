@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Code2, Zap, Smartphone, Search, Shield, Layers, Monitor, Sparkles, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import LazyImage from '../../components/ui/LazyImage';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -142,11 +143,12 @@ function MobilePortfolioDeck({ websites }: { websites: typeof portfolioWebsites 
             style={{ height: 420, background: '#080808' }}
           >
             {/* Visual Snapshot */}
-            <img
+            <LazyImage
               key={site.url + '-mobile-final'}
               src={site.mobilePreview}
               alt={site.title}
-              className="w-full h-full object-contain transition-transform duration-500 group-hover/mobile-preview:scale-[1.02]"
+              className="w-full h-full transition-transform duration-500 group-hover/mobile-preview:scale-[1.02]"
+              objectClass="object-contain"
             />
 
             {/* Concept Badge - Mobile */}
@@ -556,13 +558,13 @@ function WebDesignPage() {
               <div className="relative flex-1 h-[calc(100%-40px)] md:h-[calc(100%-48px)] overflow-hidden">
                 <div ref={contentRef} className="w-full h-full relative group/preview">
                   {/* Visual Snapshot */}
-                  <img
+                  <LazyImage
                     key={currentWebsite.url}
                     src={currentWebsite.previewImage}
                     alt={`${currentWebsite.title} Preview`}
-                    className={`w-full h-full object-cover object-top transition-opacity duration-700 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+                    className="w-full h-full"
+                    objectClass="object-cover object-top"
                     onLoad={() => setIsLoading(false)}
-                    onError={() => setIsLoading(false)}
                   />
 
                   {/* Loading Overlay */}
