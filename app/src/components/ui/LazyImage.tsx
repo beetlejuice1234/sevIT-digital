@@ -8,6 +8,8 @@ interface LazyImageProps {
   placeholderColor?: string;
   loading?: 'eager' | 'lazy';
   onLoad?: () => void;
+  /** When true + object-contain, renders a blurred scaled-up copy behind the image to fill letterbox bars */
+  blurFill?: boolean;
 }
 
 /**
@@ -16,6 +18,8 @@ interface LazyImageProps {
  * Uses IntersectionObserver to load images only when they enter viewport.
  * Implements blur-up placeholder effect for perceived performance.
  * GPU-accelerated transitions for smooth fade-in.
+ * Optional blurFill mode: fills letterbox/pillarbox bars with a blurred
+ * color-bleed of the image itself (like Instagram/YouTube).
  */
 const LazyImage = memo(function LazyImage({
   src,
@@ -25,11 +29,14 @@ const LazyImage = memo(function LazyImage({
   placeholderColor = '#0a0a0a',
   loading = 'lazy',
   onLoad,
+  blurFill = false,
 }: LazyImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(loading === 'eager');
   const imgRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const showBlurBg = blurFill && objectClass === 'object-contain';
 
   useEffect(() => {
     if (loading === 'eager') return;
@@ -81,6 +88,25 @@ const LazyImage = memo(function LazyImage({
         }}
       />
 
+      {/* Blurred background fill — scaled-up, blurred copy to replace black bars */}
+      {showBlurBg && isInView && (
+        <img
+          src={src}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{
+            opacity: isLoaded ? 0.55 : 0,
+            transform: 'scale(1.3)',
+            filter: 'blur(50px) saturate(1.4)',
+            transition: 'opacity 0.6s ease-out',
+            pointerEvents: 'none',
+          }}
+          loading={loading}
+          decoding="async"
+        />
+      )}
+
       {/* Actual Image */}
       {isInView && (
         <img
@@ -94,6 +120,8 @@ const LazyImage = memo(function LazyImage({
             transform: isLoaded ? 'scale(1)' : 'scale(1.05)',
             transition: 'opacity 0.6s ease-out, transform 0.8s ease-out',
             willChange: 'opacity, transform',
+            position: 'relative',
+            zIndex: 1,
           }}
           loading={loading}
           decoding="async"

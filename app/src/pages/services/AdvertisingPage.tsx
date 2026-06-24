@@ -356,13 +356,14 @@ function AdvertisingPage() {
                 <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-black/60 to-transparent" />
                 <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-black/60 to-transparent" />
               </div>
-              {/* Floating center title */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
-                <div className="px-4 py-2 bg-black/40 backdrop-blur-md rounded-full border border-white/10 mb-4">
+              {/* Bottom-left title overlay */}
+              <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-1 h-5 rounded-full bg-red-500/80" />
                   <span className="text-[10px] uppercase tracking-[0.3em] text-red-400 font-medium">Fragrance • Lifestyle</span>
                 </div>
-                <h3 className="text-4xl lg:text-5xl font-black tracking-tighter text-white drop-shadow-2xl uppercase">BERGAMOOD</h3>
-                <p className="text-lg text-white/40 font-medium mt-1">Concept Ad</p>
+                <h3 className="text-2xl lg:text-3xl font-black tracking-tight text-white drop-shadow-2xl uppercase">BERGAMOOD</h3>
+                <p className="text-white/40 font-medium mt-1">Concept Ad</p>
               </div>
               {/* Bottom info bar */}
               <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between">

@@ -449,7 +449,8 @@ function RenderingPage() {
               >
                 <div className="aspect-[4/3] relative overflow-hidden" style={{ background: '#6e8c6b' }}>
                   <LazyImage src={korloffImages[korloffIdx]} alt={showcaseItems[0].title}
-                    className="absolute inset-0 w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.03]"
+                    className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-[1.03]"
+                    objectClass="object-contain" blurFill
                     loading="eager" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent pointer-events-none" />
                   {/* Carousel buttons */}
@@ -469,7 +470,7 @@ function RenderingPage() {
                     ))}
                   </div>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-7 text-left">
+                <div className="absolute bottom-0 left-0 right-0 p-7 text-left z-20">
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-1 h-7 rounded-full" style={{ background: showcaseItems[0].glow }} />
                     <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[0].tag}</span>
@@ -488,7 +489,8 @@ function RenderingPage() {
               >
                 <div className="aspect-[3/4] relative overflow-hidden bg-black/60">
                   <LazyImage src={fragranceImages[fragranceIdx]} alt={showcaseItems[1].title}
-                    className="absolute inset-0 w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.04]"
+                    className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-[1.04]"
+                    objectClass="object-contain" blurFill
                     loading="eager" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
                   {/* Carousel buttons */}
@@ -508,19 +510,19 @@ function RenderingPage() {
                     ))}
                   </div>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-left">
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-left z-20">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-1 h-6 rounded-full" style={{ background: showcaseItems[1].glow }} />
                     <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[1].tag}</span>
                   </div>
-                  <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase text-center text-center">{showcaseItems[1].title}</h3>
+                  <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[1].title}</h3>
                   <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
                 </div>
               </div>
             </div>
 
             {/* Row 2 — ORIGAMI (wider) + ELKADUWA SPRINGS (carousel) */}
-            <div className="flex items-start gap-5 mb-5 text-center">
+            <div className="flex items-start gap-5 mb-5">
               {/* ORIGAMI INTERIOR — wider */}
               <div
                 className="showcase-item gpu-accelerated group relative flex-[1.7] opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
@@ -530,16 +532,17 @@ function RenderingPage() {
               >
                 <div className="aspect-[3/4] relative overflow-hidden">
                   <LazyImage src={showcaseItems[2].images[0]} alt={showcaseItems[2].title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                    className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-[1.04]"
+                    objectClass="object-contain" blurFill
                     loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent pointer-events-none" />
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-5 text-left">
+                <div className="absolute bottom-0 left-0 right-0 p-5 text-left z-20">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-1 h-5 rounded-full" style={{ background: showcaseItems[2].glow }} />
                     <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400">{showcaseItems[2].tag}</span>
                   </div>
-                  <h3 className="text-base font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase text-center text-center">{showcaseItems[2].title}</h3>
+                  <h3 className="text-base font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[2].title}</h3>
                   <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
                 </div>
               </div>
@@ -553,7 +556,8 @@ function RenderingPage() {
               >
                 <div className="aspect-[3/4] relative overflow-hidden">
                   <LazyImage src={elkaduwaImages[elkaduwaIdx]} alt={showcaseItems[4].title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                    className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-[1.04]"
+                    objectClass="object-contain" blurFill
                     loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent pointer-events-none" />
                   {/* Carousel buttons */}
@@ -573,19 +577,19 @@ function RenderingPage() {
                     ))}
                   </div>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-5 text-left">
+                <div className="absolute bottom-0 left-0 right-0 p-5 text-left z-20">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-1 h-5 rounded-full" style={{ background: showcaseItems[4].glow }} />
                     <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400">{showcaseItems[4].tag}</span>
                   </div>
-                  <h3 className="text-base font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase text-center text-center">{showcaseItems[4].title}</h3>
+                  <h3 className="text-base font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[4].title}</h3>
                   <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
                 </div>
               </div>
             </div>
 
             {/* Row 3 — two portrait cards (Bergamood + Tom Ford) */}
-            <div className="flex items-start gap-5 mb-5 text-center">
+            <div className="flex items-start gap-5 mb-5">
               {[5, 6].map((idx, i) => (
                 <div
                   key={idx}
@@ -596,16 +600,17 @@ function RenderingPage() {
                 >
                   <div className="aspect-[3/4] relative overflow-hidden">
                     <LazyImage src={showcaseItems[idx].images[0]} alt={showcaseItems[idx].title}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                      className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-[1.04]"
+                      objectClass="object-contain" blurFill
                       loading="lazy" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none" />
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-6 text-left">
+                  <div className="absolute bottom-0 left-0 right-0 p-6 text-left z-20">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-1 h-6 rounded-full" style={{ background: showcaseItems[idx].glow }} />
                       <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[idx].tag}</span>
                     </div>
-                    <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase text-center text-center">{showcaseItems[idx].title}</h3>
+                    <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[idx].title}</h3>
                     <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
                   </div>
                 </div>
@@ -614,25 +619,26 @@ function RenderingPage() {
 
             {/* Row 4 — cinematic watch strip */}
             <div
-              className="showcase-item gpu-accelerated group relative w-[88%] mx-auto opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500 text-center"
+              className="showcase-item gpu-accelerated group relative w-[88%] mx-auto opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
               style={{ transform: `rotate(${showcaseItems[7].rotation}deg)`, zIndex: 12 }}
               onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 70px ${showcaseItems[7].glow}`)}
               onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
             >
               <div className="aspect-[21/9] relative overflow-hidden">
                 <LazyImage src={showcaseItems[7].images[0]} alt={showcaseItems[7].title}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                  className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-[1.02]"
+                  objectClass="object-contain" blurFill
                   loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
               </div>
-              <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10 text-center sm:text-left text-center">
-                <div className="flex items-center gap-3 mb-3 justify-center sm:justify-start">
+              <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10 text-left z-20">
+                <div className="flex items-center gap-3 mb-3">
                   <div className="w-1 h-8 rounded-full" style={{ background: showcaseItems[7].glow }} />
                   <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[7].tag}</span>
                 </div>
-                <h3 className="text-2xl lg:text-3xl font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase text-center text-center">{showcaseItems[7].title}</h3>
+                <h3 className="text-2xl lg:text-3xl font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[7].title}</h3>
                 <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
-                <p className="text-white/40 text-sm leading-relaxed mt-2 max-w-lg mx-auto sm:mx-0 text-center text-center">
+                <p className="text-white/40 text-sm leading-relaxed mt-2 max-w-lg">
                   {showcaseItems[7].description}
                 </p>
               </div>
