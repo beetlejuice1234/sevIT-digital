@@ -16,15 +16,45 @@ interface Props {
 
 function AutoCycleImage({ images, alt, glow }: { images: string[]; alt: string; glow: string }) {
   const [idx, setIdx] = useState(0);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   useEffect(() => {
     if (images.length <= 1) return;
-    const timer = setInterval(() => setIdx(prev => (prev + 1) % images.length), 3000);
+    // Timer resets whenever idx changes (e.g. from manual swipe)
+    const timer = setInterval(() => setIdx(prev => (prev + 1) % images.length), 4000);
     return () => clearInterval(timer);
-  }, [images.length]);
+  }, [images.length, idx]);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEndHandler = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      setIdx(prev => (prev + 1) % images.length);
+    } else if (isRightSwipe) {
+      setIdx(prev => (prev - 1 + images.length) % images.length);
+    }
+  };
 
   return (
-    <div className="relative w-full h-full overflow-hidden">
+    <div 
+      className="relative w-full h-full overflow-hidden touch-pan-y"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEndHandler}
+    >
       {/* Blurred background fill — replaces black bars with color-bleed */}
       {images.map((src, i) => (
         <img

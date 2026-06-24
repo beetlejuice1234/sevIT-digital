@@ -356,22 +356,22 @@ function AdvertisingPage() {
                 <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-black/60 to-transparent" />
                 <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-black/60 to-transparent" />
               </div>
-              {/* Bottom-left title overlay */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-1 h-5 rounded-full bg-red-500/80" />
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-red-400 font-medium">Fragrance • Lifestyle</span>
-                </div>
-                <h3 className="text-2xl lg:text-3xl font-black tracking-tight text-white drop-shadow-2xl uppercase">BERGAMOOD</h3>
-                <p className="text-white/40 font-medium mt-1">Concept Ad</p>
+              {/* Playing indicator - Top right */}
+              <div className="absolute top-6 right-6 flex items-center gap-3 z-10">
+                <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-medium drop-shadow-md">Playing</span>
               </div>
-              {/* Bottom info bar */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-medium">Playing • 00:30</span>
+              
+              {/* Bottom overlay */}
+              <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between z-10">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-1 h-5 rounded-full bg-red-500/80" />
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-red-400 font-medium">Fragrance • Lifestyle</span>
+                  </div>
+                  <h3 className="text-2xl lg:text-3xl font-black tracking-tight text-white drop-shadow-2xl uppercase">BERGAMOOD</h3>
                 </div>
-                <p className="text-white/25 text-[10px] uppercase tracking-widest italic">Concept ad created by <span className="normal-case">sev</span>IT.</p>
+                <p className="text-white/25 text-[10px] uppercase tracking-widest italic text-right">Concept ad created by <span className="normal-case">sev</span>IT.</p>
               </div>
             </div>
 
