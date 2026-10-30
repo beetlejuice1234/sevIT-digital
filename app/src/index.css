@@ -229,3 +229,11 @@
   }
   [data-reveal] { opacity: 1; }
 }
+
+/* hold the hero's entrance until the splash curtain lifts */
+html[data-splash] .hero-copy > *,
+html[data-splash] .hero-visual,
+html[data-splash] .hero-card,
+html[data-splash] .svc-hero > * {
+  animation-play-state: paused !important;
+}

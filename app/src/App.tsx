@@ -8,6 +8,7 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import FloatingWhatsApp from './components/layout/FloatingWhatsApp';
 import Cursor from './components/kit/Cursor';
+import Splash from './components/layout/Splash';
 import ErrorBoundary from './components/ui/ErrorBoundary';
 import SkipToContent from './components/ui/SkipToContent';
 
@@ -105,6 +106,7 @@ export default function App() {
           <Footer />
           <FloatingWhatsApp />
           <Cursor />
+          <Splash />
         </div>
       </BrowserRouter>
     </ErrorBoundary>
