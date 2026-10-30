@@ -1,50 +1,34 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import gsap from 'gsap';
-import { Ghost, Home } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowUpRight } from 'lucide-react';
+import Seo from '@/components/Seo';
+import ShaderBackdrop from '@/components/kit/ShaderBackdrop';
+import { SERVICES } from '@/lib/site';
 
 export default function NotFoundPage() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // Entrance animation
-    gsap.fromTo(
-      '.not-found-content',
-      { opacity: 0, scale: 0.9, y: 30 },
-      { opacity: 1, scale: 1, y: 0, duration: 0.8, ease: 'power3.out' }
-    );
-  }, []);
-
   return (
-    <div className="min-h-[80vh] flex flex-col items-center justify-center px-4 text-center relative overflow-hidden pt-20">
-      <div className="not-found-content">
-        {/* Graphic */}
-        <div className="relative inline-flex items-center justify-center mb-8">
-          <span className="text-[120px] sm:text-[180px] font-black text-foreground/[0.03] leading-none select-none">
-            404
-          </span>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Ghost className="w-20 h-20 text-accent animate-pulse" style={{ animationDuration: '3s' }} />
-          </div>
-        </div>
-        
-        {/* Copy */}
-        <h1 className="text-3xl sm:text-5xl font-bold text-foreground mb-6">
-          Lost in Space
+    <section className="relative flex min-h-[100svh] items-center overflow-hidden py-32">
+      <Seo path="/404" title="Page not found | sevIT Digital" description="This page doesn’t exist." noindex />
+      <ShaderBackdrop intensity={0.6} />
+      <div className="container-x relative">
+        <p className="eyebrow mb-6">Error 404</p>
+        <h1 className="display text-[clamp(6rem,22vw,18rem)] leading-[0.8]">
+          <span className="text-outline">4</span>
+          <span className="text-gradient">0</span>
+          <span className="text-outline">4</span>
         </h1>
-        <p className="text-muted-foreground text-lg max-w-md mx-auto mb-10 leading-relaxed">
-          The page you're searching for has drifted into the digital void. Let's redirect you back to something useful.
-        </p>
-        
-        {/* Action */}
-        <button
-          onClick={() => navigate('/')}
-          className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-foreground text-background rounded-full font-medium shadow-xl hover:shadow-2xl hover:bg-accent hover:text-white transition-all duration-300 hover:scale-105 active:scale-95 group"
-        >
-          <Home className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" />
-          <span>Return to Base</span>
-        </button>
+        <p className="mt-8 max-w-md text-lg text-white/60">This page wandered off. Let’s get you somewhere useful.</p>
+        <div className="mt-10 flex flex-wrap gap-3">
+          <Link to="/" className="btn btn-primary">Back home <ArrowUpRight className="h-4 w-4" /></Link>
+          <Link to="/#contact" className="btn btn-ghost">Contact us</Link>
+        </div>
+        <div className="mt-14 flex flex-wrap gap-2">
+          {SERVICES.map((s) => (
+            <Link key={s.slug} to={s.path} className="rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm text-white/60 backdrop-blur transition-colors hover:border-orange-400/40 hover:text-white">
+              {s.name}
+            </Link>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

@@ -1,241 +1,101 @@
-import { useState, useEffect, Suspense, lazy, useRef } from 'react';
-import { HashRouter, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useEffect, Suspense, lazy } from 'react';
+import { BrowserRouter, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
 import Lenis from 'lenis';
+import { getLenis, setLenis } from './lib/lenis';
 
-// Register GSAP plugins
-gsap.registerPlugin(ScrollTrigger);
-
-// Eager-loaded critical components
-import Navbar from './components/Navbar';
-import LoadingScreen from './components/effects/LoadingScreen';
-import Footer from './components/sections/Footer';
-import RoutePrefetcher from './components/RoutePrefetcher';
-import FloatingWhatsApp from './components/ui/FloatingWhatsApp';
-import PageTransition from './components/ui/PageTransition';
+import Navbar from './components/layout/Navbar';
+import Footer from './components/layout/Footer';
+import FloatingWhatsApp from './components/layout/FloatingWhatsApp';
+import ErrorBoundary from './components/ui/ErrorBoundary';
 import SkipToContent from './components/ui/SkipToContent';
 
-// Lazy load pages for code splitting with prefetch hints
 const HomePage = lazy(() => import('./pages/HomePage'));
 const WebDesignPage = lazy(() => import('./pages/services/WebDesignPage'));
-const BrandingPage = lazy(() => import('./pages/services/BrandingPage'));
+const SoftwarePage = lazy(() => import('./pages/services/SoftwarePage'));
+const AISolutionsPage = lazy(() => import('./pages/services/AISolutionsPage'));
 const RenderingPage = lazy(() => import('./pages/services/RenderingPage'));
+const BrandingPage = lazy(() => import('./pages/services/BrandingPage'));
 const AdvertisingPage = lazy(() => import('./pages/services/AdvertisingPage'));
 const MarketingPage = lazy(() => import('./pages/services/MarketingPage'));
-const AISolutionsPage = lazy(() => import('./pages/services/AISolutionsPage'));
 const CareersPage = lazy(() => import('./pages/CareersPage'));
-
-// Error and 404 Pages
-import ErrorBoundary from './components/ui/ErrorBoundary';
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
-/**
- * Scroll Restoration Component
- * 
- * - Navigating TO any page (service, home via link): Scroll to top
- * - Navigating BACK to home: Restore saved position
- */
-function ScrollRestoration() {
+/** Scroll to top on navigation, to #hash targets when present, and keep native restoration on back/forward. */
+function ScrollManager() {
   const { pathname, hash } = useLocation();
-  const navigationType = useNavigationType();
-  const savedPositionsRef = useRef<Record<string, number>>({});
+  const nav = useNavigationType();
 
-  // Load saved position from sessionStorage on mount
   useEffect(() => {
-    try {
-      const saved = sessionStorage.getItem('homeScrollPosition');
-      if (saved) {
-        savedPositionsRef.current['/'] = parseInt(saved, 10);
-      }
-    } catch {}
-  }, []);
-
-  // Handle scroll restoration on route change
-  useEffect(() => {
-    const isHomePage = pathname === '/';
-    const isPopNavigation = navigationType === 'POP';
-
     if (hash) {
-      // If there's a hash, scroll to that element
-      setTimeout(() => {
-        const id = hash.replace('#', '');
-        const element = document.getElementById(id);
-        if (element) {
-          if ((window as any).lenis) {
-            (window as any).lenis.scrollTo(element, { offset: -80, immediate: true });
-          } else {
-            const y = window.scrollY + element.getBoundingClientRect().top - 80;
-            window.scrollTo({ top: y, behavior: 'smooth' });
-          }
-        }
-      }, 100);
-    } else if (isHomePage && isPopNavigation) {
-      // BACK button to home - restore position
-      const savedY = savedPositionsRef.current['/'] || 0;
-      setTimeout(() => {
-        if ((window as any).lenis) {
-          (window as any).lenis.scrollTo(savedY, { immediate: true });
-        } else {
-          window.scrollTo({ top: savedY, behavior: 'instant' });
-        }
-      }, 50);
-    } else {
-      // All other navigation (forward, direct link click) - go to top
-      setTimeout(() => {
-        if ((window as any).lenis) {
-          (window as any).lenis.scrollTo(0, { immediate: true });
-        } else {
-          window.scrollTo({ top: 0, behavior: 'instant' });
-        }
-      }, 50);
+      const id = decodeURIComponent(hash.slice(1));
+      let tries = 0;
+      // the target may live in a lazily loaded page; retry briefly
+      const go = () => {
+        const el = document.getElementById(id);
+        if (el) {
+          const lenis = getLenis();
+          if (lenis) lenis.scrollTo(el, { offset: -24 });
+          else el.scrollIntoView({ behavior: 'smooth' });
+        } else if (tries++ < 20) window.setTimeout(go, 60);
+      };
+      go();
+      return;
     }
-  }, [pathname, hash, navigationType]);
-
-  // Save scroll position when on home page
-  useEffect(() => {
-    if (pathname !== '/') return;
-
-    const handleScroll = () => {
-      savedPositionsRef.current['/'] = window.scrollY;
-      try {
-        sessionStorage.setItem('homeScrollPosition', window.scrollY.toString());
-      } catch {}
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [pathname]);
+    if (nav !== 'POP') {
+      getLenis()?.scrollTo(0, { immediate: true });
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, hash, nav]);
 
   return null;
 }
 
-// Page wrapper with footer for service pages
-function ServicePageWrapper({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      {children}
-      <Footer />
-    </>
-  );
-}
-
-// Minimal loading fallback - appears instantly
 function PageLoader() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div 
-        className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full"
-        style={{ animation: 'spin 0.6s linear infinite' }}
-      />
-      <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
+    <div className="flex min-h-screen items-center justify-center" role="status" aria-label="Loading">
+      <span className="h-6 w-6 animate-spin rounded-full border-2 border-orange-400 border-t-transparent" />
     </div>
   );
 }
 
-function App() {
-  const [isLoading, setIsLoading] = useState(true);
-
+export default function App() {
   useEffect(() => {
-    // Setup Lenis smooth scroll
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Custom exponential easeOut
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 1.0,
-      touchMultiplier: 1.5, // Highly responsive touch scrolling
-    });
-
-    // Synchronize Lenis scroll updates with GSAP ScrollTrigger
-    lenis.on('scroll', ScrollTrigger.update);
-
-    // Sync animation loop with GSAP ticker
-    const tickHandler = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-    gsap.ticker.add(tickHandler);
-    gsap.ticker.lagSmoothing(0);
-
-    // Bind to window to allow interaction from scroll restorer and navigation click handlers
-    (window as any).lenis = lenis;
-
-    // Refresh ScrollTrigger on resize - debounced
-    let resizeTimeout: ReturnType<typeof setTimeout>;
-    const handleResize = () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        ScrollTrigger.refresh();
-      }, 100);
-    };
-
-    window.addEventListener('resize', handleResize, { passive: true });
-
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const lenis = new Lenis({ duration: 1.1, smoothWheel: true, autoRaf: true });
+    setLenis(lenis);
     return () => {
       lenis.destroy();
-      gsap.ticker.remove(tickHandler);
-      window.removeEventListener('resize', handleResize);
-      clearTimeout(resizeTimeout);
+      setLenis(null);
     };
   }, []);
 
-  const handleLoadingComplete = () => {
-    setIsLoading(false);
-    // Delay ScrollTrigger refresh to ensure DOM is ready
-    requestAnimationFrame(() => {
-      ScrollTrigger.refresh();
-    });
-  };
-
   return (
-    <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
-      {/* Global Error Boundary to catch render failures */}
-      <ErrorBoundary>
-        <SkipToContent />
-        {/* Loading Screen */}
-        {isLoading && <LoadingScreen onComplete={handleLoadingComplete} />}
-
-      <HashRouter>
-        {/* Route Prefetcher - makes navigation instant */}
-        <RoutePrefetcher />
-        
-        {/* Scroll Restoration - handles all scroll behavior */}
-        <ScrollRestoration />
-        
-        {/* Navigation - fixed position */}
-        <Navbar />
-
-        {/* Main Content - wrapped in PageTransition for cross-fade on route change */}
-        <main id="main-content" className="relative z-10">
-          <PageTransition>
-            <Suspense fallback={<PageLoader />}>  
+    <ErrorBoundary>
+      <BrowserRouter>
+        <div className="grain relative min-h-screen overflow-x-clip bg-background text-foreground">
+          <SkipToContent />
+          <ScrollManager />
+          <Navbar />
+          <main id="main-content" className="relative">
+            <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<HomePage />} />
-                <Route path="/services/web-design" element={<ServicePageWrapper><WebDesignPage /></ServicePageWrapper>} />
-                <Route path="/services/branding" element={<ServicePageWrapper><BrandingPage /></ServicePageWrapper>} />
-                <Route path="/services/3d-rendering" element={<ServicePageWrapper><RenderingPage /></ServicePageWrapper>} />
-                <Route path="/services/advertising" element={<ServicePageWrapper><AdvertisingPage /></ServicePageWrapper>} />
-                <Route path="/services/marketing" element={<ServicePageWrapper><MarketingPage /></ServicePageWrapper>} />
-                <Route path="/services/ai-solutions" element={<ServicePageWrapper><AISolutionsPage /></ServicePageWrapper>} />
-                <Route path="/careers" element={<ServicePageWrapper><CareersPage /></ServicePageWrapper>} />
-                
-                {/* 404 Route */}
-                <Route path="*" element={<ServicePageWrapper><NotFoundPage /></ServicePageWrapper>} />
+                <Route path="/services/web-design" element={<WebDesignPage />} />
+                <Route path="/services/software-pos" element={<SoftwarePage />} />
+                <Route path="/services/ai-solutions" element={<AISolutionsPage />} />
+                <Route path="/services/3d-rendering" element={<RenderingPage />} />
+                <Route path="/services/branding" element={<BrandingPage />} />
+                <Route path="/services/advertising" element={<AdvertisingPage />} />
+                <Route path="/services/marketing" element={<MarketingPage />} />
+                <Route path="/careers" element={<CareersPage />} />
+                <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Suspense>
-          </PageTransition>
-        </main>
-        {/* Global Floating WhatsApp */}
-        <FloatingWhatsApp />
-      </HashRouter>
-      </ErrorBoundary>
-    </div>
+          </main>
+          <Footer />
+          <FloatingWhatsApp />
+        </div>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
-
-export default App;

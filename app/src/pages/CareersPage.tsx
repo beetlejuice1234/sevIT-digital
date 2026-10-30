@@ -1,435 +1,151 @@
-import { useEffect, useRef, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { 
-  ArrowRight, 
-  Briefcase, 
-  Sparkles, 
-  Rocket, 
-  Upload, 
-  CheckCircle2, 
-  FileText, 
-  Zap, 
-  Globe, 
-  Heart,
-  Loader2,
-  X
-} from 'lucide-react';
-import { useTextReveal } from '@/hooks/useTextReveal';
+import { useState, type FormEvent } from 'react';
+import { ArrowUpRight, Globe, Zap, Heart, Rocket, Mail, Check } from 'lucide-react';
+import Seo from '@/components/Seo';
+import ShaderBackdrop from '@/components/kit/ShaderBackdrop';
+import { Reveal, SectionHeader, SpotlightCard } from '@/components/kit';
+import { SITE } from '@/lib/site';
+import { cn } from '@/lib/utils';
 
-gsap.registerPlugin(ScrollTrigger);
-
-// ─── Data ──────────────────────────────────────────────────────────────────
-const roles = [
-  {
-    id: 'ui-ux-designer',
-    title: 'Senior UI/UX Designer',
-    type: 'Full-time / Remote',
-    category: 'Design',
-    description: 'Lead the visual direction of high-end digital experiences for global brands.',
-    requirements: ['5+ years experience', 'Mastery of Figma & GSAP', 'Strong portfolio of motion design'],
-  },
-  {
-    id: 'frontend-engineer',
-    title: 'Frontend Engineer (React)',
-    type: 'Full-time / Remote',
-    category: 'Engineering',
-    description: 'Build blazing-fast, animation-rich web applications using the latest tech stack.',
-    requirements: ['React/Next.js expert', 'Tailwind CSS & TypeScript', 'Experience with 3D/Three.js is a plus'],
-  },
-  {
-    id: 'ai-automation-engineer',
-    title: 'AI Automation Specialist',
-    type: 'Project-based / Remote',
-    category: 'AI',
-    description: 'Architect and deploy custom AI workflows and intelligent agents for enterprise clients.',
-    requirements: ['LLM integration experience', 'Python & Node.js', 'Obsession with workflow efficiency'],
-  },
-  {
-    id: '3d-render-artist',
-    title: '3D Render Artist',
-    type: 'Project-based / Remote',
-    category: 'Creative',
-    description: 'Create photorealistic product renders and cinematic lifestyle animations.',
-    requirements: ['Blender/C4D mastery', 'Advanced material & lighting skills', 'Experience with Octane/Redshift'],
-  },
+const ROLES = [
+  { title: 'Senior UI/UX Designer', type: 'Full-time · Remote', team: 'Design', text: 'Lead the visual direction of websites, apps and brand systems — from wireframe to polished prototype.' },
+  { title: 'Frontend Engineer (React)', type: 'Full-time · Remote', team: 'Engineering', text: 'Build fast, animation-rich sites and web apps with React, TypeScript and Tailwind.' },
+  { title: 'AI Automation Specialist', type: 'Project-based · Remote', team: 'AI', text: 'Design and deploy chatbots, document pipelines and automations for real businesses.' },
+  { title: '3D Render Artist', type: 'Project-based · Remote', team: 'Creative', text: 'Create photoreal product renders and short CGI ad films for brands.' },
 ];
 
-const benefits = [
-  { icon: Globe, title: 'Remote-First', desc: 'Work from anywhere in the world. We value output over office hours.' },
-  { icon: Zap, title: 'Latest Tech', desc: 'We play with the newest toys. From AI agents to high-end 3D engines.' },
-  { icon: Heart, title: 'Passion Driven', desc: 'No boring corporate red tape. Just high-impact work that matters.' },
-  { icon: Rocket, title: 'Rapid Growth', desc: 'Join an elite squad where you can scale your skills at warp speed.' },
+const PERKS = [
+  { icon: Globe, title: 'Remote-first', text: 'Work from anywhere. We care about output, not office hours.' },
+  { icon: Zap, title: 'Modern tools', text: 'The latest frameworks, AI tools and 3D software — and time to learn them.' },
+  { icon: Heart, title: 'Real ownership', text: 'Small team, no red tape. Your work ships and clients see your name on it.' },
+  { icon: Rocket, title: 'Grow fast', text: 'Work across web, software, AI and CGI. You’ll learn more in a year than most do in three.' },
 ];
 
-// ─── Components ─────────────────────────────────────────────────────────────
+export default function CareersPage() {
+  const [role, setRole] = useState('');
+  const [name, setName] = useState('');
+  const [link, setLink] = useState('');
+  const [note, setNote] = useState('');
+  const [opened, setOpened] = useState(false);
 
-function RoleCard({ role, onApply }: { role: typeof roles[0], onApply: (role: string) => void }) {
-  return (
-    <div className="group relative bg-white/[0.02] border border-white/10 rounded-2xl p-6 lg:p-8 hover:border-accent/50 transition-all duration-500 hover:bg-white/[0.04]">
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          <span className="text-[10px] uppercase tracking-widest text-accent font-bold block mb-2">{role.category}</span>
-          <h3 className="text-xl lg:text-2xl font-black tracking-tight group-hover:text-white transition-colors">{role.title}</h3>
-        </div>
-        <div className="px-3 py-1 bg-white/5 rounded-full text-[10px] text-white/40 uppercase tracking-widest font-medium">
-          {role.type}
-        </div>
-      </div>
-      
-      <p className="text-white/50 text-sm leading-relaxed mb-6">{role.description}</p>
-      
-      <div className="space-y-2 mb-8">
-        {role.requirements.map((req, i) => (
-          <div key={i} className="flex items-center gap-2 text-xs text-white/30">
-            <CheckCircle2 className="w-3.5 h-3.5 text-accent/50" />
-            <span>{req}</span>
-          </div>
-        ))}
-      </div>
-      
-      <button 
-        onClick={() => onApply(role.title)}
-        className="inline-flex items-center gap-2 text-sm font-bold text-white group/btn"
-      >
-        <span>Apply Now</span>
-        <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-      </button>
-      
-      <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-accent/30 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-700" />
-    </div>
-  );
-}
-
-function CareersPage() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number | null>(null);
-  const isVisibleRef = useRef(true);
-  const formRef = useRef<HTMLDivElement>(null);
-
-  const [selectedRole, setSelectedRole] = useState('');
-  const [file, setFile] = useState<File | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSubmittingSuccess] = useState(false);
-
-  const titleRef = useTextReveal<HTMLHeadingElement>('careers-hero');
-
-  // ─── Animations ───────────────────────────────────────────────────────────
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-    resize();
-    window.addEventListener('resize', resize);
-
-    const stars: { x: number; y: number; size: number; speed: number; opacity: number }[] = [];
-    for (let i = 0; i < 80; i++) {
-      stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 1.5 + 0.5, speed: Math.random() * 0.3 + 0.1, opacity: Math.random() * 0.5 + 0.2 });
-    }
-
-    const animate = () => {
-      if (!isVisibleRef.current) { animationRef.current = requestAnimationFrame(animate); return; }
-      ctx.fillStyle = 'rgba(5, 5, 5, 0.15)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      stars.forEach((star) => {
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-        ctx.fill();
-        star.y += star.speed;
-        if (star.y > canvas.height) { star.y = 0; star.x = Math.random() * canvas.width; }
-      });
-      animationRef.current = requestAnimationFrame(animate);
-    };
-    animate();
-
-    const observer = new IntersectionObserver(
-      (entries) => { entries.forEach((entry) => { isVisibleRef.current = entry.isIntersecting; }); },
-      { threshold: 0 }
-    );
-    observer.observe(canvas);
-
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-      window.removeEventListener('resize', resize);
-      observer.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo('.hero-subtitle', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.8 });
-      gsap.fromTo('.role-card', { opacity: 0, y: 50 }, { 
-        opacity: 1, y: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out',
-        scrollTrigger: { trigger: '.roles-section', start: 'top 80%', once: true }
-      });
-      gsap.fromTo('.benefit-item', { opacity: 0, scale: 0.9 }, { 
-        opacity: 1, scale: 1, duration: 0.6, stagger: 0.1, ease: 'back.out(1.7)',
-        scrollTrigger: { trigger: '.benefits-section', start: 'top 85%', once: true }
-      });
-    });
-    return () => ctx.revert();
-  }, []);
-
-  // ─── Form Handling ────────────────────────────────────────────────────────
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile && selectedFile.type === 'application/pdf') {
-      setFile(selectedFile);
-    } else if (selectedFile) {
-      alert('Please upload a PDF file.');
-    }
+  const apply = (r: string) => {
+    setRole(r);
+    document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const scrollToForm = (roleTitle: string) => {
-    setSelectedRole(roleTitle);
-    formRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const submit = (e: FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsSubmitting(false);
-    setIsSubmittingSuccess(true);
+    const body = [`Name: ${name}`, `Role: ${role || 'General application'}`, link ? `Portfolio / LinkedIn: ${link}` : null, '', note, '', '(CV attached)'].filter((x) => x !== null).join('\n');
+    window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(`Application — ${role || 'General'} — ${name}`)}&body=${encodeURIComponent(body)}`;
+    setOpened(true);
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden">
-      <Helmet>
-        <title>Careers & Elite Opportunities | sevIT Digital</title>
-        <meta name="description" content="Join the next generation of digital pioneers. We are looking for elite specialists in UI/UX, Frontend Engineering, AI Automation, and 3D Rendering. Build the future with us." />
-        <meta property="og:title" content="Careers & Elite Opportunities | sevIT Digital" />
-        <meta property="og:description" content="We're building a team of extraordinary builders. Explore our open roles and launch your career into the digital cosmos." />
-        <meta property="og:image" content="https://sevitdigital.com/images/3dlogo.webp" />
-        <link rel="canonical" href="https://sevitdigital.com/#/careers" />
-      </Helmet>
-      <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-0" />
+    <>
+      <Seo path="/careers" breadcrumbs={[{ name: 'Careers', path: '/careers' }]} />
 
-      {/* ── HERO ─────────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-[80vh] flex items-center justify-center px-6 lg:px-12 pt-32 pb-20 z-10">
-        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(139, 92, 246, 0.12) 0%, transparent 60%)' }} />
-
-        <div className="relative z-10 max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 border border-accent/30 rounded-full mb-8">
-            <Briefcase className="w-4 h-4 text-accent" />
-            <span className="text-xs uppercase tracking-[0.3em] text-accent">Join the cosmos</span>
-          </div>
-
-          <h1 ref={titleRef} className="text-6xl sm:text-7xl lg:text-9xl font-black leading-[0.9] tracking-tighter mb-8 uppercase">
-            BUILD THE<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent via-purple-500 to-accent">FUTURE.</span>
-          </h1>
-
-          <p className="hero-subtitle text-base sm:text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-12 leading-relaxed opacity-0">
-            We are looking for elite specialists who live at the intersection of art and engineering. Join a remote-first team building the next generation of digital tools, 3D experiences, and AI agents.
-          </p>
-
-          <div className="hero-subtitle opacity-0 flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="#roles" className="px-8 py-4 bg-white text-black rounded-full font-bold uppercase tracking-wider hover:bg-accent hover:text-white transition-all">
-              View Open Roles
-            </a>
-            <a href="#benefits" className="px-8 py-4 border border-white/20 rounded-full font-bold uppercase tracking-wider hover:bg-white/5 transition-all">
-              Our Culture
-            </a>
-          </div>
+      <section className="relative overflow-hidden pb-20 pt-36 sm:pt-44">
+        <ShaderBackdrop intensity={0.7} />
+        <div className="grid-bg pointer-events-none absolute inset-0 opacity-50" aria-hidden />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" aria-hidden />
+        <div className="container-x relative">
+          <Reveal className="eyebrow mb-7">Careers at sevIT</Reveal>
+          <Reveal as="h1" delay={80} className="display max-w-5xl text-balance text-[clamp(3rem,8vw,7rem)]">
+            Do the best work of <span className="text-gradient">your career.</span>
+          </Reveal>
+          <Reveal as="p" delay={160} className="mt-7 max-w-xl text-lg leading-relaxed text-white/60">
+            We’re a small studio that takes on big, varied projects — websites, software, AI and CGI. If you love shipping things you’re proud of, we should talk.
+          </Reveal>
+          <Reveal delay={240} className="mt-10">
+            <a href="#roles" className="btn btn-accent">See open roles <ArrowUpRight className="h-4 w-4" /></a>
+          </Reveal>
         </div>
       </section>
 
-      {/* ── BENEFITS ─────────────────────────────────────────────────────────── */}
-      <section id="benefits" className="benefits-section relative py-24 px-6 lg:px-12 z-10 border-t border-white/10">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {benefits.map((benefit, i) => (
-              <div key={i} className="benefit-item flex flex-col items-center text-center opacity-0">
-                <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
-                  <benefit.icon className="w-8 h-8 text-accent" />
-                </div>
-                <h3 className="text-xl font-bold mb-3">{benefit.title}</h3>
-                <p className="text-white/40 text-sm leading-relaxed">{benefit.desc}</p>
-              </div>
-            ))}
-          </div>
+      <section className="py-16">
+        <div className="container-x grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {PERKS.map((p, i) => (
+            <Reveal key={p.title} delay={i * 70}>
+              <SpotlightCard className="h-full p-6">
+                <p.icon className="h-5 w-5 text-orange-300" />
+                <h3 className="mt-6 font-display text-lg font-bold">{p.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-white/55">{p.text}</p>
+              </SpotlightCard>
+            </Reveal>
+          ))}
         </div>
       </section>
 
-      {/* ── OPEN ROLES ───────────────────────────────────────────────────────── */}
-      <section id="roles" className="roles-section relative py-24 md:py-32 px-6 lg:px-12 z-10 border-t border-white/10">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full mb-6">
-              <Sparkles className="w-3 h-3 text-accent" />
-              <span className="text-xs uppercase tracking-[0.2em] text-white/40">Openings</span>
-            </span>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight">MISSION CONTROL</h2>
-            <p className="text-white/50 mt-4 max-w-xl mx-auto">
-              If you don't see a role that fits but you're extraordinary, apply under "General Application".
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {roles.map((role) => (
-              <div key={role.id} className="role-card opacity-0">
-                <RoleCard role={role} onApply={scrollToForm} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── APPLICATION FORM ─────────────────────────────────────────────────── */}
-      <section ref={formRef} id="apply" className="relative py-24 md:py-32 px-6 lg:px-12 z-10 border-t border-white/10">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white/[0.02] border border-white/10 rounded-[2.5rem] p-8 md:p-16 relative overflow-hidden">
-            <div className="absolute -top-24 -right-24 w-64 h-64 bg-accent/20 blur-[100px] pointer-events-none" />
-            
-            {isSuccess ? (
-              <div className="text-center py-20 animate-in fade-in zoom-in duration-500">
-                <div className="w-20 h-20 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-8">
-                  <CheckCircle2 className="w-10 h-10 text-accent" />
-                </div>
-                <h3 className="text-3xl font-black mb-4 uppercase">Transmission Received</h3>
-                <p className="text-white/50 text-lg max-w-md mx-auto mb-10">
-                  Our team has received your application. If there's a match, we'll reach out across the digital void soon.
-                </p>
-                <button 
-                  onClick={() => setIsSubmittingSuccess(false)}
-                  className="px-8 py-4 bg-white text-black rounded-full font-bold uppercase tracking-wider hover:bg-accent hover:text-white transition-all"
-                >
-                  Send another
+      <section id="roles" className="scroll-mt-24 py-20 sm:py-28">
+        <div className="container-x">
+          <SectionHeader eyebrow="Open roles" title={<>Find your <span className="text-white/40">seat.</span></>} />
+          <ul className="border-t border-white/[0.08]">
+            {ROLES.map((r, i) => (
+              <Reveal as="li" key={r.title} delay={i * 50} className="border-b border-white/[0.08]">
+                <button type="button" onClick={() => apply(r.title)} className="group grid w-full items-center gap-3 py-7 text-left sm:grid-cols-[1fr_auto_auto] sm:gap-8">
+                  <span>
+                    <span className="block font-display text-2xl font-bold transition-colors group-hover:text-orange-200 sm:text-3xl">{r.title}</span>
+                    <span className="mt-1.5 block max-w-xl text-sm text-white/50">{r.text}</span>
+                  </span>
+                  <span className="flex gap-2 text-xs">
+                    <span className="rounded-full border border-white/10 px-3 py-1 text-white/60">{r.team}</span>
+                    <span className="rounded-full border border-white/10 px-3 py-1 text-white/60">{r.type}</span>
+                  </span>
+                  <span className="hidden h-12 w-12 items-center justify-center rounded-full border border-white/15 transition-all duration-500 group-hover:rotate-45 group-hover:border-transparent group-hover:bg-white group-hover:text-black sm:flex">
+                    <ArrowUpRight className="h-5 w-5" />
+                  </span>
                 </button>
-              </div>
-            ) : (
-              <>
-                <div className="mb-12">
-                  <h2 className="text-3xl sm:text-4xl font-black mb-4 uppercase">Apply for Impact</h2>
-                  <p className="text-white/40">Ready to join sevIT? Fill out the form below and upload your CV.</p>
-                </div>
+              </Reveal>
+            ))}
+          </ul>
+          <p className="mt-6 text-sm text-white/45">Don’t see your role? Apply anyway — we read every message.</p>
+        </div>
+      </section>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest text-white/40 font-bold ml-1">Full Name</label>
-                      <input 
-                        required
-                        type="text" 
-                        placeholder="John Doe"
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-accent/50 transition-colors"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest text-white/40 font-bold ml-1">Email Address</label>
-                      <input 
-                        required
-                        type="email" 
-                        placeholder="john@example.com"
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-accent/50 transition-colors"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-xs uppercase tracking-widest text-white/40 font-bold ml-1">Applying for Position</label>
-                    <select 
-                      value={selectedRole}
-                      onChange={(e) => setSelectedRole(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-accent/50 transition-colors appearance-none"
+      <section id="apply" className="scroll-mt-24 border-t border-white/[0.06] py-24 sm:py-32">
+        <div className="container-x grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+          <SectionHeader className="!mb-0" eyebrow="Apply" title={<>Introduce <span className="text-white/40">yourself.</span></>} intro="Fill this in and we’ll open an email to the team with your details. Attach your CV or portfolio PDF and hit send." />
+          <Reveal>
+            <SpotlightCard as="form" onSubmit={submit} className="space-y-5 p-6 sm:p-8">
+              <div>
+                <p className="mb-2 text-sm text-white/60">Role</p>
+                <div className="flex flex-wrap gap-2">
+                  {[...ROLES.map((r) => r.title), 'General application'].map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => setRole(r)}
+                      aria-pressed={role === r}
+                      className={cn('rounded-full border px-3.5 py-2 text-xs transition-colors', role === r ? 'border-orange-400/70 bg-orange-500/15 text-white' : 'border-white/10 text-white/55 hover:text-white')}
                     >
-                      <option value="" className="bg-[#0a0a0a]">Select a role</option>
-                      {roles.map(r => <option key={r.id} value={r.title} className="bg-[#0a0a0a]">{r.title}</option>)}
-                      <option value="General Application" className="bg-[#0a0a0a]">General Application</option>
-                    </select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-xs uppercase tracking-widest text-white/40 font-bold ml-1">CV / Resume (PDF Only)</label>
-                    <div className="relative group/upload">
-                      <input 
-                        required
-                        type="file" 
-                        accept="application/pdf"
-                        onChange={handleFileChange}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                        aria-label="Upload your CV in PDF format"
-                      />
-                      <div className={`w-full border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center gap-3 transition-all ${file ? 'border-accent/50 bg-accent/5' : 'border-white/10 hover:border-white/20'}`}>
-                        {file ? (
-                          <>
-                            <div className="flex items-center gap-3 bg-white/10 px-4 py-2 rounded-xl">
-                              <FileText className="w-5 h-5 text-accent" />
-                              <span className="text-sm font-medium truncate max-w-[150px]">{file.name}</span>
-                              <button 
-                                type="button"
-                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setFile(null); }}
-                                className="p-2 hover:bg-white/10 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
-                                aria-label="Remove selected file"
-                              >
-                                <X className="w-4 h-4" />
-                              </button>
-                            </div>
-                            <span className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Tap to Replace</span>
-                          </>
-                        ) : (
-                          <>
-                            <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center group-hover/upload:scale-110 transition-transform">
-                              <Upload className="w-6 h-6 text-white/40" />
-                            </div>
-                            <span className="text-sm text-white/40 font-medium">Tap to select PDF</span>
-                            <span className="text-[10px] text-white/20 uppercase tracking-widest">Max size 5MB</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-xs uppercase tracking-widest text-white/40 font-bold ml-1">Tell us why you're extraordinary</label>
-                    <textarea 
-                      placeholder="I once built a..."
-                      rows={4}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-accent/50 transition-colors resize-none"
-                    />
-                  </div>
-
-                  <button 
-                    disabled={isSubmitting}
-                    type="submit"
-                    className="w-full py-5 bg-accent text-white rounded-full font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        <span>Sending Signal...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Submit Application</span>
-                        <ArrowRight className="w-5 h-5" />
-                      </>
-                    )}
-                  </button>
-                </form>
-              </>
-            )}
-          </div>
+                      {r}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {[
+                { l: 'Full name', v: name, s: setName, req: true, ac: 'name' },
+                { l: 'Portfolio, GitHub or LinkedIn', v: link, s: setLink, req: false, ac: 'url' },
+              ].map((f) => (
+                <label key={f.l} className="block">
+                  <span className="mb-2 block text-sm text-white/60">{f.l}</span>
+                  <input required={f.req} autoComplete={f.ac} value={f.v} onChange={(e) => f.s(e.target.value)} className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-base focus:border-orange-400/60 focus:outline-none sm:text-sm" />
+                </label>
+              ))}
+              <label className="block">
+                <span className="mb-2 block text-sm text-white/60">Why sevIT? (optional)</span>
+                <textarea rows={4} value={note} onChange={(e) => setNote(e.target.value)} className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-base focus:border-orange-400/60 focus:outline-none sm:text-sm" />
+              </label>
+              <button type="submit" className="btn btn-accent w-full !py-4">
+                {opened ? <Check className="h-4 w-4" /> : <Mail className="h-4 w-4" />}
+                {opened ? 'Email opened — attach your CV and send' : 'Continue in email'}
+              </button>
+              <p className="text-center text-xs text-white/35">
+                Or email us directly at <a className="underline" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+              </p>
+            </SpotlightCard>
+          </Reveal>
         </div>
       </section>
-
-      {/* ── SPACE FOOTER ─────────────────────────────────────────────────────── */}
-      <section className="relative py-20 px-6 lg:px-12 z-10 text-center">
-        <div className="max-w-2xl mx-auto opacity-20">
-          <p className="text-[10px] uppercase tracking-[0.5em]">sevIT Digital Agency — Recruitment Division</p>
-        </div>
-      </section>
-    </div>
+    </>
   );
 }
-
-export default CareersPage;

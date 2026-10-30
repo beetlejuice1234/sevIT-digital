@@ -1,0 +1,70 @@
+{
+  "siteUrl": "https://sevitdigital.com",
+  "siteName": "sevIT Digital",
+  "defaultImage": "/og-image.png",
+  "routes": [
+    {
+      "path": "/",
+      "title": "sevIT Digital | Web Design, Software & POS, AI and 3D Ads in Sri Lanka",
+      "description": "sevIT is a Sri Lankan digital studio building high-performance websites, POS and business software, AI automation, branding and photoreal 3D product ads.",
+      "priority": 1.0,
+      "changefreq": "weekly"
+    },
+    {
+      "path": "/services/web-design",
+      "title": "Web Design & Development | sevIT Digital",
+      "description": "Fast, SEO-ready websites and web apps built with React and modern tooling. Custom design, mobile-first, and built to convert visitors into customers.",
+      "priority": 0.9,
+      "changefreq": "monthly"
+    },
+    {
+      "path": "/services/software-pos",
+      "title": "POS Systems & Custom Business Software | sevIT Digital",
+      "description": "Custom POS, billing, inventory and business management software for shops, restaurants and growing teams in Sri Lanka. Built around how you actually work.",
+      "priority": 0.9,
+      "changefreq": "monthly"
+    },
+    {
+      "path": "/services/ai-solutions",
+      "title": "AI Chatbots & Automation | sevIT Digital",
+      "description": "Custom AI assistants, chatbots and workflow automation that handle repetitive work, answer customers 24/7 and plug into the tools you already use.",
+      "priority": 0.9,
+      "changefreq": "monthly"
+    },
+    {
+      "path": "/services/3d-rendering",
+      "title": "3D Product Rendering & Virtual Ads | sevIT Digital",
+      "description": "Photoreal 3D product renders and AI-assisted virtual ad campaigns. Studio-quality visuals for fragrance, beverage, tech and lifestyle brands — no studio required.",
+      "priority": 0.9,
+      "changefreq": "monthly"
+    },
+    {
+      "path": "/services/branding",
+      "title": "Branding & Visual Identity | sevIT Digital",
+      "description": "Logos, visual identity systems and brand guidelines that make your business recognisable and consistent across every touchpoint.",
+      "priority": 0.8,
+      "changefreq": "monthly"
+    },
+    {
+      "path": "/services/advertising",
+      "title": "Social & Search Advertising | sevIT Digital",
+      "description": "Meta, Instagram, TikTok and Google ad campaigns with scroll-stopping creative, careful targeting and clear reporting on what your budget returns.",
+      "priority": 0.8,
+      "changefreq": "monthly"
+    },
+    {
+      "path": "/services/marketing",
+      "title": "Growth Marketing & SEO | sevIT Digital",
+      "description": "SEO, conversion optimisation and email marketing that bring in steady, compounding growth instead of one-off spikes.",
+      "priority": 0.8,
+      "changefreq": "monthly"
+    },
+    {
+      "path": "/careers",
+      "title": "Careers | sevIT Digital",
+      "description": "Join sevIT. We're looking for designers, React engineers, AI automation specialists and 3D artists who like shipping work they're proud of.",
+      "priority": 0.6,
+      "changefreq": "monthly"
+    }
+  ]
+}

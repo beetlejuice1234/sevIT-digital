@@ -1,471 +1,190 @@
-import React, { useEffect, useRef } from 'react';
-import { Helmet } from 'react-helmet-async';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, Search, Mail, BarChart3, Rocket, Target, TrendingUp, Users, RefreshCw, Layers } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import MobileAccordionCards from '../../components/ui/MobileAccordionCards';
-import type { AccordionCardItem } from '../../components/ui/MobileAccordionCards';
-import MobileTimeline from '../../components/ui/MobileTimeline';
-import type { TimelineStep } from '../../components/ui/MobileTimeline';
+import { useState } from 'react';
+import { Search, MousePointerClick, Mail, MapPin, Star } from 'lucide-react';
+import ServiceLayout, { StepsSection } from '@/components/service/ServiceLayout';
+import { Reveal, SectionHeader } from '@/components/kit';
+import { cn } from '@/lib/utils';
 
-gsap.registerPlugin(ScrollTrigger);
+const STAGES = [
+  { label: 'Get found', width: 100, what: 'SEO, Google Business Profile and content that put you in front of people already searching.', tactics: ['Keyword & competitor research', 'Technical SEO fixes', 'Google Business Profile', 'Local landing pages'] },
+  { label: 'Get chosen', width: 78, what: 'Conversion work that turns more of those visitors into calls, bookings and orders.', tactics: ['Landing page rewrites', 'Clear offers & CTAs', 'Reviews & trust signals', 'A/B testing'] },
+  { label: 'Get them back', width: 56, what: 'Email, WhatsApp and loyalty flows that bring customers back without paying for them twice.', tactics: ['Welcome & win-back emails', 'WhatsApp broadcasts', 'Offers & loyalty', 'Segmented newsletters'] },
+  { label: 'Keep improving', width: 38, what: 'Analytics and a monthly rhythm of looking at the numbers and doing more of what works.', tactics: ['GA4 & Search Console', 'Monthly growth review', 'Experiment backlog', 'Clear dashboards'] },
+];
 
-const GREEN = {
-  color: 'rgb(16,185,129)',
-  accentClass: 'text-emerald-500',
-  bgClass: 'bg-emerald-500/20',
-  borderClass: 'border-emerald-500/40',
-};
-
-// ─── Service Card (Desktop) ───────────────────────────────────────────────────
-function ServiceCard({ icon: Icon, title, subtitle, description, bullets }: {
-  icon: React.ComponentType<{ className?: string }>;
-  title: string;
-  subtitle: string;
-  description: string;
-  bullets: string[];
-}) {
+function Funnel() {
+  const [i, setI] = useState(0);
+  const s = STAGES[i];
   return (
-    <div className="group relative bg-white/[0.02] border border-white/10 rounded-3xl p-8 hover:border-emerald-500/50 transition-all duration-500 h-full flex flex-col">
-      <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-emerald-500/10 blur-3xl opacity-0 group-hover:opacity-40 transition-opacity" />
-      <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 flex items-center justify-center mb-6 shrink-0">
-        <Icon className="w-7 h-7 text-emerald-500" />
+    <section id="work" className="relative scroll-mt-24 py-20 sm:py-28">
+      <div className="container-x">
+        <SectionHeader eyebrow="The growth loop" title={<>Four levers. <span className="text-gradient">Pulled together.</span></>} intro="Tap each stage to see what we work on. Most businesses only pull one of these; growth comes from all four." />
+        <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
+          <Reveal className="flex flex-col items-center gap-2 rounded-[2rem] border border-white/10 bg-[#0b0b0b] p-6 sm:p-10">
+            {STAGES.map((x, n) => (
+              <button
+                key={x.label}
+                type="button"
+                onClick={() => setI(n)}
+                aria-pressed={n === i}
+                className={cn(
+                  'relative flex h-16 items-center justify-between rounded-2xl px-5 text-left transition-all duration-500 [transition-timing-function:var(--ease-out)] sm:h-20',
+                  n === i ? 'bg-gradient-to-r from-red-500 to-orange-400 text-white shadow-[0_10px_40px_-10px_rgba(249,115,22,0.7)]' : 'bg-white/[0.04] text-white/55 hover:bg-white/[0.08]',
+                )}
+                style={{ width: `${x.width}%`, minWidth: 220 }}
+              >
+                <span className="font-mono text-xs opacity-70">0{n + 1}</span>
+                <span className="font-display text-lg font-bold sm:text-xl">{x.label}</span>
+              </button>
+            ))}
+          </Reveal>
+          <div key={s.label} className="flex flex-col justify-center [animation:svc-in_.6s_var(--ease-out)_both]">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-orange-300">Stage 0{i + 1}</p>
+            <h3 className="display mt-3 text-4xl sm:text-5xl">{s.label}</h3>
+            <p className="mt-4 max-w-md leading-relaxed text-white/60">{s.what}</p>
+            <ul className="mt-6 grid gap-2 sm:grid-cols-2">
+              {s.tactics.map((t) => (
+                <li key={t} className="rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-sm text-white/75">{t}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
-      <span className="text-xs uppercase tracking-[0.2em] text-emerald-400 mb-2 block">{subtitle}</span>
-      <h3 className="text-2xl font-bold mb-3">{title}</h3>
-      <p className="text-white/50 text-sm mb-6 leading-relaxed">{description}</p>
-      <ul className="space-y-3 mt-auto">
-        {bullets.map((b, i) => (
-          <li key={i} className="flex items-start gap-3 text-sm text-white/70">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 mt-1.5" />
-            {b}
-          </li>
+    </section>
+  );
+}
+
+function SerpPreview() {
+  const [name, setName] = useState('Golden Hour Coffee');
+  const [city, setCity] = useState('Kandy');
+  const [kind, setKind] = useState('café');
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '') || 'yourbusiness';
+  return (
+    <section className="relative border-t border-white/[0.06] py-24 sm:py-32">
+      <div className="container-x grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+        <div>
+          <SectionHeader className="!mb-8" eyebrow="Try it" title={<>See yourself <span className="text-white/40">on page one.</span></>} intro="Type your business details and preview how a well-optimised listing could look when someone nearby searches for you." />
+          <div className="grid gap-3 sm:grid-cols-3">
+            {[
+              { l: 'Business name', v: name, s: setName },
+              { l: 'What you are', v: kind, s: setKind },
+              { l: 'City', v: city, s: setCity },
+            ].map((f) => (
+              <label key={f.l} className="block">
+                <span className="mb-1.5 block text-xs text-white/50">{f.l}</span>
+                <input value={f.v} onChange={(e) => f.s(e.target.value)} className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-base focus:border-orange-400/60 focus:outline-none sm:text-sm" />
+              </label>
+            ))}
+          </div>
+        </div>
+        <Reveal>
+          <div className="rounded-[2rem] bg-white p-5 text-[#202124] shadow-2xl sm:p-7">
+            <div className="flex items-center gap-3 rounded-full border border-black/10 px-4 py-2.5 shadow-sm">
+              <Search className="h-4 w-4 text-[#9aa0a6]" />
+              <span className="truncate text-sm">best {kind || 'business'} in {city || 'your city'}</span>
+            </div>
+            <div className="mt-5 rounded-2xl border border-black/10 p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="truncate text-lg font-medium text-[#1a0dab]">{name || 'Your Business'}</p>
+                  <p className="mt-0.5 flex items-center gap-1 text-sm">
+                    <span className="font-medium">4.9</span>
+                    <span className="flex text-[#fbbc04]">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-3.5 w-3.5 fill-current" />)}</span>
+                    <span className="text-[#70757a]">(128) · {kind}</span>
+                  </p>
+                  <p className="mt-0.5 flex items-center gap-1 text-sm text-[#70757a]"><MapPin className="h-3.5 w-3.5" /> {city} · Open now</p>
+                </div>
+                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl">
+                  <img src="/images/renders/sm/perf3.webp" alt="" className="h-full w-full object-cover" />
+                </div>
+              </div>
+              <div className="mt-3 flex gap-2 text-xs">
+                {['Website', 'Directions', 'Call'].map((b) => (
+                  <span key={b} className="rounded-full border border-black/15 px-3 py-1 text-[#1a73e8]">{b}</span>
+                ))}
+              </div>
+            </div>
+            <div className="mt-5">
+              <p className="text-xs text-[#4d5156]">https://{slug}.lk</p>
+              <p className="text-lg text-[#1a0dab]">{name || 'Your Business'} — {kind ? kind[0].toUpperCase() + kind.slice(1) : 'Business'} in {city}</p>
+              <p className="text-sm text-[#4d5156]">Visit {name || 'us'} in {city}. See our menu, opening hours and reviews, and book or order online in seconds.</p>
+            </div>
+            <p className="mt-5 text-center text-[11px] text-black/35">Preview for illustration — ratings shown are placeholders</p>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function HeroVisual() {
+  const pts = [92, 88, 80, 82, 70, 64, 58, 50, 42, 36, 26, 18];
+  return (
+    <div className="relative mx-auto max-w-[520px] rounded-[2rem] border border-white/10 bg-[#0b0b0b]/90 p-6 shadow-2xl backdrop-blur">
+      <div className="flex items-center justify-between">
+        <p className="font-mono text-[10px] uppercase tracking-wider text-white/40">Organic sessions · 12 months</p>
+        <span className="rounded-full border border-white/10 px-2 py-0.5 font-mono text-[10px] text-white/40">Illustrative</span>
+      </div>
+      <svg viewBox="0 0 330 110" className="mt-6 h-44 w-full" preserveAspectRatio="none" aria-hidden>
+        <defs>
+          <linearGradient id="mk-g" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stopColor="#f97316" stopOpacity=".45" />
+            <stop offset="1" stopColor="#f97316" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path d={`M0 ${pts[0]} ${pts.map((p, i) => `L${i * 30} ${p}`).join(' ')} L330 110 L0 110Z`} fill="url(#mk-g)" />
+        <polyline points={pts.map((p, i) => `${i * 30},${p}`).join(' ')} fill="none" stroke="#fb923c" strokeWidth="2.5" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
+        {pts.map((p, i) => i % 3 === 2 && <circle key={i} cx={i * 30} cy={p} r="3" fill="#fff" />)}
+      </svg>
+      <div className="mt-5 grid grid-cols-3 gap-2">
+        {[
+          { i: Search, l: 'Search' },
+          { i: MousePointerClick, l: 'Conversion' },
+          { i: Mail, l: 'Email' },
+        ].map((x) => (
+          <div key={x.l} className="flex items-center gap-2 rounded-xl bg-white/[0.04] px-3 py-2.5 text-xs text-white/70">
+            <x.i className="h-3.5 w-3.5 text-orange-300" /> {x.l}
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
 
-// ─── Growth Explainer (desktop 2×2 + mobile 2×2 always-visible grid) ─────────
-function GrowthExplainer() {
-  const pillars = [
-    { icon: TrendingUp, label: 'Get Found', detail: 'Showing up in search results when people are already looking for what you offer.' },
-    { icon: Users, label: 'Get Chosen', detail: "Turning website visitors into actual customers by making your site easy to trust and use." },
-    { icon: RefreshCw, label: 'Get Them Back', detail: 'Keeping past customers engaged so they buy again — the most efficient revenue you can make.' },
-    { icon: BarChart3, label: 'Keep Improving', detail: "Every campaign teaches us something. We use that to make the next one better." },
-  ];
-
+export default function MarketingPage() {
   return (
-    <>
-      {/* Desktop */}
-      <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {pillars.map((p, i) => {
-          const Icon = p.icon;
-          return (
-            <div key={i} className="flex gap-4 bg-white/[0.02] border border-white/10 rounded-2xl p-5 hover:border-emerald-500/30 transition-all duration-300 group">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center shrink-0">
-                <Icon className="w-5 h-5 text-emerald-500" />
-              </div>
-              <div>
-                <h4 className="font-bold text-sm mb-1 group-hover:text-emerald-400 transition-colors">{p.label}</h4>
-                <p className="text-white/45 text-xs leading-relaxed">{p.detail}</p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Mobile — always-visible 2×2 compact grid */}
-      <div className="md:hidden grid grid-cols-2 gap-3 mt-6">
-        {pillars.map((p, i) => {
-          const Icon = p.icon;
-          return (
-            <div
-              key={i}
-              className="flex flex-col gap-3 bg-white/[0.03] border border-white/10 rounded-2xl p-4"
-            >
-              <div className="w-9 h-9 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-                <Icon className="w-4 h-4 text-emerald-500" />
-              </div>
-              <div>
-                <h4 className="font-bold text-sm text-emerald-400 mb-1">{p.label}</h4>
-                <p className="text-white/45 text-xs leading-relaxed">{p.detail}</p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </>
+    <ServiceLayout
+      slug="marketing"
+      title={
+        <>
+          Growth that <span className="text-gradient">compounds.</span>
+        </>
+      }
+      intro="SEO, conversion and email marketing that keep bringing customers in month after month — instead of stopping the moment you pause your ad spend."
+      heroVisual={<HeroVisual />}
+      offeringsTitle={<>Less noise. <span className="text-white/40">More customers.</span></>}
+      offerings={[
+        { icon: Search, title: 'SEO & local search', text: 'Technical fixes, content and Google Business Profile work that help nearby customers find you first.' },
+        { icon: MousePointerClick, title: 'Conversion optimisation', text: 'Sharper pages, offers and forms that get more out of the traffic you already have.' },
+        { icon: Mail, title: 'Email & WhatsApp', text: 'Automated flows and campaigns that turn one-time buyers into regulars.' },
+      ]}
+      faqs={[
+        { q: 'How long does SEO take to work?', a: 'Technical fixes can help within weeks, but meaningful ranking gains usually take three to six months. It’s slower than ads — and it keeps working after you stop paying.' },
+        { q: 'Do you guarantee first place on Google?', a: 'No honest agency can. We guarantee the work: solid technical foundations, useful content and clear monthly reporting on rankings and traffic.' },
+        { q: 'Do I need a new website for this?', a: 'Not necessarily. We start with an audit; sometimes small fixes on your current site are enough, sometimes a rebuild is the better investment.' },
+        { q: 'What does a monthly retainer include?', a: 'An agreed set of SEO, content and conversion tasks each month, plus a short report and a review call.' },
+      ]}
+    >
+      <Funnel />
+      <SerpPreview />
+      <StepsSection
+        title={<>Our monthly <span className="text-white/40">rhythm.</span></>}
+        steps={[
+          { title: 'Audit', text: 'Where you rank, where visitors drop off and what competitors do better.' },
+          { title: 'Prioritise', text: 'The few changes with the biggest expected impact go first.' },
+          { title: 'Execute', text: 'Fixes, content, pages and flows shipped every month.' },
+          { title: 'Review', text: 'Results, learnings and next month’s plan — in plain language.' },
+        ]}
+      />
+    </ServiceLayout>
   );
 }
-
-// ─── Main Component ───────────────────────────────────────────────────────────
-function MarketingPage() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number | null>(null);
-  const isVisibleRef = useRef(true);
-
-  // Starfield background
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-    resize();
-    window.addEventListener('resize', resize);
-
-    const stars: { x: number; y: number; size: number; speed: number; opacity: number }[] = [];
-    for (let i = 0; i < 80; i++) {
-      stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 1.5 + 0.5, speed: Math.random() * 0.3 + 0.1, opacity: Math.random() * 0.5 + 0.2 });
-    }
-
-    const animate = () => {
-      if (!isVisibleRef.current) { animationRef.current = requestAnimationFrame(animate); return; }
-      ctx.fillStyle = 'rgba(5, 5, 5, 0.15)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      stars.forEach((star) => {
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-        ctx.fill();
-        star.y += star.speed;
-        if (star.y > canvas.height) { star.y = 0; star.x = Math.random() * canvas.width; }
-      });
-      animationRef.current = requestAnimationFrame(animate);
-    };
-    animate();
-
-    const observer = new IntersectionObserver(
-      (entries) => { entries.forEach((e) => { isVisibleRef.current = e.isIntersecting; }); },
-      { threshold: 0 }
-    );
-    observer.observe(canvas);
-
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-      window.removeEventListener('resize', resize);
-      observer.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo('.hero-line',
-        { opacity: 0, y: 80 },
-        { opacity: 1, y: 0, duration: 1, stagger: 0.15, ease: 'power3.out', delay: 0.3 }
-      );
-      gsap.fromTo('.service-card',
-        { opacity: 0, y: 60 },
-        { opacity: 1, y: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out',
-          scrollTrigger: { trigger: '.services-section', start: 'top 80%', once: true } }
-      );
-      gsap.fromTo('.explainer-section',
-        { opacity: 0, y: 50 },
-        { opacity: 1, y: 0, duration: 1, ease: 'power3.out',
-          scrollTrigger: { trigger: '.explainer-section', start: 'top 80%', once: true } }
-      );
-      gsap.fromTo('.process-step',
-        { opacity: 0, x: -30 },
-        { opacity: 1, x: 0, duration: 0.7, stagger: 0.15, ease: 'power3.out',
-          scrollTrigger: { trigger: '.process-section', start: 'top 80%', once: true } }
-      );
-    });
-    return () => ctx.revert();
-  }, []);
-
-  // ── Data ──────────────────────────────────────────────────────────────────
-  const services = [
-    {
-      icon: Search,
-      title: 'SEO',
-      subtitle: 'Get Found Organically',
-      description: "When someone searches for what you offer, you want to be there. SEO is the long game — it takes time to build, but once it's working, it brings in customers without you paying per click.",
-      bullets: [
-        'Figuring out what your customers are actually searching for',
-        'Making sure your website loads fast and is easy for Google to read',
-        'Writing content that answers real questions and ranks',
-        'Building credibility through quality links over time',
-      ],
-    },
-    {
-      icon: Target,
-      title: 'Conversion Optimization',
-      subtitle: 'Turn Visitors Into Customers',
-      description: "Getting traffic is only half the battle. If people land on your site and leave without doing anything, something's off. We find out what and fix it.",
-      bullets: [
-        'Looking at where people are dropping off on your site',
-        'Testing different versions of your pages to see what works better',
-        'Making your calls-to-action clearer and more compelling',
-        'Simplifying the path from "interested" to "bought"',
-      ],
-    },
-    {
-      icon: Mail,
-      title: 'Email Marketing',
-      subtitle: 'Your Most Reliable Channel',
-      description: "Email is still one of the highest-ROI marketing channels — because you own the list. We set up flows and campaigns that stay in touch with your customers without being annoying.",
-      bullets: [
-        'Automated welcome and onboarding sequences',
-        'Campaigns that feel personal, not like a newsletter blast',
-        'Segmenting your list so the right people get the right message',
-        'Re-engaging people who went quiet',
-      ],
-    },
-  ];
-
-  const mobileServiceItems: AccordionCardItem[] = services.map((s) => ({
-    icon: s.icon,
-    title: s.title,
-    subtitle: s.subtitle,
-    description: s.description,
-    bullets: s.bullets,
-    accentColor: GREEN.color,
-    accentClass: GREEN.accentClass,
-    bgClass: GREEN.bgClass,
-    borderClass: GREEN.borderClass,
-  }));
-
-  const processSteps = [
-    { number: '01', title: 'Understand Where You Are', description: "We start by looking at what you already have — your site, your traffic, your existing content. No point building on a broken foundation." },
-    { number: '02', title: 'Identify the Real Opportunities', description: "Not every business needs the same thing. We figure out which channels and tactics will actually move the needle for your specific situation, and prioritize those." },
-    { number: '03', title: 'Build and Execute', description: "We put the plan into action — whether that's fixing your site structure, creating content, setting up email flows, or running experiments on your landing pages." },
-    { number: '04', title: 'Measure, Learn, Repeat', description: "Growth marketing is an ongoing loop, not a one-time project. We track what's working, cut what isn't, and keep iterating until the numbers are consistently moving in the right direction." },
-  ];
-
-  const mobileTimelineSteps: TimelineStep[] = processSteps.map((s) => ({
-    ...s,
-    accentColor: GREEN.color,
-    accentClass: GREEN.accentClass,
-    bgClass: GREEN.bgClass,
-    borderClass: GREEN.borderClass,
-  }));
-
-  return (
-    <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden">
-      <Helmet>
-        <title>Growth Marketing & SEO Strategy | sevIT Digital</title>
-        <meta name="description" content="Dominate your market with compounding growth. We engineer systematic audience accumulation through data-driven SEO, CRO, and email marketing." />
-        <meta property="og:title" content="Growth Marketing & SEO Strategy | sevIT Digital" />
-        <meta property="og:description" content="Stop buying traffic. Start building compounding growth assets that consistently convert visitors into loyal customers." />
-        <meta property="og:image" content="https://sevitdigital.com/images/3d-portfolio-1.jpg" />
-        <link rel="canonical" href="https://sevitdigital.com/#/services/marketing" />
-      </Helmet>
-      <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-0" />
-
-      {/* ── HERO ─────────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-[85vh] flex items-center justify-center px-6 lg:px-12 pt-28 pb-32 md:pt-32 md:pb-40 z-10">
-        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(16, 185, 129, 0.15) 0%, transparent 60%)' }} />
-        <div className="relative z-10 max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full mb-6 md:mb-8">
-            <Rocket className="w-4 h-4 text-emerald-500" />
-            <span className="text-xs uppercase tracking-[0.3em] text-emerald-400">Growth Marketing</span>
-          </div>
-
-          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tighter mb-6 md:mb-8">
-            <span className="hero-line block opacity-0">MORE PEOPLE.</span>
-            <span className="hero-line block text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-green-400 opacity-0">
-              MORE CUSTOMERS.
-            </span>
-          </h1>
-
-          <p className="hero-line text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-4 opacity-0 leading-relaxed">
-            Growth marketing is the systematic accumulation of audience, authority, and trust. 
-            We build assets that consistently convert—not one-off campaigns that fade.
-          </p>
-
-          <p className="hero-line text-sm md:text-base text-white/35 max-w-xl mx-auto mb-8 md:mb-10 opacity-0">
-            We handle the SEO, CRO, and email strategy so you can focus on scale.
-          </p>
-
-          <div className="hero-line opacity-0">
-            <Link
-              to="/#chat"
-              className="inline-flex items-center gap-3 px-7 md:px-8 py-3.5 md:py-4 bg-emerald-500 text-white rounded-full font-bold uppercase tracking-wider hover:bg-white hover:text-black transition-all group text-sm md:text-base"
-            >
-              <span>Let's Build Your Growth Plan</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-        </div>
-
-        {/* Mobile scroll hint */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30 md:hidden">
-          <span className="text-[10px] uppercase tracking-widest">Scroll</span>
-          <div className="w-px h-6 bg-gradient-to-b from-emerald-500 to-transparent" />
-        </div>
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 text-white/40">
-          <span className="text-xs uppercase tracking-widest">Scroll</span>
-          <div className="w-px h-8 bg-gradient-to-b from-emerald-500 to-transparent" />
-        </div>
-      </section>
-
-      {/* ── WHAT IS GROWTH MARKETING ──────────────────────────────────────────── */}
-      <section className="explainer-section relative py-20 md:py-24 px-6 lg:px-12 z-10 border-t border-white/10">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-12 items-start lg:items-center">
-            <div>
-              <span className="text-sm text-emerald-400 uppercase tracking-wider">The Short Version</span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mt-3 mb-5">
-                What is growth<br />marketing, actually?
-              </h2>
-              <p className="text-white/50 text-sm leading-relaxed mb-4">
-                The world's most visible brands don't appear by accident. They use growth marketing—a systematic combination of channels engineered for compounding returns.
-              </p>
-              <p className="text-white/50 text-sm leading-relaxed mb-4">
-                The key is <span className="text-white">compounding value</span>. The work we do today builds equity that pays off for months.
-              </p>
-              <p className="text-white/50 text-sm leading-relaxed">
-                Unlike paid ads that stop the moment the budget ends, growth assets like search rankings and email lists keep working for you long after the initial setup.
-              </p>
-            </div>
-            <GrowthExplainer />
-          </div>
-        </div>
-      </section>
-
-      {/* ── SERVICES ─────────────────────────────────────────────────────────── */}
-      <section className="services-section relative py-20 md:py-24 px-6 lg:px-12 z-10 border-t border-white/10">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-10 md:mb-16">
-            <span className="text-sm text-emerald-400 uppercase tracking-wider">What We Handle</span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mt-2">
-              Three channels.<br />One consistent strategy.
-            </h2>
-            <p className="text-white/40 mt-4 max-w-xl mx-auto text-sm leading-relaxed">
-              We focus on the three channels that tend to deliver the best long-term results for growing businesses.
-            </p>
-          </div>
-
-          {/* Desktop Grid */}
-          <div className="hidden md:grid grid-cols-3 gap-6 items-stretch">
-            {services.map((service, i) => (
-              <div key={i} className="service-card opacity-0 h-full">
-                <ServiceCard
-                  icon={service.icon}
-                  title={service.title}
-                  subtitle={service.subtitle}
-                  description={service.description}
-                  bullets={service.bullets}
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* Mobile — Accordion */}
-          <MobileAccordionCards items={mobileServiceItems} />
-        </div>
-      </section>
-
-      {/* ── HOW IT WORKS ─────────────────────────────────────────────────────── */}
-      <section className="process-section relative py-20 md:py-24 px-6 lg:px-12 z-10 border-t border-white/10">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10 md:mb-16">
-            <span className="text-sm text-emerald-400 uppercase tracking-wider">How We Work</span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mt-2">No mysteries. Just a clear process.</h2>
-            <p className="text-white/40 mt-4 max-w-lg mx-auto text-sm leading-relaxed">
-              Growth isn't a switch you flip — it's a loop you build. Here's how we build it with you.
-            </p>
-          </div>
-
-          {/* Desktop List */}
-          <div className="hidden md:block space-y-4">
-            {processSteps.map((step, i) => (
-              <div key={i} className="process-step opacity-0 flex gap-6 bg-white/[0.02] border border-white/10 rounded-2xl p-6 hover:border-emerald-500/30 transition-all duration-300 group">
-                <div className="w-14 h-14 rounded-xl bg-emerald-500/20 flex items-center justify-center shrink-0">
-                  <span className="text-xl font-black text-emerald-500">{step.number}</span>
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg mb-1 group-hover:text-emerald-400 transition-colors">{step.title}</h3>
-                  <p className="text-sm text-white/50 leading-relaxed">{step.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Mobile — Timeline */}
-          <MobileTimeline steps={mobileTimelineSteps} />
-        </div>
-      </section>
-
-      {/* ── HONEST PITCH ─────────────────────────────────────────────────────── */}
-      <section className="relative py-20 md:py-24 px-6 lg:px-12 z-10 border-t border-white/10">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 lg:p-12 backdrop-blur-sm">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-              <div>
-                <span className="text-sm text-emerald-400 uppercase tracking-wider">The Honest Truth</span>
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-black mt-3 mb-5">
-                  Growth marketing<br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-green-400">
-                    isn't magic.
-                  </span>
-                </h2>
-                <p className="text-white/50 text-sm leading-relaxed mb-4">
-                  Anyone promising specific traffic or revenue numbers before seeing your data is guessing. Growth depends on your market, your product, and your starting point.
-                </p>
-                <p className="text-white/50 text-sm leading-relaxed mb-4">
-                  We promise a methodical approach: test, measure, learn, and repeat. No busy work. No vanity metrics. No reports full of charts that don't connect to revenue.
-                </p>
-                <p className="text-white/50 text-sm leading-relaxed">
-                  If you're a fit for our systems, we'll tell you honestly. If you're not, we'll tell you that too.
-                </p>
-              </div>
-              <div className="space-y-3 md:space-y-4">
-                {[
-                  { label: "We focus on the channels that make sense for your specific business", icon: Layers },
-                  { label: "You get a clear explanation of what we're doing and why", icon: BarChart3 },
-                  { label: "We report on real outcomes — leads and sales, not just traffic", icon: TrendingUp },
-                  { label: "We move at a pace that doesn't outrun your ability to handle growth", icon: Rocket },
-                ].map((item, i) => {
-                  const Icon = item.icon;
-                  return (
-                    <div key={i} className="flex items-start gap-4 p-4 bg-white/[0.03] border border-white/10 rounded-xl">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center shrink-0">
-                        <Icon className="w-4 h-4 text-emerald-500" />
-                      </div>
-                      <p className="text-sm text-white/70 leading-snug">{item.label}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA ──────────────────────────────────────────────────────────────── */}
-      <section className="relative py-24 md:py-32 px-6 lg:px-12 z-10 border-t border-white/10 overflow-hidden">
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse at center, rgba(16, 185, 129, 0.18) 0%, transparent 60%)' }}
-        />
-        <div className="relative z-10 max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4">
-            Ready to start<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-green-400">
-              growing for real?
-            </span>
-          </h2>
-          <p className="text-base md:text-lg text-white/50 mb-3 leading-relaxed">
-            Let's look at your business together and figure out where growth marketing can actually make a difference for you — no pitch, no pressure.
-          </p>
-          <p className="text-sm text-white/30 mb-8 md:mb-10 uppercase tracking-widest">
-            Free conversation. Zero obligation.
-          </p>
-          <Link
-            to={{ pathname: '/', hash: '#chat' }}
-            className="inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-emerald-500 text-white rounded-full font-bold text-base md:text-lg uppercase tracking-wider hover:bg-white hover:text-black transition-all group"
-          >
-            <span>Let's Have That Conversation</span>
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-      </section>
-    </div>
-  );
-}
-
-export default MarketingPage;
