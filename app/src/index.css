@@ -56,8 +56,8 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Bricolage Grotesque Variable', sans-serif;
-    font-stretch: 92%;
-    letter-spacing: -0.015em;
+    font-stretch: 100%;
+    letter-spacing: -0.02em;
   }
 
   :focus-visible {
@@ -78,8 +78,8 @@
 
   .display {
     font-family: 'Bricolage Grotesque Variable', sans-serif;
-    font-stretch: 86%;
-    @apply font-bold leading-[0.94] tracking-[-0.02em];
+    font-stretch: 100%;
+    @apply font-bold leading-[0.95] tracking-[-0.035em];
   }
 
   .text-gradient {

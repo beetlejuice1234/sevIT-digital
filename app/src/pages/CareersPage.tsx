@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Mail, Check } from 'lucide-react';
 import Seo from '@/components/Seo';
 import ShaderBackdrop from '@/components/kit/ShaderBackdrop';
-import { Reveal, SectionHeader } from '@/components/kit';
+import { Marquee, Reveal, SectionHeader } from '@/components/kit';
 import { SITE } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
@@ -47,16 +47,25 @@ export default function CareersPage() {
         <ShaderBackdrop intensity={0.7} />
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" aria-hidden />
         <div className="container-x relative">
-          <Reveal className="eyebrow mb-7">Careers at sevIT</Reveal>
-          <Reveal as="h1" delay={80} className="display max-w-5xl text-balance text-[clamp(3rem,8vw,7rem)]">
-            Come build things with us.
-          </Reveal>
-          <Reveal as="p" delay={160} className="mt-7 max-w-xl text-lg leading-relaxed text-white/60">
+          <p className="eyebrow mb-6">Careers at sevIT</p>
+          <h1 className="display text-balance text-[clamp(3.2rem,9vw,8.5rem)] [animation:svc-in_.9s_var(--ease-out)_both]">Come build things with us.</h1>
+        </div>
+        <div className="relative mt-14 border-y border-white/10 py-6 [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
+          <Marquee duration={40}>
+            {ROLES.map((r) => (
+              <a key={r.title} href="#roles" className="mr-12 whitespace-nowrap font-display text-[clamp(2rem,4.5vw,4rem)] font-bold text-outline transition-colors hover:text-a2 [-webkit-text-stroke-color:rgb(var(--a2)/0.6)]">
+                {r.title}
+              </a>
+            ))}
+          </Marquee>
+        </div>
+        <div className="container-x relative mt-12 grid gap-8 md:grid-cols-12">
+          <p className="max-w-[48ch] text-lg leading-relaxed text-white/65 md:col-span-6">
             We’re a small studio doing varied work: websites, software, AI tools and CGI. If you like shipping things you’re proud of, we should talk.
-          </Reveal>
-          <Reveal delay={240} className="mt-10">
+          </p>
+          <div className="md:col-span-6 md:text-right">
             <a href="#roles" className="btn btn-accent">See open roles</a>
-          </Reveal>
+          </div>
         </div>
       </section>
 

@@ -1,7 +1,8 @@
 import { Bot, FileSearch, Workflow, Sparkles } from 'lucide-react';
-import ServiceLayout, { StepsSection } from '@/components/service/ServiceLayout';
+import ServiceLayout, { StepsSection, HeroCtas } from '@/components/service/ServiceLayout';
 import SevAI from '@/components/service/SevAI';
-import { SectionHeader } from '@/components/kit';
+import { SectionHeader, Sparkle } from '@/components/kit';
+import useTyped from '@/lib/useTyped';
 
 const FLOWS = [
   {
@@ -39,22 +40,52 @@ function Flows() {
   );
 }
 
+const HEADLINE = 'Yes. We build AI assistants for the repetitive parts of your business.';
+
+/** Hero: a conversation. The question is the visitor's, the headline is sevAI's answer. */
+function Hero() {
+  const { typed, done } = useTyped(HEADLINE, 32, 900);
+  return (
+    <div className="container-x pb-16">
+      <div className="mx-auto max-w-4xl">
+        <p className="ml-auto w-fit max-w-[80%] rounded-3xl rounded-br-md bg-white px-5 py-3 text-lg text-black [animation:svc-in_.6s_var(--ease-out)_both]">
+          Can AI actually help a business like mine?
+        </p>
+        <div className="mt-8 flex gap-4 sm:gap-5">
+          <span className="mt-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-a2 sm:h-12 sm:w-12">
+            <Sparkle className="h-5 w-5 [&_path]:fill-black" />
+          </span>
+          <div className="min-w-0">
+            <h1 className="display text-[clamp(2.2rem,5vw,4.4rem)]" aria-label={HEADLINE}>
+              <span aria-hidden>{typed}</span>
+              <span aria-hidden className={done ? 'hidden' : 'ml-1 inline-block h-[0.8em] w-[3px] animate-pulse bg-a2 align-baseline'} />
+            </h1>
+            <div className={done ? 'opacity-100 transition-opacity duration-700' : 'opacity-0'}>
+              <p className="mt-6 max-w-[52ch] text-lg leading-relaxed text-white/65">
+                Chatbots that answer customers at 2am, tools that read invoices for you, and automations that keep your apps in sync. You keep the work that needs a human.
+              </p>
+              <HeroCtas className="mt-8" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="sevai" className="mx-auto mt-20 max-w-3xl scroll-mt-28">
+        <p className="mb-4 flex items-center gap-2 text-[15px] text-white/55">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" /> sevAI is live. Ask it something real.
+        </p>
+        <SevAI />
+      </div>
+    </div>
+  );
+}
+
+
 export default function AISolutionsPage() {
   return (
     <ServiceLayout
       slug="ai-solutions"
-      title={
-        <>
-          AI assistants for the repetitive parts of your business.
-        </>
-      }
-      intro="Custom chatbots, assistants and automations that answer customers around the clock, read the paperwork and keep your tools in sync, so your team can focus on the work that needs a human."
-      heroVisual={
-        <div id="sevai" className="scroll-mt-28">
-          <SevAI />
-        </div>
-      }
-      heroNote={<p className="flex items-center gap-2 font-mono text-xs text-white/40"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" /> sevAI is live on this page, say hi.</p>}
+      hero={<Hero />}
       offeringsTitle="Useful AI, set up for how your business works."
       offerings={[
         { icon: Bot, title: 'AI chatbots', text: 'Assistants for your website and WhatsApp that know your products and hand off to staff when needed.' },

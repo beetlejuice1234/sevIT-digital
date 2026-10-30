@@ -1,6 +1,7 @@
+import useTyped from '@/lib/useTyped';
 import { useState } from 'react';
 import { ArrowUpRight, Gauge, Smartphone, Search, ShoppingBag, LayoutTemplate, Wrench } from 'lucide-react';
-import ServiceLayout, { StepsSection } from '@/components/service/ServiceLayout';
+import ServiceLayout, { StepsSection, HeroCtas } from '@/components/service/ServiceLayout';
 import { BrowserFrame, PhoneFrame, SectionHeader, Marquee } from '@/components/kit';
 import { cn } from '@/lib/utils';
 
@@ -47,19 +48,43 @@ const INCLUDED = [
   'Training and 30 days of post-launch support',
 ];
 
-function HeroVisual() {
+/** Hero: the page itself is a website being built, in a browser window. */
+function Hero() {
+  const { typed, done } = useTyped('yourbusiness.lk', 90, 500);
   return (
-    <div className="relative mx-auto max-w-[620px] pb-10">
-      <BrowserFrame url="clickzonemobiles.com" className="float-slow [--r:-1deg]">
-        <img src="/images/renders/sm/clickzone.webp" alt="ClickZone Mobiles website designed by sevIT" className="w-full" fetchPriority="high" />
-      </BrowserFrame>
-      <PhoneFrame className="absolute -bottom-2 -right-2 w-[30%] min-w-[120px] sm:-right-8">
-        <img src="/images/renders/sm/bodylab-mobile.webp" alt="BodyLab Fitness mobile website" className="w-full" />
-      </PhoneFrame>
-      <div className="absolute -left-4 bottom-6 hidden rounded-2xl border border-white/10 bg-black/70 px-4 py-3 backdrop-blur-xl sm:block">
-        <p className="text-[13px] text-white/40">Built with</p>
-        <p className="mt-1 text-sm font-medium">React · TypeScript · Tailwind</p>
+    <div className="container-x pb-12">
+      <div className="overflow-hidden rounded-[1.6rem] border border-white/15 bg-[#080808]/90 shadow-[0_40px_120px_-40px_rgb(var(--a2)/0.5)] backdrop-blur [animation:svc-in_.9s_var(--ease-out)_both]">
+        <div className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
+          <div className="flex gap-1.5">
+            <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
+            <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
+            <span className="h-3 w-3 rounded-full bg-[#28c840]" />
+          </div>
+          <div className="mx-auto flex w-full max-w-md items-center gap-2 rounded-full bg-white/[0.06] px-4 py-1.5 text-sm text-white/60">
+            <span className="text-white/35">https://</span>
+            <span className="text-white">{typed}</span>
+            <span className={done ? 'hidden' : 'h-4 w-px animate-pulse bg-a2'} />
+          </div>
+        </div>
+        <div className="grid gap-8 p-6 sm:p-10 lg:grid-cols-12 lg:gap-10 lg:p-14">
+          <h1 className="display text-balance text-[clamp(2.6rem,5.6vw,5.2rem)] lg:col-span-7">Websites and online stores, designed and coded in-house.</h1>
+          <div className="lg:col-span-5 lg:pt-3">
+            <p className="max-w-[44ch] text-lg leading-relaxed text-white/65">
+              From a sharp one-page site to a full online store. Fast, easy to find on Google, and built by the same people who design it.
+            </p>
+            <HeroCtas className="mt-8" />
+          </div>
+        </div>
+        <div className="relative h-[200px] overflow-hidden border-t border-white/10 sm:h-[280px]" data-cursor="View">
+          <img src="/images/renders/sm/clickzone.webp" alt="ClickZone Mobiles website, built by sevIT" className="web-scroll absolute inset-x-0 top-0 w-full object-cover object-top" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+          <p className="absolute bottom-5 left-6 text-sm text-white/70 sm:left-10">Live now: <a href="https://clickzonemobiles.com" target="_blank" rel="noopener noreferrer" className="text-white underline decoration-a2 underline-offset-4">clickzonemobiles.com</a></p>
+          <div className="absolute -bottom-24 right-6 w-[110px] sm:right-12 sm:w-[150px]">
+            <PhoneFrame><img src="/images/renders/sm/bodylab-mobile.webp" alt="BodyLab Fitness mobile site" className="w-full" /></PhoneFrame>
+          </div>
+        </div>
       </div>
+      <style>{`@keyframes web-scroll { 0%, 15% { transform: translateY(0) } 85%, 100% { transform: translateY(-35%) } } .web-scroll { animation: web-scroll 12s ease-in-out infinite alternate }`}</style>
     </div>
   );
 }
@@ -154,13 +179,7 @@ export default function WebDesignPage() {
   return (
     <ServiceLayout
       slug="web-design"
-      title={
-        <>
-          Websites and online stores, designed and coded in-house.
-        </>
-      }
-      intro="Custom-designed, fast and search-ready websites and web apps, from a sharp one-page presence to full e-commerce. Built by the same people who design them."
-      heroVisual={<HeroVisual />}
+      hero={<Hero />}
       offeringsTitle="From a one-page site to a full online store."
       offerings={[
         { icon: LayoutTemplate, title: 'Business websites', text: 'Polished multi-page sites that explain what you do and turn visitors into enquiries.' },

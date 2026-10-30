@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PenTool, BookOpen, Compass, Package, Copy, Check } from 'lucide-react';
 import { THEMES, themeStyle } from '@/lib/theme';
-import ServiceLayout, { StepsSection } from '@/components/service/ServiceLayout';
+import ServiceLayout, { StepsSection, HeroCtas } from '@/components/service/ServiceLayout';
 import { Reveal, SectionHeader, Sparkle } from '@/components/kit';
 
 const PALETTE = [
@@ -109,24 +109,66 @@ function BrandBoard() {
   );
 }
 
-function HeroVisual() {
+const WORD = 'recognise.';
+
+/** Hero: a giant word whose letters get heavier as the pointer comes near (variable font). */
+function Hero() {
+  const ref = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const letters = Array.from(el.querySelectorAll<HTMLSpanElement>('span'));
+    const pointer = { x: -9999, y: -9999, active: false };
+    let raf = 0;
+    const t0 = performance.now();
+    const loop = (now: number) => {
+      raf = requestAnimationFrame(loop);
+      letters.forEach((l, i) => {
+        const r = l.getBoundingClientRect();
+        let k: number;
+        if (pointer.active) {
+          const d = Math.hypot(pointer.x - (r.left + r.width / 2), pointer.y - (r.top + r.height / 2));
+          k = Math.max(0, 1 - d / 320);
+        } else {
+          // no pointer (touch): a slow wave runs through the word
+          k = (Math.sin((now - t0) / 700 - i * 0.6) + 1) / 2;
+        }
+        l.style.fontVariationSettings = `'wght' ${Math.round(250 + k * 550)}, 'wdth' ${Math.round(100 - k * 25)}`;
+      });
+    };
+    const move = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return;
+      pointer.x = e.clientX;
+      pointer.y = e.clientY;
+      pointer.active = true;
+    };
+    const leave = () => (pointer.active = false);
+    window.addEventListener('pointermove', move, { passive: true });
+    document.addEventListener('pointerleave', leave);
+    raf = requestAnimationFrame(loop);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('pointermove', move);
+      document.removeEventListener('pointerleave', leave);
+    };
+  }, []);
+
   return (
-    <div className="relative mx-auto flex aspect-square max-w-[460px] items-center justify-center">
-      <div className="absolute inset-0 rounded-full border border-white/[0.06]" />
-      <div className="spin-slow absolute inset-6 rounded-full border border-dashed border-white/10" />
-      <div className="absolute inset-16 rounded-full bg-[radial-gradient(circle,rgb(var(--a2)/0.3),transparent_65%)] blur-2xl" />
-      <div className="float-slow relative w-[80%] overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_40px_100px_-30px_rgb(var(--a2)/0.6)]">
-        <img src="/images/3dlogo.webp" alt="sevIT spark logo mark in 3D" className="aspect-square w-full object-cover" fetchPriority="high" />
-      </div>
-      {['Logo', 'Colour', 'Type', 'Voice'].map((t, i) => (
-        <span
-          key={t}
-          className="absolute rounded-full border border-white/10 bg-black/70 px-3 py-1.5 text-[13px] text-white/60 backdrop-blur"
-          style={{ top: `${[8, 30, 72, 88][i]}%`, left: `${[12, 82, 4, 70][i]}%` }}
-        >
-          {t}
+    <div className="container-x pb-16 text-center">
+      <h1 aria-label="Logos and identities people actually recognise.">
+        <span aria-hidden className="block text-[clamp(1.4rem,3vw,2.4rem)] font-medium text-white/70">Logos and identities people actually</span>
+        <span ref={ref} aria-hidden className="mt-2 block whitespace-nowrap font-display text-[clamp(3.6rem,15vw,15rem)] leading-[0.95] tracking-[-0.04em]">
+          {WORD.split('').map((c, i) => (
+            <span key={i} className={c === '.' ? 'text-a2' : ''} style={{ fontVariationSettings: "'wght' 250, 'wdth' 100" }}>
+              {c}
+            </span>
+          ))}
         </span>
-      ))}
+      </h1>
+      <p className="mx-auto mt-8 max-w-[52ch] text-lg leading-relaxed text-white/65">
+        A logo, a colour and type system, and simple rules that keep your brand consistent on every sign, box, post and screen. The word above is set in a variable typeface that shifts weight as you move. Type is half of a brand.
+      </p>
+      <HeroCtas className="mt-8 justify-center" />
     </div>
   );
 }
@@ -135,13 +177,7 @@ export default function BrandingPage() {
   return (
     <ServiceLayout
       slug="branding"
-      title={
-        <>
-          Logos and identities people actually recognise.
-        </>
-      }
-      intro="Logos, identity systems and brand guidelines that make your business instantly recognisable, and keep it looking consistent everywhere it shows up."
-      heroVisual={<HeroVisual />}
+      hero={<Hero />}
       offeringsTitle="A logo is the start. The system around it is what makes it stick."
       offerings={[
         { icon: PenTool, title: 'Logo & mark', text: 'A distinctive primary logo, icon and variations that work from favicon to billboard.' },

@@ -11,7 +11,7 @@ import {
   Check,
   RotateCcw,
 } from 'lucide-react';
-import ServiceLayout, { StepsSection } from '@/components/service/ServiceLayout';
+import ServiceLayout, { StepsSection, HeroCtas } from '@/components/service/ServiceLayout';
 import { Reveal, SectionHeader } from '@/components/kit';
 import { cn } from '@/lib/utils';
 
@@ -181,52 +181,66 @@ function PosDemo() {
   );
 }
 
-function HeroVisual() {
+const RECEIPT = [
+  ['Fast checkout', 'yes'],
+  ['Stock that updates itself', 'yes'],
+  ['Daily sales on your phone', 'yes'],
+  ['Staff logins and roles', 'yes'],
+  ['Printed and WhatsApp bills', 'yes'],
+  ['Keeps selling offline', 'yes'],
+];
+
+/** Hero: what you get, printed on a receipt. */
+function Hero() {
   return (
-    <div className="relative mx-auto max-w-[520px]">
-      <div className="float-slow rounded-[1.8rem] border border-white/10 bg-[#0b0b0b]/90 p-5 shadow-2xl backdrop-blur [--r:1.5deg]">
-        <div className="flex items-center justify-between">
-          <p className="text-[13px] text-white/40">Sales · this week</p>
-          <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">Live</span>
+    <div className="container-x pb-16">
+      <h1 className="display max-w-[16ch] text-balance text-[clamp(2.8rem,6.4vw,6rem)]">POS and business software, built around how your shop runs.</h1>
+      <div className="mt-12 grid items-start gap-10 lg:grid-cols-[1fr_auto_1fr] lg:gap-14">
+        <div className="lg:pt-10">
+          <p className="max-w-[40ch] text-lg leading-relaxed text-white/65">
+            Billing, stock, staff and reports in one system, shaped around your counter instead of someone else’s template. It grows from one till to many branches.
+          </p>
+          <HeroCtas className="mt-8" />
         </div>
-        <p className="mt-2 font-display text-3xl font-bold">Rs 1,284,600</p>
-        <svg viewBox="0 0 300 100" className="mt-4 h-28 w-full" preserveAspectRatio="none" aria-hidden>
-          <defs>
-            <linearGradient id="sw-g" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" style={{ stopColor: 'rgb(var(--a2))' }} stopOpacity=".4" />
-              <stop offset="1" style={{ stopColor: 'rgb(var(--a2))' }} stopOpacity="0" />
-            </linearGradient>
-          </defs>
-          <path d="M0 80 L43 62 L86 70 L129 44 L172 52 L215 26 L258 34 L300 12 L300 100 L0 100Z" fill="url(#sw-g)" />
-          <path d="M0 80 L43 62 L86 70 L129 44 L172 52 L215 26 L258 34 L300 12" fill="none" style={{ stroke: 'rgb(var(--a2))' }} strokeWidth="2.5" vectorEffect="non-scaling-stroke" />
-        </svg>
-        <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
-          {[
-            ['312', 'Orders'],
-            ['3', 'Branches'],
-            ['98%', 'In stock'],
-          ].map(([k, v]) => (
-            <div key={v} className="rounded-xl bg-white/[0.04] py-3">
-              <p className="font-display text-lg font-bold">{k}</p>
-              <p className="text-white/40">{v}</p>
+
+        <div className="receipt relative mx-auto w-[300px] origin-top -rotate-2 bg-[#f4f1ea] px-6 pb-10 pt-6 font-mono text-[12px] text-black shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)]">
+          <p className="text-center text-base font-bold">YOUR SHOP</p>
+          <p className="text-center text-black/50">powered by sevIT POS</p>
+          <p className="mt-1 text-center text-black/50">Receipt #0001</p>
+          <div className="my-3 border-t border-dashed border-black/40" />
+          {RECEIPT.map(([k], i) => (
+            <div key={k} className="receipt-line flex justify-between py-0.5" style={{ animationDelay: `${0.5 + i * 0.18}s` }}>
+              <span>{k}</span>
+              <span>✓</span>
             </div>
           ))}
+          <div className="my-3 border-t border-dashed border-black/40" />
+          <div className="flex justify-between text-sm font-bold">
+            <span>TOTAL</span>
+            <span>Built for you</span>
+          </div>
+          <div className="mt-4 h-10 bg-[repeating-linear-gradient(90deg,#000_0_2px,transparent_2px_4px,#000_4px_5px,transparent_5px_8px,#000_8px_11px,transparent_11px_12px)]" />
+          <p className="mt-3 text-center text-black/60">Thank you, come again!</p>
+          <div className="absolute inset-x-0 -bottom-3 h-3 bg-[linear-gradient(-45deg,transparent_6px,#f4f1ea_0),linear-gradient(45deg,transparent_6px,#f4f1ea_0)] bg-[length:12px_12px] bg-bottom" />
+        </div>
+
+        <div className="hidden lg:block lg:pt-24">
+          <div className="rounded-2xl border border-white/10 bg-black/60 p-5 backdrop-blur">
+            <p className="text-[13px] text-white/50">Sales this week, all branches</p>
+            <p className="mt-1 font-display text-3xl font-bold">Rs 1,284,600</p>
+            <svg viewBox="0 0 300 100" className="mt-4 h-24 w-full" preserveAspectRatio="none" aria-hidden>
+              <path d="M0 80 L43 62 L86 70 L129 44 L172 52 L215 26 L258 34 L300 12" fill="none" style={{ stroke: 'rgb(var(--a2))' }} strokeWidth="2.5" vectorEffect="non-scaling-stroke" />
+            </svg>
+            <p className="mt-3 flex items-center gap-2 text-[13px] text-white/60"><span className="h-2 w-2 rounded-full bg-amber-400" /> Low stock: Croissant (6 left)</p>
+          </div>
         </div>
       </div>
-      <div className="float-slow absolute -bottom-10 -left-6 w-52 rounded-2xl border border-white/10 bg-[#f5f1ea] p-4 font-mono text-[10px] text-black shadow-2xl [--r:-4deg] [animation-delay:-2s] sm:-left-12">
-        <p className="text-center font-bold tracking-widest">GOLDEN HOUR</p>
-        <p className="text-center text-black/50">Receipt #1048 · Kandy</p>
-        <div className="my-2 border-t border-dashed border-black/30" />
-        <div className="flex justify-between"><span>Iced latte x2</span><span>1,700</span></div>
-        <div className="flex justify-between"><span>Croissant</span><span>950</span></div>
-        <div className="flex justify-between"><span>Service 10%</span><span>265</span></div>
-        <div className="my-2 border-t border-dashed border-black/30" />
-        <div className="flex justify-between font-bold"><span>TOTAL</span><span>Rs 2,915</span></div>
-        <div className="mt-2 h-6 bg-[repeating-linear-gradient(90deg,#000_0_2px,transparent_2px_4px,#000_4px_5px,transparent_5px_8px)]" />
-      </div>
-      <div className="float-slow absolute -right-4 -top-6 flex items-center gap-2 rounded-2xl border border-white/10 bg-black/80 px-3 py-2 text-xs shadow-2xl backdrop-blur [animation-delay:-4s] sm:-right-8">
-        <span className="h-2 w-2 rounded-full bg-amber-400" /> Low stock: Croissant (6)
-      </div>
+      <style>{`
+        @keyframes print { from { clip-path: inset(0 0 100% 0); transform: translateY(-30px) rotate(-2deg) } to { clip-path: inset(0 0 -20px 0); transform: rotate(-2deg) } }
+        .receipt { animation: print 1.6s var(--ease-out) both }
+        @keyframes line-in { from { opacity: 0 } to { opacity: 1 } }
+        .receipt-line { animation: line-in .3s ease both }
+      `}</style>
     </div>
   );
 }
@@ -237,13 +251,7 @@ export default function SoftwarePage() {
   return (
     <ServiceLayout
       slug="software-pos"
-      title={
-        <>
-          POS and business software, built around how your shop runs.
-        </>
-      }
-      intro="Point-of-sale, billing, inventory and custom business software, designed around how your team actually works, and built to grow from one counter to many branches."
-      heroVisual={<HeroVisual />}
+      hero={<Hero />}
       offeringsTitle="Everything behind the counter, and the office behind that."
       offerings={[
         { icon: Receipt, title: 'POS & billing', text: 'Fast checkout for shops and restaurants: barcode or tap-to-add, discounts, split bills, receipts and returns.' },

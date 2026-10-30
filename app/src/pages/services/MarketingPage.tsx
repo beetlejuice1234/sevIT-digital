@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import useTyped from '@/lib/useTyped';
+import { useCallback, useEffect, useState } from 'react';
 import { Search, MousePointerClick, Mail, MapPin, Star } from 'lucide-react';
-import ServiceLayout, { StepsSection } from '@/components/service/ServiceLayout';
+import ServiceLayout, { StepsSection, HeroCtas } from '@/components/service/ServiceLayout';
 import { Reveal, SectionHeader } from '@/components/kit';
 import { cn } from '@/lib/utils';
 
@@ -62,7 +63,7 @@ function SerpPreview() {
     <section className="relative border-t border-white/[0.06] py-24 sm:py-32">
       <div className="container-x grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
         <div>
-          <SectionHeader stacked className="!mb-8" eyebrow="Try it" title="Preview your business on Google." intro="Type your business details and preview how a well-optimised listing could look when someone nearby searches for you." />
+          <SectionHeader stacked className="!mb-8" eyebrow="Try it with your business" title="Preview your business on Google." intro="Type your business details and preview how a well-optimised listing could look when someone nearby searches for you." />
           <div className="grid gap-3 sm:grid-cols-3">
             {[
               { l: 'Business name', v: name, s: setName },
@@ -116,35 +117,50 @@ function SerpPreview() {
   );
 }
 
-function HeroVisual() {
-  const pts = [92, 88, 80, 82, 70, 64, 58, 50, 42, 36, 26, 18];
+const QUERIES = ['best café in kandy', 'iphone shop near me', 'gym membership kandy', 'bridal salon colombo'];
+
+/** Hero: a search results page where the headline is the number one result. */
+function Query({ text, onDone }: { text: string; onDone: () => void }) {
+  const { typed, done } = useTyped(text, 70, 400);
+  useEffect(() => {
+    if (!done) return;
+    const id = window.setTimeout(onDone, 2600);
+    return () => window.clearTimeout(id);
+  }, [done, onDone]);
+  return <span className="truncate">{typed}</span>;
+}
+
+function Hero() {
+  const [q, setQ] = useState(0);
+  const next = useCallback(() => setQ((n) => (n + 1) % QUERIES.length), []);
+
   return (
-    <div className="relative mx-auto max-w-[520px] rounded-[2rem] border border-white/10 bg-[#0b0b0b]/90 p-6 shadow-2xl backdrop-blur">
-      <div className="flex items-center justify-between">
-        <p className="text-[13px] text-white/40">Organic visits, last 12 months</p>
-        <span className="rounded-full border border-white/10 px-2 py-0.5 font-mono text-[10px] text-white/40">Illustrative</span>
-      </div>
-      <svg viewBox="0 0 330 110" className="mt-6 h-44 w-full" preserveAspectRatio="none" aria-hidden>
-        <defs>
-          <linearGradient id="mk-g" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" style={{ stopColor: 'rgb(var(--a2))' }} stopOpacity=".45" />
-            <stop offset="1" style={{ stopColor: 'rgb(var(--a2))' }} stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <path d={`M0 ${pts[0]} ${pts.map((p, i) => `L${i * 30} ${p}`).join(' ')} L330 110 L0 110Z`} fill="url(#mk-g)" />
-        <polyline points={pts.map((p, i) => `${i * 30},${p}`).join(' ')} fill="none" style={{ stroke: 'rgb(var(--a2))' }} strokeWidth="2.5" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
-        {pts.map((p, i) => i % 3 === 2 && <circle key={i} cx={i * 30} cy={p} r="3" fill="#fff" />)}
-      </svg>
-      <div className="mt-5 grid grid-cols-3 gap-2">
-        {[
-          { i: Search, l: 'Search' },
-          { i: MousePointerClick, l: 'Conversion' },
-          { i: Mail, l: 'Email' },
-        ].map((x) => (
-          <div key={x.l} className="flex items-center gap-2 rounded-xl bg-white/[0.04] px-3 py-2.5 text-xs text-white/70">
-            <x.i className="h-3.5 w-3.5 text-a3" /> {x.l}
-          </div>
-        ))}
+    <div className="container-x pb-16">
+      <div className="max-w-4xl">
+        <div className="flex items-center gap-3 rounded-full border border-white/15 bg-white/[0.04] px-5 py-3.5 text-lg">
+          <Search className="h-5 w-5 shrink-0 text-white/45" />
+          <Query key={q} text={QUERIES[q]} onDone={next} />
+          <span className="h-5 w-px animate-pulse bg-a2" />
+        </div>
+        <p className="mt-5 text-sm text-white/40">Top result</p>
+        <div className="mt-3">
+          <p className="text-sm text-white/55">https://<span className="text-white/80">yourbusiness.lk</span></p>
+          <h1 className="display mt-2 text-balance text-[clamp(2.6rem,5.8vw,5.4rem)] text-a3">SEO and marketing that keeps working after the ad budget runs out.</h1>
+          <p className="mt-5 max-w-[56ch] text-lg leading-relaxed text-white/65">
+            We get you found on Google and Maps, turn more visitors into calls and bookings, and bring customers back with email and WhatsApp.
+          </p>
+          <HeroCtas className="mt-8" />
+        </div>
+        <div className="mt-14 space-y-6 opacity-40" aria-hidden>
+          {[0, 1].map((n) => (
+            <div key={n} className="space-y-2">
+              <div className="h-2.5 w-40 rounded bg-white/20" />
+              <div className="h-5 w-[min(28rem,80%)] rounded bg-white/25" />
+              <div className="h-2.5 w-[min(36rem,95%)] rounded bg-white/15" />
+            </div>
+          ))}
+          <p className="text-sm">Your competitors, further down the page.</p>
+        </div>
       </div>
     </div>
   );
@@ -154,13 +170,7 @@ export default function MarketingPage() {
   return (
     <ServiceLayout
       slug="marketing"
-      title={
-        <>
-          SEO and marketing that keeps working after the ad budget runs out.
-        </>
-      }
-      intro="SEO, conversion and email marketing that keep bringing customers in month after month, instead of stopping the moment you pause your ad spend."
-      heroVisual={<HeroVisual />}
+      hero={<Hero />}
       offeringsTitle="Three things we do every month."
       offerings={[
         { icon: Search, title: 'SEO & local search', text: 'Technical fixes, content and Google Business Profile work that help nearby customers find you first.' },

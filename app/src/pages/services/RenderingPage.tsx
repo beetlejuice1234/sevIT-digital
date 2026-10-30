@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Box, Camera, Building, Film, X, ChevronLeft, ChevronRight } from 'lucide-react';
-import ServiceLayout, { StepsSection } from '@/components/service/ServiceLayout';
+import ServiceLayout, { StepsSection, HeroCtas } from '@/components/service/ServiceLayout';
 import { Reveal, SectionHeader } from '@/components/kit';
 import VideoCard from '@/components/kit/VideoCard';
 import { cn } from '@/lib/utils';
@@ -124,13 +124,40 @@ function Films() {
   );
 }
 
-function HeroVisual() {
+const COLUMNS = [
+  ['perf1', 'saraperf', 'elkaduwamist', 'watchsevit'],
+  ['1', 'collageperf', 'perf3', 'elkaduwa4'],
+  ['watch-detail', 'pefmouth', 'saraa', 'perf2'],
+  ['elkaduwaskin', '3', 'perfmodel2', 'collage1'],
+];
+
+/** Full-bleed wall of renders drifting upward behind the hero. */
+function RenderWall() {
   return (
-    <div className="relative mx-auto grid max-w-[520px] grid-cols-2 gap-3">
-      <img src={sm('perf1')} alt="Bergamood fragrance render" className="mt-14 w-full rounded-2xl border border-white/10 shadow-2xl" fetchPriority="high" />
-      <img src={sm('watchsevit')} alt="Luxury watch render" className="w-full rounded-2xl border border-white/10 shadow-2xl" fetchPriority="high" />
-      <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 rounded-full border border-white/15 bg-black/70 px-4 py-2 text-xs backdrop-blur-xl">
-        <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" /> 100% CGI, no photoshoot
+    <div className="absolute inset-0 grid grid-cols-3 gap-3 overflow-hidden px-3 opacity-70 sm:grid-cols-4" aria-hidden>
+      {COLUMNS.map((col, i) => (
+        <div key={i} className={i === 3 ? 'hidden sm:block' : ''}>
+          <div className="marquee-y flex flex-col gap-3" style={{ '--dur': `${50 + i * 12}s`, animationDirection: i % 2 ? 'reverse' : 'normal' } as React.CSSProperties}>
+            {[...col, ...col].map((n, k) => (
+              <img key={k} src={sm(n)} alt="" className="w-full rounded-xl" />
+            ))}
+          </div>
+        </div>
+      ))}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_80%,rgba(5,5,5,0.92),rgba(5,5,5,0.55)_60%,rgba(5,5,5,0.3))]" />
+    </div>
+  );
+}
+
+function Hero() {
+  return (
+    <div className="container-x flex min-h-[72vh] flex-col justify-end pb-16">
+      <h1 className="display max-w-[14ch] text-[clamp(3rem,8vw,7.5rem)] [animation:svc-in_.9s_var(--ease-out)_both]">Product photos, without the photoshoot.</h1>
+      <div className="mt-8 grid gap-6 md:grid-cols-12">
+        <p className="max-w-[46ch] text-lg leading-relaxed text-white/75 md:col-span-6">
+          Everything behind this text is CGI. Photoreal renders and ad films for fragrance, drinks, tech and fashion brands, in any setting, with no studio or samples to ship.
+        </p>
+        <HeroCtas className="md:col-span-6 md:justify-end md:self-end" />
       </div>
     </div>
   );
@@ -140,13 +167,8 @@ export default function RenderingPage() {
   return (
     <ServiceLayout
       slug="3d-rendering"
-      title={
-        <>
-          Photoreal product visuals, without a photoshoot.
-        </>
-      }
-      intro="Photoreal 3D renders and AI-assisted virtual ads for fragrance, beverage, tech and lifestyle brands. Any angle, any setting, any season, without a studio, crew or shipping samples."
-      heroVisual={<HeroVisual />}
+      hero={<Hero />}
+      heroBackdrop={<RenderWall />}
       offeringsTitle="Once your product is in 3D, every new campaign is quicker."
       offeringsIntro="Once your product exists in 3D, every new campaign, colourway or format is a render away."
       offerings={[

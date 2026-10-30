@@ -17,10 +17,10 @@ export type Faq = { q: string; a: string };
 
 type Props = {
   slug: string;
-  title: ReactNode;
-  intro: ReactNode;
-  heroVisual?: ReactNode;
-  heroNote?: ReactNode;
+  /** The page's own opening section. Each service has a different one. */
+  hero: ReactNode;
+  /** Background behind the hero: the shader by default, or a custom layer. */
+  heroBackdrop?: ReactNode;
   offeringsTitle?: ReactNode;
   offeringsIntro?: string;
   offerings: Offering[];
@@ -28,7 +28,7 @@ type Props = {
   children?: ReactNode;
 };
 
-export default function ServiceLayout({ slug, title, intro, heroVisual, heroNote, offeringsTitle, offeringsIntro, offerings, faqs, children }: Props) {
+export default function ServiceLayout({ slug, hero, heroBackdrop, offeringsTitle, offeringsIntro, offerings, faqs, children }: Props) {
   const service = serviceBySlug(slug);
   const route = seo.routes.find((r) => r.path === service.path)!;
 
@@ -40,34 +40,20 @@ export default function ServiceLayout({ slug, title, intro, heroVisual, heroNote
         jsonLd={[serviceLd(service.name, service.path, route.description), faqLd(faqs)]}
       />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden pb-16 pt-32 sm:pb-24 sm:pt-40">
-        <ShaderBackdrop intensity={0.75} />
+      {/* Hero: shared shell (backdrop + breadcrumb), page-specific content */}
+      <section className="relative overflow-hidden pt-28 sm:pt-32">
+        {heroBackdrop ?? <ShaderBackdrop intensity={0.75} />}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" aria-hidden />
-        <div className={cn('container-x relative grid items-center gap-14 [&>*]:min-w-0', heroVisual && 'lg:grid-cols-[1.05fr_1fr]')}>
-          <div className="svc-hero">
-            <nav aria-label="Breadcrumb" className="mb-8 flex items-center gap-1.5 text-[15px] text-white/45">
-              <Link to="/" className="hover:text-white">Home</Link>
-              <ChevronRight className="h-3 w-3" />
-              <Link to="/#services" className="hover:text-white">Services</Link>
-              <ChevronRight className="h-3 w-3" />
-              <span className="text-a3">{service.short}</span>
-            </nav>
-            <h1 className="display text-balance text-[clamp(2.6rem,5.6vw,5.2rem)]">{title}</h1>
-            <p className="mt-7 max-w-[48ch] text-pretty text-lg leading-relaxed text-white/60">{intro}</p>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <Link to="#contact" className="btn btn-accent">Start a project</Link>
-              <Link to="#work" className="btn btn-ghost">See the work</Link>
-            </div>
-            {heroNote && <div className="mt-10">{heroNote}</div>}
-          </div>
-          {heroVisual && <div className="svc-hero-visual relative">{heroVisual}</div>}
-        </div>
+        <nav aria-label="Breadcrumb" className="container-x relative z-10 mb-10 flex items-center gap-1.5 text-[15px] text-white/50">
+          <Link to="/" className="hover:text-white">Home</Link>
+          <ChevronRight className="h-3 w-3" />
+          <Link to="/#services" className="hover:text-white">Services</Link>
+          <ChevronRight className="h-3 w-3" />
+          <span className="text-a3">{service.short}</span>
+        </nav>
+        <div className="relative">{hero}</div>
         <style>{`
-          @keyframes svc-in { from { opacity: 0; transform: translate3d(0, 36px, 0); filter: blur(8px) } to { opacity: 1; transform: none; filter: none } }
-          .svc-hero > * { animation: svc-in 1s var(--ease-out) both }
-          .svc-hero > :nth-child(2) { animation-delay: .06s } .svc-hero > :nth-child(3) { animation-delay: .14s } .svc-hero > :nth-child(4) { animation-delay: .22s } .svc-hero > :nth-child(5) { animation-delay: .3s }
-          .svc-hero-visual { animation: svc-in 1.3s .2s var(--ease-out) both }
+          @keyframes svc-in { from { opacity: 0; transform: translate3d(0, 24px, 0) } to { opacity: 1; transform: none } }
         `}</style>
       </section>
 
@@ -170,5 +156,15 @@ export function StepsSection({ eyebrow = 'How it works', title, steps }: { eyebr
         </ol>
       </div>
     </section>
+  );
+}
+
+/* ─── small building blocks the page heroes share ─── */
+export function HeroCtas({ className }: { className?: string }) {
+  return (
+    <div className={cn('flex flex-wrap gap-3', className)}>
+      <Link to="#contact" className="btn btn-accent">Start a project</Link>
+      <Link to="#work" className="btn btn-ghost">See the work</Link>
+    </div>
   );
 }
