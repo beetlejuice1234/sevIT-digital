@@ -134,7 +134,7 @@ export default function Splash() {
         {SEQUENCE.map(([, slug], i) => (
           <div
             key={slug}
-            className="relative h-full flex-1 bg-[#050505] transition-transform duration-[900ms] [transition-timing-function:cubic-bezier(0.76,0,0.24,1)]"
+            className="relative h-full flex-1 bg-[#050505] transition-transform [transition-duration:900ms] [transition-timing-function:cubic-bezier(0.76,0,0.24,1)]"
             style={{ transform: leaving ? 'translateY(-101%)' : 'none', transitionDelay: leaving ? `${Math.abs(i - 3) * 55}ms` : '0ms' }}
           >
             <span
