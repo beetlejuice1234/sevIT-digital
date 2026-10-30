@@ -49,7 +49,7 @@ function AIVisual() {
       <div className="ml-auto max-w-[75%] rounded-2xl rounded-br-md bg-white px-3.5 py-2 text-xs text-black">Do you deliver to Kandy today?</div>
       <div className="flex max-w-[85%] items-start gap-2">
         <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-a1 to-a2">
-          <Sparkle className="h-3 w-3 [&_path]:fill-white" />
+          <Sparkle tone="white" className="h-3 w-3" />
         </span>
         <div className="rounded-2xl rounded-tl-md border border-white/10 bg-white/[0.06] px-3.5 py-2 text-xs text-white/80">
           Yes! Orders before 2pm arrive the same day. Want me to start one for you?

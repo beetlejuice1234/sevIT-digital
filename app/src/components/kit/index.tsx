@@ -1,6 +1,5 @@
 import {
   useEffect,
-  useId,
   useRef,
   type CSSProperties,
   type ElementType,
@@ -10,7 +9,6 @@ import {
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { SPARK } from '@/lib/spark';
 
 /* ─── Reveal ─────────────────────────────────────────────────────────────
  * Adds `.is-in` when the element scrolls into view. One shared observer.
@@ -177,19 +175,9 @@ export function ButtonLink({ to, variant = 'primary', children, className, arrow
 }
 
 /* ─── Sparkle (brand mark) ───────────────────────────────────────────── */
-export function Sparkle({ className }: { className?: string }) {
-  const id = `spk${useId().replace(/:/g, '')}`;
-  return (
-    <svg viewBox="-1 -1 2 2" className={className} aria-hidden>
-      <defs>
-        <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" style={{ stopColor: 'rgb(var(--a3))' }} />
-          <stop offset="1" style={{ stopColor: 'rgb(var(--a1))' }} />
-        </linearGradient>
-      </defs>
-      <path fill={`url(#${id})`} d={SPARK} />
-    </svg>
-  );
+/** The sevIT spark, cut straight from the logo artwork. */
+export function Sparkle({ className, tone = 'brand' }: { className?: string; tone?: 'brand' | 'white' | 'black' }) {
+  return <img src={`/images/spark-${tone}.png`} alt="" aria-hidden className={cn('inline-block object-contain', className)} draggable={false} />;
 }
 
 /* ─── Browser frame ──────────────────────────────────────────────────── */
@@ -202,7 +190,7 @@ export function BrowserFrame({ url, children, className }: { url: string; childr
           <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
           <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
         </div>
-        <div className="mx-auto flex max-w-[60%] items-center gap-2 truncate rounded-full bg-white/[0.05] px-4 py-1 font-mono text-[11px] text-white/45">
+        <div className="mx-auto flex max-w-[80%] items-center gap-1.5 rounded-full bg-white/[0.05] px-3 py-1 font-mono text-[9px] text-white/45 sm:max-w-[60%] sm:gap-2 sm:px-4 sm:text-[11px]">
           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400/80" />
           {url}
         </div>

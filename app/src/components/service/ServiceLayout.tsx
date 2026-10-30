@@ -128,7 +128,7 @@ function Related({ current }: { current: string }) {
         <ul className="flex flex-wrap gap-x-6 gap-y-1 md:col-span-9">
           {others.map((s) => (
             <li key={s.slug} style={themeStyle(THEMES[s.slug])}>
-              <Link to={s.path} className="display text-[clamp(1.6rem,3vw,2.6rem)] text-white/35 transition-colors hover:text-a2">
+              <Link to={s.path} className="display text-[clamp(1.35rem,3vw,2.6rem)] text-white/40 transition-colors hover:text-a2">
                 {s.name}
               </Link>
             </li>
@@ -147,9 +147,9 @@ export function StepsSection({ eyebrow = 'How it works', title, steps }: { eyebr
         <SectionHeader eyebrow={eyebrow} title={title} />
         <ol className={cn('grid gap-x-8 border-t border-white/10 sm:grid-cols-2', steps.length === 5 ? 'lg:grid-cols-5' : steps.length === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4')}>
           {steps.map((s, i) => (
-            <li key={s.title} className="group border-b border-white/10 py-8 lg:border-b-0 lg:border-r lg:pr-8 lg:last:border-r-0">
-              <span className="display block text-[4.5rem] leading-none text-white/15 transition-colors duration-500 group-hover:text-a2">{i + 1}</span>
-              <h3 className="mt-5 text-xl font-bold">{s.title}</h3>
+            <li key={s.title} className="group grid grid-cols-[3.25rem_1fr] gap-x-3 border-b border-white/10 py-6 sm:block sm:py-8 lg:border-b-0 lg:border-r lg:pr-8 lg:last:border-r-0">
+              <span className="display row-span-2 block text-5xl leading-none text-white/20 transition-colors duration-500 group-hover:text-a2 sm:text-[4.5rem] sm:text-white/15">{i + 1}</span>
+              <h3 className="text-xl font-bold sm:mt-5">{s.title}</h3>
               <p className="mt-2 max-w-[34ch] text-[15px] leading-relaxed text-white/60">{s.text}</p>
             </li>
           ))}

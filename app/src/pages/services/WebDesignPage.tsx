@@ -78,8 +78,8 @@ function Hero() {
         <div className="relative h-[200px] overflow-hidden border-t border-white/10 sm:h-[280px]" data-cursor="View">
           <img src="/images/renders/sm/clickzone.webp" alt="ClickZone Mobiles website, built by sevIT" className="web-scroll absolute inset-x-0 top-0 w-full object-cover object-top" />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-          <p className="absolute bottom-5 left-6 text-sm text-white/70 sm:left-10">Live now: <a href="https://clickzonemobiles.com" target="_blank" rel="noopener noreferrer" className="text-white underline decoration-a2 underline-offset-4">clickzonemobiles.com</a></p>
-          <div className="absolute -bottom-24 right-6 w-[110px] sm:right-12 sm:w-[150px]">
+          <p className="absolute bottom-5 left-5 right-5 text-sm text-white/70 sm:left-10">Live now: <a href="https://clickzonemobiles.com" target="_blank" rel="noopener noreferrer" className="text-white underline decoration-a2 underline-offset-4">clickzonemobiles.com</a></p>
+          <div className="absolute -bottom-24 right-12 hidden w-[150px] sm:block">
             <PhoneFrame><img src="/images/renders/sm/bodylab-mobile.webp" alt="BodyLab Fitness mobile site" className="w-full" /></PhoneFrame>
           </div>
         </div>
@@ -120,7 +120,7 @@ function ProjectSwitcher() {
                 <BrowserFrame url={p.url}>
                   <img src={p.desktop} alt={`${p.name} homepage`} className="w-full" loading="lazy" />
                 </BrowserFrame>
-                <PhoneFrame className="absolute -bottom-2 right-4 w-[24%] min-w-[100px]">
+                <PhoneFrame className="absolute -bottom-2 right-4 hidden w-[24%] min-w-[100px] sm:block">
                   <img src={p.mobile} alt={`${p.name} on mobile`} className="w-full" loading="lazy" />
                 </PhoneFrame>
               </div>

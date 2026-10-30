@@ -42,7 +42,7 @@ export default function ContactSection({ defaultService }: { defaultService?: st
         <div className="grid gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
           <div className="flex flex-col">
             <p className="eyebrow mb-6">Start a project</p>
-            <h2 className="display text-balance text-[clamp(3rem,7vw,6.4rem)]">Tell us what you’re building.</h2>
+            <h2 className="display text-balance text-[clamp(2.8rem,5.4vw,5.2rem)]">Tell us what you’re building.</h2>
             <p className="mt-6 max-w-[42ch] text-lg leading-relaxed text-white/60">
               A rough idea is enough. One of the three of us will reply, usually the same day.
             </p>

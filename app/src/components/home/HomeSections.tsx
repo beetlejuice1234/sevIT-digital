@@ -75,10 +75,10 @@ export function Process() {
         <SectionHeader eyebrow="How a project runs" title="Four steps, with a preview link you can open from day one." />
         <ol className="grid gap-x-8 border-t border-white/10 sm:grid-cols-2 lg:grid-cols-4">
           {STEPS.map((s, i) => (
-            <li key={s.title} className="group border-b border-white/10 py-8 lg:border-b-0 lg:border-r lg:pr-8 lg:last:border-r-0">
-              <span className="display block text-[5.5rem] leading-none text-white/15 transition-colors duration-500 group-hover:text-a2">{i + 1}</span>
-              <h3 className="mt-6 text-2xl font-bold">{s.title}</h3>
-              <p className="mt-3 max-w-[34ch] leading-relaxed text-white/60">{s.text}</p>
+            <li key={s.title} className="group grid grid-cols-[3.25rem_1fr] gap-x-3 border-b border-white/10 py-6 sm:block sm:py-8 lg:border-b-0 lg:border-r lg:pr-8 lg:last:border-r-0">
+              <span className="display row-span-2 block text-5xl leading-none text-white/20 transition-colors duration-500 group-hover:text-a2 sm:text-[5.5rem] sm:text-white/15">{i + 1}</span>
+              <h3 className="text-2xl font-bold sm:mt-6">{s.title}</h3>
+              <p className="mt-2 max-w-[34ch] leading-relaxed text-white/60 sm:mt-3">{s.text}</p>
             </li>
           ))}
         </ol>

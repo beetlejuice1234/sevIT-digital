@@ -79,7 +79,7 @@ function BrandBoard() {
           <Reveal delay={80} className="flex flex-col justify-between gap-6 rounded-[2rem] border border-white/10 bg-[#0b0b0b] p-6 lg:col-span-3">
             <div className="flex items-start justify-between">
               <p className="text-[13px] text-white/40">Typography</p>
-              <p className="font-mono text-[10px] text-white/30">Inter Tight / Inter / JetBrains Mono</p>
+              <p className="font-mono text-[10px] text-white/30">Bricolage Grotesque / Instrument Sans</p>
             </div>
             <p className="display text-7xl sm:text-8xl">Aag</p>
             <p className="text-sm leading-relaxed text-white/50">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789, set tight, loud and confident.</p>
@@ -93,7 +93,7 @@ function BrandBoard() {
                 <p className="mt-6 text-[9px] text-white/50 sm:text-[10px]">sevit@sevitdigital.com</p>
               </div>
               <div className="flex aspect-[1.75] w-[46%] items-center justify-center rounded-xl bg-gradient-to-br from-a1 to-a2 shadow-2xl [transform:rotateY(-14deg)_rotateX(6deg)]">
-                <Sparkle className="h-10 w-10 [&_path]:fill-white" />
+                <Sparkle tone="white" className="h-10 w-10" />
               </div>
             </div>
           </Reveal>

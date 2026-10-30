@@ -29,7 +29,7 @@ const CASES: Case[] = [
           src="/images/renders/sm/clickzone-mobile.webp"
           alt="ClickZone Mobiles on mobile"
           loading="lazy"
-          className="absolute bottom-[-12%] right-[6%] w-[24%] min-w-[110px] rounded-[1.4rem] border-4 border-[#111] shadow-2xl"
+          className="absolute bottom-[-12%] right-[6%] hidden w-[24%] min-w-[110px] rounded-[1.4rem] border-4 border-[#111] shadow-2xl sm:block"
         />
       </div>
     ),
@@ -97,7 +97,7 @@ const CASES: Case[] = [
             src={`/images/renders/sm/${n}-mobile.webp`}
             alt={`${n === 'bodylab' ? 'BodyLab Fitness' : 'Golden Hour Coffee'} mobile site`}
             loading="lazy"
-            className="h-auto w-[38%] max-w-[220px] rounded-[1.6rem] border-4 border-[#111] shadow-2xl"
+            className="h-auto w-[44%] max-w-[220px] rounded-[1.4rem] border-4 border-[#111] shadow-2xl sm:w-[38%]"
             style={{ transform: `rotate(${i ? 5 : -4}deg) translateY(${i ? 20 : 0}px)` }}
           />
         ))}
@@ -116,7 +116,7 @@ function CaseCard({ c, i }: { c: Case; i: number }) {
   // scale down slightly as the next card slides over this one
   useEffect(() => {
     const el = ref.current;
-    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !window.matchMedia('(min-width: 1024px)').matches) return;
     let raf = 0;
     const onScroll = () => {
       cancelAnimationFrame(raf);
@@ -144,7 +144,7 @@ function CaseCard({ c, i }: { c: Case; i: number }) {
   );
 
   return (
-    <div className="sticky" style={{ top: 96 + i * 16 }}>
+    <div className="lg:sticky" style={{ top: 96 + i * 16 }}>
       <div
         ref={ref}
         className="relative grid origin-top overflow-hidden rounded-[2rem] border border-white/10 bg-[#090909] will-change-transform lg:min-h-[560px] lg:grid-cols-[0.85fr_1.15fr]"

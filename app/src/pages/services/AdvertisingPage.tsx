@@ -19,7 +19,7 @@ function useAutoplay() {
 
 const Avatar = () => (
   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-a2">
-    <Sparkle className="h-3.5 w-3.5 [&_path]:fill-black" />
+    <Sparkle tone="black" className="h-3.5 w-3.5" />
   </span>
 );
 
@@ -119,9 +119,9 @@ function Hero() {
         </div>
       </div>
       <div className="no-scrollbar relative -mx-5 mt-14 flex snap-x gap-4 overflow-x-auto px-5 pb-4 sm:mx-0 sm:h-[min(56vw,520px)] sm:items-start sm:justify-center sm:gap-8 sm:overflow-hidden sm:px-0 sm:pb-0">
-        <div className="ad-rise w-[230px] shrink-0 snap-center sm:w-[30%] sm:max-w-[250px] sm:pt-16" style={{ animationDelay: '.15s' }}>{ADS.youtube}</div>
-        <div className="ad-rise w-[230px] shrink-0 snap-center sm:w-[33%] sm:max-w-[270px]">{ADS.reel}</div>
-        <div className="ad-rise w-[230px] shrink-0 snap-center sm:w-[30%] sm:max-w-[250px] sm:pt-16" style={{ animationDelay: '.3s' }}>{ADS.feed}</div>
+        <div className="ad-rise w-[250px] shrink-0 snap-center sm:w-[30%] sm:max-w-[250px] sm:pt-16" style={{ animationDelay: '.15s' }}>{ADS.youtube}</div>
+        <div className="ad-rise w-[250px] shrink-0 snap-center sm:w-[33%] sm:max-w-[270px]">{ADS.reel}</div>
+        <div className="ad-rise w-[250px] shrink-0 snap-center sm:w-[30%] sm:max-w-[250px] sm:pt-16" style={{ animationDelay: '.3s' }}>{ADS.feed}</div>
       </div>
       <p className="mt-3 text-sm text-white/40 sm:hidden">Swipe to see all three formats</p>
       <style>{`@keyframes ad-rise { from { transform: translateY(120px); opacity: 0 } to { transform: none; opacity: 1 } } .ad-rise { animation: ad-rise 1.1s var(--ease-out) both }`}</style>

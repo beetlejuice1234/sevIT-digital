@@ -158,7 +158,7 @@ export default function SevAI() {
           <span className="relative flex h-10 w-10 items-center justify-center">
             <span className={cn('absolute inset-0 rounded-full bg-gradient-to-br from-a1 to-a2', (thinking || listening) && 'animate-pulse')} />
             {(thinking || listening) && <span className="pulse-ring absolute inset-0 rounded-full border border-a2" />}
-            <Sparkle className="relative h-5 w-5 [&_path]:fill-white" />
+            <Sparkle tone="white" className="relative h-5 w-5" />
           </span>
           <div>
             <p className="font-semibold">sevAI</p>

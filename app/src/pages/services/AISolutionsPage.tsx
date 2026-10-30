@@ -53,14 +53,17 @@ function Hero() {
         </p>
         <div className="mt-8 flex gap-4 sm:gap-5">
           <span className="mt-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-a2 sm:h-12 sm:w-12">
-            <Sparkle className="h-5 w-5 [&_path]:fill-black" />
+            <Sparkle tone="black" className="h-5 w-5" />
           </span>
           <div className="min-w-0">
-            <h1 className="display text-[clamp(2.2rem,5vw,4.4rem)]" aria-label={HEADLINE}>
-              <span aria-hidden>{typed}</span>
-              <span aria-hidden className={done ? 'hidden' : 'ml-1 inline-block h-[0.8em] w-[3px] animate-pulse bg-a2 align-baseline'} />
+            <h1 className="display relative text-[clamp(2.2rem,5vw,4.4rem)]" aria-label={HEADLINE}>
+              <span aria-hidden className="invisible">{HEADLINE}</span>
+              <span aria-hidden className="absolute inset-0">
+                {typed}
+                <span className={done ? 'hidden' : 'ml-1 inline-block h-[0.8em] w-[3px] animate-pulse bg-a2 align-baseline'} />
+              </span>
             </h1>
-            <div className={done ? 'opacity-100 transition-opacity duration-700' : 'opacity-0'}>
+            <div className="[animation:svc-in_.8s_var(--ease-out)_1.6s_both]">
               <p className="mt-6 max-w-[52ch] text-lg leading-relaxed text-white/65">
                 Chatbots that answer customers at 2am, tools that read invoices for you, and automations that keep your apps in sync. You keep the work that needs a human.
               </p>

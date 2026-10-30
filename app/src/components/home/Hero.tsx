@@ -62,7 +62,7 @@ function WorkFan() {
   }, []);
 
   return (
-    <div className="relative mx-auto aspect-[4/5] w-full max-w-[460px] [perspective:1200px]">
+    <div className="relative mx-auto aspect-[4/5] w-[82%] max-w-[460px] [perspective:1200px] sm:w-full">
       <div
         ref={ref}
         className="relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d] [transition-timing-function:var(--ease-out)]"
@@ -96,7 +96,7 @@ function WorkFan() {
 
         {/* floating UI chips: shows we do more than visuals */}
         <div
-          className="float-slow absolute -left-[10%] bottom-[8%] w-44 rounded-2xl border border-white/10 bg-black/70 p-3 shadow-2xl backdrop-blur-xl sm:-left-[16%] sm:w-52"
+          className="float-slow absolute -left-[8%] bottom-[6%] w-40 rounded-2xl border border-white/10 bg-black/70 p-3 shadow-2xl backdrop-blur-xl sm:-left-[16%] sm:w-52"
           style={{ transform: 'translate3d(var(--tx,0),var(--ty,0),80px)', '--r': '-3deg' } as React.CSSProperties}
         >
           <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-wider text-white/40">
@@ -114,11 +114,11 @@ function WorkFan() {
         </div>
 
         <div
-          className="float-slow absolute -right-[6%] bottom-[22%] flex items-center gap-2.5 rounded-2xl border border-white/10 bg-black/70 px-3 py-2.5 shadow-2xl backdrop-blur-xl sm:-right-[12%]"
+          className="float-slow absolute -right-[8%] bottom-[22%] flex items-center gap-2.5 rounded-2xl border border-white/10 bg-black/70 px-3 py-2.5 shadow-2xl backdrop-blur-xl sm:-right-[12%]"
           style={{ transform: 'translate3d(calc(var(--tx,0) * -1),calc(var(--ty,0) * -1),100px)', animationDelay: '-3s', '--r': '4deg' } as React.CSSProperties}
         >
           <span className="relative flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-a1 to-a2">
-            <Sparkle className="h-3.5 w-3.5 [&_path]:fill-white" />
+            <Sparkle tone="white" className="h-3.5 w-3.5" />
           </span>
           <div className="text-[11px] leading-tight">
             <p className="font-medium">sevAI</p>
@@ -139,9 +139,9 @@ export default function Hero() {
 
       <div className="container-x relative grid flex-1 items-center gap-12 pb-10 lg:grid-cols-[1.3fr_1fr] lg:gap-6 [&>*]:min-w-0">
         <div className="hero-copy">
-          <h1 className="display text-[clamp(2.8rem,6.4vw,6rem)]">
+          <h1 className="display text-[clamp(2.5rem,5vw,5.4rem)]">
             <RotatingWord />
-            <span className="block">designed and built</span>
+            <span className="block">designed <br className="sm:hidden" />and built</span>
             <span className="block text-white/45">in Sri Lanka.</span>
           </h1>
           <p className="mt-8 max-w-[46ch] text-pretty text-lg leading-relaxed text-white/65">
