@@ -1,799 +1,214 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { Helmet } from 'react-helmet-async';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Code2, Zap, Smartphone, Search, Shield, Layers, Monitor, Sparkles, CheckCircle2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import LazyImage from '../../components/ui/LazyImage';
+import useTyped from '@/lib/useTyped';
+import { useState } from 'react';
+import { ArrowUpRight, Gauge, Smartphone, Search, ShoppingBag, LayoutTemplate, Wrench } from 'lucide-react';
+import ServiceLayout, { StepsSection, HeroCtas } from '@/components/service/ServiceLayout';
+import { BrowserFrame, PhoneFrame, SectionHeader, Marquee } from '@/components/kit';
+import { cn } from '@/lib/utils';
 
-gsap.registerPlugin(ScrollTrigger);
+const PROJECTS = [
+  {
+    name: 'ClickZone Mobiles',
+    type: 'E-commerce',
+    url: 'clickzonemobiles.com',
+    href: 'https://clickzonemobiles.com',
+    text: 'iPhone retail store with product catalogue, live stock, WhatsApp ordering and warranty info, designed to feel as premium as the phones it sells.',
+    desktop: '/images/renders/sm/clickzone.webp',
+    mobile: '/images/renders/sm/clickzone-mobile.webp',
+  },
+  {
+    name: 'BodyLab Fitness',
+    type: 'Fitness platform',
+    url: 'bodylabfitness.vercel.app',
+    href: 'https://bodylabfitness.vercel.app',
+    text: 'A bold, membership-first site for a fitness network with programmes, transformations and booking that works one-handed.',
+    desktop: null,
+    mobile: '/images/renders/sm/bodylab-mobile.webp',
+  },
+  {
+    name: 'Golden Hour Coffee',
+    type: 'Hospitality concept',
+    url: 'goldencafe.vercel.app',
+    href: 'https://goldencafe.vercel.app',
+    text: 'A concept project exploring a menu-led brand experience for a specialty café, warm, editorial and quick to order from.',
+    desktop: null,
+    mobile: '/images/renders/sm/goldencafe-mobile.webp',
+  },
+];
 
-// Mobile Portfolio — Premium phone-frame showcase with swipe
-function MobilePortfolioDeck({ websites }: { websites: typeof portfolioWebsites }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [dragStartX, setDragStartX] = useState(0);
-  const [dragDeltaX, setDragDeltaX] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const phoneRef = useRef<HTMLDivElement>(null);
-  const infoRef = useRef<HTMLDivElement>(null);
+const STACK = ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Vite', 'Node.js', 'Supabase', 'PostgreSQL', 'Vercel', 'Shopify', 'WordPress', 'GSAP', 'Three.js'];
 
-  const SWIPE_THRESHOLD = 55;
-  const site = websites[currentIndex];
+const INCLUDED = [
+  'Custom design, no recycled templates',
+  'Mobile-first, tested on real devices',
+  'Technical SEO, sitemap & structured data',
+  'Analytics and conversion tracking',
+  'Fast hosting with SSL and backups',
+  'CMS or simple editing where you need it',
+  'WhatsApp, booking & payment integrations',
+  'Training and 30 days of post-launch support',
+];
 
-  const animateTo = useCallback((direction: 'left' | 'right', targetIndex: number) => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    const phone = phoneRef.current;
-    const info = infoRef.current;
-    if (!phone || !info) { setIsAnimating(false); return; }
-    // Slide out
-    gsap.to([phone, info], {
-      x: direction === 'left' ? -60 : 60,
-      opacity: 0,
-      duration: 0.25,
-      ease: 'power2.in',
-      onComplete: () => {
-        setCurrentIndex(targetIndex);
-        setDragDeltaX(0);
-        gsap.fromTo([phone, info],
-          { x: direction === 'left' ? 60 : -60, opacity: 0 },
-          { x: 0, opacity: 1, duration: 0.35, ease: 'power2.out', onComplete: () => setIsAnimating(false) }
-        );
-      }
-    });
-  }, [isAnimating]);
-
-  const goNext = useCallback(() => {
-    animateTo('left', (currentIndex + 1) % websites.length);
-  }, [animateTo, currentIndex, websites.length]);
-
-  const goPrev = useCallback(() => {
-    animateTo('right', (currentIndex - 1 + websites.length) % websites.length);
-  }, [animateTo, currentIndex, websites.length]);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setDragStartX(e.touches[0].clientX);
-    setIsDragging(true);
-    setDragDeltaX(0);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
-    const delta = e.touches[0].clientX - dragStartX;
-    setDragDeltaX(delta);
-    if (phoneRef.current) gsap.set(phoneRef.current, { x: delta * 0.4 });
-  };
-
-  const handleTouchEnd = () => {
-    setIsDragging(false);
-    if (Math.abs(dragDeltaX) > SWIPE_THRESHOLD) {
-      if (dragDeltaX < 0) {
-        goNext();
-      } else {
-        goPrev();
-      }
-    } else {
-      if (phoneRef.current) gsap.to(phoneRef.current, { x: 0, duration: 0.3, ease: 'elastic.out(1, 0.7)' });
-      setDragDeltaX(0);
-    }
-  };
-
+/** Hero: the page itself is a website being built, in a browser window. */
+function Hero() {
+  const { typed, done } = useTyped('yourbusiness.lk', 90, 500);
   return (
-    <div className="w-full px-4 pb-4 select-none">
-      {/* Category pill + counter */}
-      <div className="flex items-center justify-between mb-5 px-1">
-        <span
-          className="text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full"
-          style={{ backgroundColor: `${site.color}25`, color: site.color }}
-        >
-          {site.category}
-        </span>
-        <span className="text-xs text-white/40">
-          <span className="text-white font-semibold">{currentIndex + 1}</span>
-          <span className="mx-1 text-white/20">/</span>
-          {websites.length}
-        </span>
-      </div>
-
-      {/* Phone frame mockup */}
-      <div
-        ref={phoneRef}
-        className="mx-auto relative"
-        style={{ maxWidth: 280 }}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        {/* Phone shell */}
-        <div
-          className="relative rounded-[2.5rem] overflow-hidden shadow-2xl"
-          style={{
-            background: '#111',
-            border: `2px solid ${site.color}50`,
-            boxShadow: `0 30px 80px ${site.color}30, 0 0 0 1px rgba(255,255,255,0.06)`,
-          }}
-        >
-          {/* Status bar */}
-          <div className="flex items-center justify-between px-5 pt-3 pb-2 bg-[#0a0a0a]">
-            <span className="text-[10px] text-white/50 font-medium">9:41</span>
-            <div className="w-20 h-4 bg-black rounded-full" />
-            <div className="flex gap-1 items-center">
-              <div className="w-3 h-2 border border-white/40 rounded-sm" />
-              <div className="w-1 h-2.5 rounded-full bg-white/40" />
-            </div>
+    <div className="container-x pb-12">
+      <div className="overflow-hidden rounded-[1.6rem] border border-white/15 bg-[#080808]/90 shadow-[0_40px_120px_-40px_rgb(var(--a2)/0.5)] backdrop-blur [animation:svc-in_.9s_var(--ease-out)_both]">
+        <div className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
+          <div className="flex gap-1.5">
+            <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
+            <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
+            <span className="h-3 w-3 rounded-full bg-[#28c840]" />
           </div>
-
-          {/* Browser address bar */}
-          <div className="flex items-center gap-2 px-3 py-2 bg-[#141414] border-t border-white/5">
-            <div className="flex gap-1">
-              <div className="w-2 h-2 rounded-full bg-red-500/70" />
-              <div className="w-2 h-2 rounded-full bg-yellow-500/70" />
-              <div className="w-2 h-2 rounded-full bg-green-500/70" />
-            </div>
-            <div className="flex-1 flex items-center gap-1.5 bg-black/40 rounded-lg px-2 py-1">
-              <div className="w-2 h-2 rounded-full bg-green-500/60" />
-              <span className="text-[9px] text-white/35 truncate">{site.url.replace('https://', '')}</span>
-            </div>
-          </div>
-
-          {/* Website "Visual Preview" area */}
-          <div
-            className="relative overflow-hidden group/mobile-preview flex items-center justify-center"
-            style={{ height: 420, background: '#080808' }}
-          >
-            {/* Visual Snapshot */}
-            <LazyImage
-              key={site.url + '-mobile-final'}
-              src={site.mobilePreview}
-              alt={site.title}
-              className="w-full h-full transition-transform duration-500 group-hover/mobile-preview:scale-[1.02]"
-              objectClass="object-contain"
-            />
-
-            {/* Concept Badge - Mobile */}
-            {site.isConcept && (
-              <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10 flex items-center gap-1.5 shadow-xl">
-                <Sparkles className="w-3 h-3 text-orange-400" />
-                <span className="text-[9px] text-white/90 font-bold uppercase tracking-widest">Concept</span>
-              </div>
-            )}
-
-            {/* Link Overlay - Mobile */}
-            <div className="absolute inset-0 bg-black/0 active:bg-black/20 transition-colors" />
-
-            {/* Scan line shimmer effect */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{ background: 'linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.2) 100%)' }}
-            />
-          </div>
-
-          {/* Home indicator */}
-          <div className="bg-[#0a0a0a] py-2 flex justify-center">
-            <div className="w-24 h-1 bg-white/25 rounded-full" />
+          <div className="mx-auto flex w-full max-w-md items-center gap-2 rounded-full bg-white/[0.06] px-4 py-1.5 text-sm text-white/60">
+            <span className="text-white/35">https://</span>
+            <span className="text-white">{typed}</span>
+            <span className={done ? 'hidden' : 'h-4 w-px animate-pulse bg-a2'} />
           </div>
         </div>
-
-        {/* Swipe hint */}
-        <div className="flex items-center justify-center gap-1.5 mt-3">
-          <div className="w-3 h-0.5 bg-white/20 rounded-full" />
-          <span className="text-[10px] uppercase tracking-widest text-white/25">swipe</span>
-          <div className="w-3 h-0.5 bg-white/20 rounded-full" />
-        </div>
-      </div>
-
-      {/* Project info */}
-      <div ref={infoRef} className="mt-6 px-1">
-        <h3 className="text-2xl font-black mb-1">{site.title}</h3>
-        <p className="text-white/50 text-sm leading-relaxed mb-4">{site.description}</p>
-
-        {/* Stats row */}
-        <div className="flex gap-3 mb-4">
-          <div className="flex-1 bg-white/[0.03] border border-white/10 rounded-xl p-3 text-center">
-            <span className="text-lg font-black" style={{ color: site.color }}>{site.stats.loadTime}</span>
-            <p className="text-[10px] text-white/40 uppercase tracking-wider mt-0.5">Load Time</p>
-          </div>
-          <div className="flex-1 bg-white/[0.03] border border-white/10 rounded-xl p-3 text-center">
-            <span className="text-lg font-black text-emerald-400">{site.stats.conversion}</span>
-            <p className="text-[10px] text-white/40 uppercase tracking-wider mt-0.5">Conversion</p>
+        <div className="grid gap-8 p-6 sm:p-10 lg:grid-cols-12 lg:gap-10 lg:p-14">
+          <h1 className="display text-balance text-[clamp(2.6rem,5.6vw,5.2rem)] lg:col-span-7">Websites and online stores, designed and coded in-house.</h1>
+          <div className="lg:col-span-5 lg:pt-3">
+            <p className="max-w-[44ch] text-lg leading-relaxed text-white/65">
+              From a sharp one-page site to a full online store. Fast, easy to find on Google, and built by the same people who design it.
+            </p>
+            <HeroCtas className="mt-8" />
           </div>
         </div>
-
-        {/* Open site button */}
-        <a
-          href={site.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl font-bold text-sm transition-all active:scale-95 shadow-lg shadow-black/20"
-          style={{ background: site.color, color: '#fff' }}
-        >
-          <span>Open Live Site</span>
-          <ExternalLink className="w-4 h-4" />
-        </a>
+        <div className="relative h-[200px] overflow-hidden border-t border-white/10 sm:h-[280px]" data-cursor="View">
+          <img src="/images/renders/sm/clickzone.webp" alt="ClickZone Mobiles website, built by sevIT" className="web-scroll absolute inset-x-0 top-0 w-full object-cover object-top" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+          <p className="absolute bottom-5 left-6 text-sm text-white/70 sm:left-10">Live now: <a href="https://clickzonemobiles.com" target="_blank" rel="noopener noreferrer" className="text-white underline decoration-a2 underline-offset-4">clickzonemobiles.com</a></p>
+          <div className="absolute -bottom-24 right-6 w-[110px] sm:right-12 sm:w-[150px]">
+            <PhoneFrame><img src="/images/renders/sm/bodylab-mobile.webp" alt="BodyLab Fitness mobile site" className="w-full" /></PhoneFrame>
+          </div>
+        </div>
       </div>
+      <style>{`@keyframes web-scroll { 0%, 15% { transform: translateY(0) } 85%, 100% { transform: translateY(-35%) } } .web-scroll { animation: web-scroll 12s ease-in-out infinite alternate }`}</style>
+    </div>
+  );
+}
 
-      {/* Dot nav — increased margin for safety */}
-      <div className="flex items-center justify-center gap-2 mt-8 lg:mt-10">
-        <button
-          onClick={goPrev}
-          disabled={isAnimating}
-          className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 active:scale-90 transition-all disabled:opacity-40"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <div className="flex gap-2 mx-2">
-          {websites.map((_, idx) => (
+function ProjectSwitcher() {
+  const [i, setI] = useState(0);
+  const p = PROJECTS[i];
+  return (
+    <section id="work" className="relative scroll-mt-24 py-20 sm:py-28">
+      <div className="container-x">
+        <SectionHeader eyebrow="Recent work" title="Some sites we’ve built" />
+        <div role="tablist" aria-label="Projects" className="no-scrollbar mb-8 flex gap-2 overflow-x-auto">
+          {PROJECTS.map((x, n) => (
             <button
-              key={idx}
-              onClick={() => !isAnimating && animateTo(idx > currentIndex ? 'left' : 'right', idx)}
-              className="h-2 rounded-full transition-all duration-300"
-              style={{
-                width: idx === currentIndex ? 24 : 8,
-                background: idx === currentIndex ? site.color : 'rgba(255,255,255,0.15)',
-              }}
-            />
+              key={x.name}
+              role="tab"
+              aria-selected={n === i}
+              onClick={() => setI(n)}
+              className={cn(
+                'shrink-0 rounded-full border px-5 py-2.5 text-sm transition-all duration-300',
+                n === i ? 'border-white bg-white text-black' : 'border-white/10 text-white/60 hover:border-white/30 hover:text-white',
+              )}
+            >
+              {x.name}
+            </button>
           ))}
         </div>
-        <button
-          onClick={goNext}
-          disabled={isAnimating}
-          className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 active:scale-90 transition-all disabled:opacity-40"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
-      </div>
-    </div>
-  );
-}
 
-const features = [
-  { icon: Zap, title: 'Lightning Fast', desc: 'Sub-second load times with optimized code and edge caching.' },
-  { icon: Smartphone, title: 'Mobile-First', desc: 'Responsive designs that look stunning on every device.' },
-  { icon: Search, title: 'SEO Optimized', desc: 'Built-in SEO best practices for higher rankings.' },
-  { icon: Shield, title: 'Secure by Default', desc: 'HTTPS, security headers, and best practices.' },
-  { icon: Code2, title: 'Clean Code', desc: 'Maintainable, well-documented code.' },
-  { icon: Layers, title: 'Scalable Architecture', desc: 'Built to grow from startup to enterprise.' },
-];
-
-const portfolioWebsites = [
-  {
-    id: 1,
-    title: 'ClickZone',
-    category: 'E-Commerce',
-    url: 'https://clickzonemobiles.com',
-    description: 'Premier iPhone retail destination in Sri Lanka with a focus on certified pre-owned quality and seamless user experience.',
-    stats: { loadTime: '0.9s', conversion: '+220%' },
-    color: '#3B82F6',
-    previewImage: '/images/clickzone.webp',
-    mobilePreview: '/images/mobile-previews/clickzone-mobile.png',
-    isConcept: false,
-  },
-  {
-    id: 2,
-    title: 'Golden Cafe',
-    category: 'Dining & Hospitality',
-    url: 'https://goldencafe.vercel.app',
-    description: 'A conceptual digital menu and brand experience designed to showcase high-end hospitality UI/UX. (Conceptual Project)',
-    stats: { loadTime: '0.7s', conversion: '+180%' },
-    color: '#F59E0B',
-    previewImage: 'https://api.microlink.io/?url=https%3A%2F%2Fgoldencafe.vercel.app&screenshot=true&embed=screenshot.url&viewport.width=1280&viewport.height=800&waitFor=3000',
-    mobilePreview: '/images/mobile-previews/goldencafe-mobile.png',
-    isConcept: true,
-  },
-  {
-    id: 3,
-    title: 'BodyLab Fitness',
-    category: 'Health & Wellness',
-    url: 'https://bodylabfitness.vercel.app',
-    description: 'A premier fitness network platform featuring member tools, performance tracking, and streamlined booking experiences.',
-    stats: { loadTime: '1.1s', conversion: '+210%' },
-    color: '#EF4444',
-    previewImage: 'https://api.microlink.io/?url=https%3A%2F%2Fbodylabfitness.vercel.app&screenshot=true&embed=screenshot.url&viewport.width=1280&viewport.height=800&waitFor=3000',
-    mobilePreview: '/images/mobile-previews/bodylab-mobile.png',
-    isConcept: false,
-  },
-];
-
-const processSteps = [
-  { number: '01', title: 'Discovery', desc: 'We dive deep into your business goals and target audience.' },
-  { number: '02', title: 'Wireframing', desc: 'Low-fidelity layouts mapping user journeys.' },
-  { number: '03', title: 'Design', desc: 'High-fidelity mockups with your brand identity.' },
-  { number: '04', title: 'Development', desc: 'Clean, performant code with modern frameworks.' },
-  { number: '05', title: 'Launch', desc: 'Deployment, monitoring, and optimization.' },
-];
-
-const technologies = [
-  { name: 'React', icon: '⚛️' },
-  { name: 'Next.js', icon: '▲' },
-  { name: 'TypeScript', icon: 'TS' },
-  { name: 'Tailwind', icon: '🌊' },
-  { name: 'Node.js', icon: '🟢' },
-  { name: 'PostgreSQL', icon: '🐘' },
-];
-
-function WebDesignPage() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number | null>(null);
-  const isVisibleRef = useRef(true);
-
-  const currentWebsite = portfolioWebsites[currentIndex];
-
-  // Starfield background animation with IntersectionObserver
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener('resize', resize);
-
-    const stars: { x: number; y: number; size: number; speed: number; opacity: number }[] = [];
-    for (let i = 0; i < 100; i++) {
-      stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 1.5 + 0.5,
-        speed: Math.random() * 0.3 + 0.1,
-        opacity: Math.random() * 0.5 + 0.2,
-      });
-    }
-
-    const animate = () => {
-      if (!isVisibleRef.current) {
-        animationRef.current = requestAnimationFrame(animate);
-        return;
-      }
-      
-      ctx.fillStyle = 'rgba(5, 5, 5, 0.15)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      stars.forEach((star) => {
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-        ctx.fill();
-
-        star.y += star.speed;
-        if (star.y > canvas.height) {
-          star.y = 0;
-          star.x = Math.random() * canvas.width;
-        }
-      });
-
-      animationRef.current = requestAnimationFrame(animate);
-    };
-    animate();
-
-    // IntersectionObserver to pause when not visible
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          isVisibleRef.current = entry.isIntersecting;
-        });
-      },
-      { threshold: 0 }
-    );
-    observer.observe(canvas);
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-      window.removeEventListener('resize', resize);
-      observer.disconnect();
-    };
-  }, []);
-
-  const navigate = (newDirection: 'left' | 'right') => {
-    if (isAnimating) return;
-    
-    setIsAnimating(true);
-    setIsLoading(true);
-
-    const newIndex = newDirection === 'right' 
-      ? (currentIndex + 1) % portfolioWebsites.length
-      : (currentIndex - 1 + portfolioWebsites.length) % portfolioWebsites.length;
-
-    gsap.to(contentRef.current, {
-      x: newDirection === 'right' ? '-100%' : '100%',
-      opacity: 0,
-      duration: 0.4,
-      ease: 'power2.in',
-      onComplete: () => {
-        setCurrentIndex(newIndex);
-        gsap.fromTo(contentRef.current, 
-          { x: newDirection === 'right' ? '100%' : '-100%', opacity: 0 },
-          { x: '0%', opacity: 1, duration: 0.5, ease: 'power2.out', onComplete: () => setIsAnimating(false) }
-        );
-      }
-    });
-  };
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo('.hero-title', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.3 });
-      gsap.fromTo('.hero-subtitle', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.5 });
-      gsap.fromTo('.hero-cta', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.7 });
-
-      gsap.fromTo('.feature-card', { opacity: 0, y: 50 }, { 
-        opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out',
-        scrollTrigger: { trigger: '.features-section', start: 'top 80%', once: true }
-      });
-
-      gsap.fromTo('.process-step', { opacity: 0, x: -40 }, { 
-        opacity: 1, x: 0, duration: 0.6, stagger: 0.12, ease: 'power2.out',
-        scrollTrigger: { trigger: '.process-section', start: 'top 80%', once: true }
-      });
-
-      gsap.fromTo('.tech-item', { opacity: 0, scale: 0.8 }, { 
-        opacity: 1, scale: 1, duration: 0.4, stagger: 0.08, ease: 'back.out(1.7)',
-        scrollTrigger: { trigger: '.tech-section', start: 'top 85%', once: true }
-      });
-    });
-
-    return () => ctx.revert();
-  }, []);
-
-  return (
-    <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden">
-      <Helmet>
-        <title>Premium Web Design & High-Performance Development | sevIT Digital</title>
-        <meta name="description" content="We build websites that convert. Get blazing-fast, SEO-optimized, and mobile-first web experiences designed to turn visitors into loyal customers." />
-        <meta property="og:title" content="Premium Web Design & High-Performance Development | sevIT Digital" />
-        <meta property="og:description" content="Don't just launch a website. Build a digital empire with our conversion-focused design and engineering." />
-        <meta property="og:image" content="https://sevitdigital.com/images/clickzone.webp" />
-        <link rel="canonical" href="https://sevitdigital.com/#/services/web-design" />
-      </Helmet>
-      {/* Animated Starfield Background */}
-      <canvas 
-        ref={canvasRef} 
-        className="fixed inset-0 w-full h-full pointer-events-none z-0"
-      />
-
-      {/* Back Navigation - New Design */}
-      {/* HERO SECTION */}
-      <section className="relative min-h-[70vh] flex items-center justify-center px-6 lg:px-12 pt-32 pb-20 z-10">
-        <div className="absolute inset-0 pointer-events-none" 
-          style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(239, 68, 68, 0.12) 0%, transparent 60%)' }} 
-        />
-
-        <div className="relative z-10 max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-500/30 rounded-full mb-8 hero-title opacity-0">
-            <Monitor className="w-4 h-4 text-red-500" />
-            <span className="text-xs uppercase tracking-[0.3em] text-red-400">Web Design & Development</span>
+        <div key={p.name} role="tabpanel" className="grid gap-8 lg:grid-cols-[1.5fr_1fr] [animation:svc-in_.7s_var(--ease-out)_both]">
+          <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_30%_20%,rgb(var(--a2)/0.18),transparent_60%)] p-4 sm:p-10">
+            {p.desktop ? (
+              <div className="relative pb-8">
+                <BrowserFrame url={p.url}>
+                  <img src={p.desktop} alt={`${p.name} homepage`} className="w-full" loading="lazy" />
+                </BrowserFrame>
+                <PhoneFrame className="absolute -bottom-2 right-4 w-[24%] min-w-[100px]">
+                  <img src={p.mobile} alt={`${p.name} on mobile`} className="w-full" loading="lazy" />
+                </PhoneFrame>
+              </div>
+            ) : (
+              <div className="flex justify-center py-4">
+                <PhoneFrame className="w-[min(280px,70%)]">
+                  <img src={p.mobile} alt={`${p.name} on mobile`} className="w-full" loading="lazy" />
+                </PhoneFrame>
+              </div>
+            )}
           </div>
-
-          <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tight mb-6 hero-title opacity-0">
-            WEBSITES THAT
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">CONVERT</span>
-          </h1>
-
-          <p className="text-xl text-white/60 max-w-2xl mx-auto mb-10 hero-subtitle opacity-0">
-            We build blazing-fast, SEO-optimized websites with stunning designs that turn visitors into customers.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center hero-cta opacity-0">
-            <a href="#portfolio" className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black rounded-full font-medium hover:bg-red-500 hover:text-white transition-all group">
-              <span>View Our Work</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          <div className="flex flex-col justify-center">
+            <p className="text-[13px] text-a3">{p.type}</p>
+            <h3 className="display mt-4 text-4xl sm:text-5xl">{p.name}</h3>
+            <p className="mt-5 leading-relaxed text-white/60">{p.text}</p>
+            <a href={p.href} target="_blank" rel="noopener noreferrer" className="btn btn-ghost group mt-8 self-start">
+              Open live site
+              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </a>
-            <Link to="/#chat" className="inline-flex items-center gap-2 px-8 py-4 border border-white/20 rounded-full font-medium hover:bg-white/5 transition-all">
-              <span>Start Your Project</span>
-            </Link>
           </div>
         </div>
-      </section>
-
-      {/* PORTFOLIO SHOWCASE - INTERACTIVE IFRAME */}
-      <section id="portfolio" className="relative py-20 px-4 lg:px-12 z-10">
-        <div className="max-w-[1600px] mx-auto">
-          {/* Section Header */}
-          <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 rounded-full mb-4">
-              <Sparkles className="w-3 h-3 text-red-400" />
-              <span className="text-xs uppercase tracking-[0.2em] text-red-400">Portfolio</span>
-            </span>
-            <h2 className="text-4xl sm:text-5xl font-bold mb-4">
-              Our <span className="text-red-500">Work</span>
-            </h2>
-            <p className="text-white/50 max-w-xl mx-auto">
-              Browse and interact with our latest web design projects.
-            </p>
-          </div>
-
-          {/* Mobile/Tablet: Swipe Deck */}
-          <div className="lg:hidden">
-            <MobilePortfolioDeck websites={portfolioWebsites} />
-          </div>
-
-          {/* Desktop: macOS Mockup */}
-          <div className="hidden lg:flex relative items-center justify-center gap-4 lg:gap-8">
-            {/* Left Arrow */}
-            <button 
-              onClick={() => navigate('left')}
-              disabled={isAnimating}
-              className="flex-shrink-0 w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-red-500 hover:border-red-500 transition-all duration-300 disabled:opacity-50 z-20"
-            >
-              <ChevronLeft className="w-6 h-6 lg:w-8 lg:h-8" />
-            </button>
-
-            {/* Preview Box with Iframe */}
-            <div 
-              className="relative flex-1 max-w-6xl aspect-[16/10] rounded-2xl lg:rounded-3xl overflow-hidden bg-[#0a0a0a] border border-white/10 shadow-2xl"
-              style={{ boxShadow: '0 0 100px rgba(239, 68, 68, 0.15)' }}
-            >
-              {/* Browser Chrome */}
-              <div className="h-8 md:h-10 lg:h-12 bg-[#1a1a1a] border-b border-white/10 flex items-center px-3 md:px-4 gap-2 md:gap-3">
-                <div className="flex gap-1.5 md:gap-2">
-                  <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-red-500/80" />
-                  <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-yellow-500/80" />
-                  <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-green-500/80" />
-                </div>
-                <div className="flex-1 flex justify-center px-2">
-                  <a 
-                    href={currentWebsite.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-2 md:px-4 py-1 md:py-1.5 bg-[#0a0a0a] rounded-lg text-[10px] md:text-xs text-white/40 flex items-center gap-1.5 md:gap-2 hover:text-white/60 transition-colors truncate max-w-[180px] md:max-w-none"
-                  >
-                    <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-500/50 flex-shrink-0" />
-                    <span className="truncate">{currentWebsite.url}</span>
-                    <ExternalLink className="w-2.5 h-2.5 md:w-3 md:h-3 flex-shrink-0" />
-                  </a>
-                </div>
-              </div>
-
-              {/* Website Preview Content Container */}
-              <div className="relative flex-1 h-[calc(100%-40px)] md:h-[calc(100%-48px)] overflow-hidden">
-                <div ref={contentRef} className="w-full h-full relative group/preview">
-                  {/* Visual Snapshot */}
-                  <LazyImage
-                    key={currentWebsite.url}
-                    src={currentWebsite.previewImage}
-                    alt={`${currentWebsite.title} Preview`}
-                    className="w-full h-full"
-                    objectClass="object-cover object-top"
-                    onLoad={() => setIsLoading(false)}
-                  />
-
-                  {/* Loading Overlay */}
-                  {isLoading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-[#0a0a0a] z-10">
-                      <div className="flex flex-col items-center gap-4">
-                        <div className="w-10 h-10 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
-                        <span className="text-white/40 text-sm tracking-widest uppercase">Initializing...</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Interactive Overlay - Desktop Only */}
-                  {!isLoading && (
-                    <div className="absolute inset-0 bg-black/0 group-hover/preview:bg-black/20 transition-colors duration-500 flex items-center justify-center pointer-events-none group-hover/preview:pointer-events-auto">
-                      <div className="opacity-0 group-hover/preview:opacity-100 transition-all duration-300 transform translate-y-4 group-hover/preview:translate-y-0">
-                        <a 
-                          href={currentWebsite.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-8 py-4 bg-white text-black rounded-full font-bold shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all"
-                        >
-                          <span>Launch Live Experience</span>
-                          <ExternalLink className="w-5 h-5" />
-                        </a>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Status Badge */}
-                  {!isLoading && (
-                    <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-2">
-                      <div className="bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-[10px] text-white/80 font-bold uppercase tracking-widest">Visual Verified</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Overlay Info - Desktop Only */}
-                  <div className="hidden md:block absolute bottom-0 left-0 right-0 p-6 lg:p-8 bg-gradient-to-t from-black via-black/90 to-transparent pointer-events-none">
-                    <div className="flex items-end justify-between pointer-events-auto">
-                      <div>
-                        <span className="text-xs text-red-400 uppercase tracking-wider">{currentWebsite.category}</span>
-                        <h3 className="text-2xl lg:text-3xl font-bold mt-1">{currentWebsite.title}</h3>
-                        <p className="text-white/60 text-sm mt-2 max-w-md">{currentWebsite.description}</p>
-                      </div>
-                      <a 
-                        href={currentWebsite.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-5 py-3 bg-white text-black rounded-full text-sm font-medium hover:bg-red-500 hover:text-white transition-all"
-                      >
-                        <span>Open in New Tab</span>
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Progress Indicators */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-                {portfolioWebsites.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => {
-                      if (i !== currentIndex && !isAnimating) {
-                        navigate(i > currentIndex ? 'right' : 'left');
-                      }
-                    }}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      i === currentIndex ? 'w-8 bg-red-500' : 'bg-white/30 hover:bg-white/50'
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Right Arrow */}
-            <button 
-              onClick={() => navigate('right')}
-              disabled={isAnimating}
-              className="flex-shrink-0 w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-red-500 hover:border-red-500 transition-all duration-300 disabled:opacity-50 z-20"
-            >
-              <ChevronRight className="w-6 h-6 lg:w-8 lg:h-8" />
-            </button>
-          </div>
-
-          {/* Website Counter */}
-          <div className="text-center mt-8">
-            <span className="text-white/40 text-sm">
-              <span className="text-red-500 font-bold">{currentIndex + 1}</span> / {portfolioWebsites.length}
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* FEATURES SECTION */}
-      <section className="features-section relative py-24 px-6 lg:px-12 z-10 border-t border-white/10">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 rounded-full mb-4">
-              <Sparkles className="w-3 h-3 text-red-400" />
-              <span className="text-xs uppercase tracking-[0.2em] text-red-400">Features</span>
-            </span>
-            <h2 className="text-4xl sm:text-5xl font-bold mb-4">Built for Performance</h2>
-            <p className="text-white/50 max-w-2xl mx-auto">
-              Every website we build is optimized for speed, accessibility, and conversion.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <div 
-                  key={index}
-                  className="feature-card group p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/50 hover:bg-white/[0.08] transition-all duration-500"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center mb-5 group-hover:bg-red-500/20 transition-colors">
-                    <Icon className="w-6 h-6 text-red-500" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2 group-hover:text-red-400 transition-colors">{feature.title}</h3>
-                  <p className="text-white/50 text-sm leading-relaxed">{feature.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* PROCESS SECTION */}
-      <section className="process-section relative py-24 px-6 lg:px-12 z-10 border-t border-white/10">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <span className="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 rounded-full mb-4">
-                <span className="text-xs uppercase tracking-[0.2em] text-red-400">Our Process</span>
-              </span>
-              <h2 className="text-4xl sm:text-5xl font-bold mb-6">How We Build</h2>
-              <p className="text-white/50 text-lg mb-8">
-                A proven 5-step process that takes your project from concept to launch.
-              </p>
-
-              <div className="space-y-4">
-                {['Weekly progress updates', 'Unlimited revisions during design', 'Full source code ownership', '30-day post-launch support'].map((item, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-red-500 flex-shrink-0" />
-                    <span className="text-white/80">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              {processSteps.map((step, index) => (
-                <div 
-                  key={index}
-                  className="process-step flex gap-4 p-5 bg-white/5 rounded-2xl border border-white/10 hover:border-red-500/30 transition-all"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center flex-shrink-0">
-                    <span className="text-sm font-bold text-red-500">{step.number}</span>
-                  </div>
-                  <div>
-                    <h4 className="text-lg font-semibold mb-1">{step.title}</h4>
-                    <p className="text-sm text-white/50">{step.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* TECH STACK */}
-      <section className="tech-section relative py-24 px-6 lg:px-12 z-10 border-t border-white/10">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 rounded-full mb-4">
-              <Code2 className="w-3 h-3 text-red-400" />
-              <span className="text-xs uppercase tracking-[0.2em] text-red-400">Tech Stack</span>
-            </span>
-            <h2 className="text-4xl sm:text-5xl font-bold mb-4">Modern Technologies</h2>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-4">
-            {technologies.map((tech, index) => (
-              <div 
-                key={index}
-                className="tech-item flex items-center gap-3 px-6 py-4 bg-white/5 rounded-xl border border-white/10 hover:border-red-500/30 transition-all"
-              >
-                <span className="text-2xl">{tech.icon}</span>
-                <span className="font-medium">{tech.name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA SECTION */}
-      <section className="relative py-32 px-6 lg:px-12 z-10">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full opacity-30 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse at center, rgba(239, 68, 68, 0.3) 0%, transparent 60%)' }} 
-        />
-
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <div className="bg-gradient-to-br from-red-500/20 to-background rounded-3xl p-12 sm:p-16 border border-red-500/20">
-            <h2 className="text-4xl sm:text-5xl font-bold mb-4">Ready to Launch?</h2>
-            <p className="text-white/50 text-lg mb-8 max-w-xl mx-auto">
-              Let's discuss your project and create a website that drives results.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to={{ pathname: '/', hash: '#chat' }}
-                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black rounded-full font-medium hover:bg-red-500 hover:text-white transition-all"
-              >
-                <span>Get a Free Quote</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <a href="mailto:sevit@sevitdigital.com" className="inline-flex items-center gap-2 px-8 py-4 border border-white/20 rounded-full hover:bg-white/5 transition-all">
-                <span>Contact Us</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }
 
-export default WebDesignPage;
+function Included() {
+  return (
+    <section className="relative border-t border-white/[0.06] py-24 sm:py-32">
+      <div className="container-x grid gap-12 lg:grid-cols-2 lg:gap-20">
+        <div>
+          <SectionHeader stacked className="!mb-8" eyebrow="Every build" title="What every site gets, whatever the budget" intro="The details most agencies skip are the ones that decide whether a site actually ranks, loads and converts." />
+        </div>
+        <ul className="grid gap-x-8 sm:grid-cols-2">
+          {INCLUDED.map((x) => (
+            <li key={x} className="border-t border-white/10 py-4 text-[17px] text-white/80">
+              {x}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="mt-20 [mask-image:linear-gradient(90deg,transparent,#000_15%,#000_85%,transparent)]">
+        <Marquee duration={35}>
+          {STACK.map((s) => (
+            <span key={s} className="mr-3 rounded-full border border-white/10 bg-white/[0.03] px-5 py-2.5 font-mono text-sm text-white/55">
+              {s}
+            </span>
+          ))}
+        </Marquee>
+      </div>
+    </section>
+  );
+}
+
+export default function WebDesignPage() {
+  return (
+    <ServiceLayout
+      slug="web-design"
+      hero={<Hero />}
+      offeringsTitle="From a one-page site to a full online store."
+      offerings={[
+        { icon: LayoutTemplate, title: 'Business websites', text: 'Polished multi-page sites that explain what you do and turn visitors into enquiries.' },
+        { icon: ShoppingBag, title: 'E-commerce', text: 'Online stores with catalogues, carts, payments, delivery options and WhatsApp ordering.' },
+        { icon: Smartphone, title: 'Web apps & portals', text: 'Booking systems, member areas, dashboards and internal tools that run in the browser.' },
+        { icon: Search, title: 'SEO foundations', text: 'Clean structure, metadata, schema and speed so Google understands and ranks your pages.' },
+        { icon: Gauge, title: 'Performance tuning', text: 'Optimised images, code-splitting and caching for sites that load fast on any connection.' },
+        { icon: Wrench, title: 'Care & updates', text: 'Ongoing changes, monitoring and improvements after launch, so the site never goes stale.' },
+      ]}
+      faqs={[
+        { q: 'How long does a website take?', a: 'A focused business site usually takes 2–4 weeks from kickoff to launch. E-commerce and custom web apps take longer depending on features, we give you a clear timeline before we start.' },
+        { q: 'How much does a website cost?', a: 'It depends on the number of pages, features and integrations. We quote a fixed price after a short discovery call so there are no surprises.' },
+        { q: 'Will I be able to update the site myself?', a: 'Yes. Where you need it we add simple content editing, and we walk you through it at handover. We can also handle updates for you.' },
+        { q: 'Do you handle domains and hosting?', a: 'We can set up and manage your domain, hosting, SSL and business email, or work with what you already have.' },
+        { q: 'Can you redesign my existing website?', a: 'Absolutely. We audit what you have, keep what works (including your search rankings) and rebuild the rest.' },
+      ]}
+    >
+      <ProjectSwitcher />
+      <Included />
+      <StepsSection
+        title="How a site comes together"
+        steps={[
+          { title: 'Discovery', text: 'Goals, audience, competitors and the pages you actually need.' },
+          { title: 'Wireframes', text: 'Structure and user journeys mapped out before any visuals.' },
+          { title: 'Design', text: 'High-fidelity screens in your brand, reviewed together.' },
+          { title: 'Build', text: 'Clean, fast code with weekly previews on a live link.' },
+          { title: 'Launch', text: 'Go-live, analytics, search console and handover.' },
+        ]}
+      />
+    </ServiceLayout>
+  );
+}

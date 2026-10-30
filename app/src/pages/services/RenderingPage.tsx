@@ -1,885 +1,200 @@
-import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, Box, Layers, Sparkles, Camera, Cpu, Globe, Play, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import MobileAccordionCards from '../../components/ui/MobileAccordionCards';
-import type { AccordionCardItem } from '../../components/ui/MobileAccordionCards';
-import MobilePerspectiveGallery from '../../components/ui/MobilePerspectiveGallery';
-import LazyImage from '../../components/ui/LazyImage';
+import { useCallback, useEffect, useState } from 'react';
+import { Box, Camera, Building, Film, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import ServiceLayout, { StepsSection, HeroCtas } from '@/components/service/ServiceLayout';
+import { Reveal, SectionHeader } from '@/components/kit';
+import VideoCard from '@/components/kit/VideoCard';
+import { cn } from '@/lib/utils';
+import { getLenis } from '@/lib/lenis';
 
-function useLazyVideo(src: string) {
-  const videoRef = useRef<HTMLVideoElement>(null);
+type Shot = { file: string; full: string; title: string; tag: string };
+const sm = (f: string) => `/images/renders/sm/${f.replace(/ /g, '-')}.webp`;
+const full = (f: string) => `/images/renders/${f}.webp`;
+
+const SHOTS: Shot[] = [
+  { file: 'saraperf', title: 'Virtual product shoot', tag: 'Fragrance · Lifestyle' },
+  { file: 'perf1', title: 'Bergamood, concept ad', tag: 'Studio · Dramatic' },
+  { file: 'elkaduwamist', title: 'Elkaduwa Springs', tag: 'Product · Beverage' },
+  { file: 'watchsevit', title: 'Watch, hero shot', tag: 'Micro-detail · Luxury' },
+  { file: 'saraprfu', title: 'Fragrance campaign, concept', tag: 'Fragrance · Editorial' },
+  { file: '1', title: 'Grooming campaign', tag: 'Model · Splash' },
+  { file: 'collageperf', title: 'Botanical skincare, concept', tag: 'Packaging · Collage' },
+  { file: 'pefmouth', title: 'Bergamood, bold', tag: 'Beauty · Editorial' },
+  { file: 'elkaduwaskin', title: 'Elkaduwa, forest floor', tag: 'Product · Nature' },
+  { file: 'watch-detail', title: 'Watch, material study', tag: 'Mechanics · Detail' },
+  { file: 'origamiinterior', title: 'Origami interior', tag: 'Architecture · Spatial' },
+  { file: 'perf3', title: 'Luxury fragrance, mood', tag: 'Warm · Ambient' },
+  { file: 'perfmodel2', title: 'Botanical skincare, model', tag: 'Fashion · Colour' },
+  { file: '3', title: 'Grooming, close-up', tag: 'Model · Product' },
+  { file: 'elkaduwa4', title: 'Elkaduwa, flat lay', tag: 'Product · Studio' },
+  { file: 'saraa', title: 'Fragrance, portrait', tag: 'Model · Natural light' },
+].map((s) => ({ ...s, full: full(s.file), file: sm(s.file) }));
+
+function Lightbox({ index, onClose, onMove }: { index: number; onClose: () => void; onMove: (d: number) => void }) {
+  const s = SHOTS[index];
   useEffect(() => {
-    const el = videoRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !el.src) {
-          el.src = src;
-          el.load();
-          el.play().catch(() => {});
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [src]);
-  return videoRef;
-}
-
-gsap.registerPlugin(ScrollTrigger);
-
-const VIOLET = {
-  color: 'rgb(139,92,246)',
-  accentClass: 'text-violet-500',
-  bgClass: 'bg-violet-500/20',
-  borderClass: 'border-violet-500/40',
-};
-
-const showcaseItems = [
-  {
-    id: 1,
-    title: 'VIRTUAL PRODUCT SHOOT',
-    tag: 'Fragrance • Lifestyle',
-    description: 'Model and product composited in a single cohesive scene — editorial-grade fragrance advertising.',
-    images: [
-      '/images/renders/saraperf.webp',
-      '/images/renders/saraa.webp',
-      '/images/renders/saraprfu.webp'
-    ],
-    rotation: -2,
-    glow: 'rgba(120, 180, 120, 0.5)',
-    fit: 'cover' as const,
-  },
-  {
-    id: 2,
-    title: 'FRAGRANCE PERFECTION',
-    tag: 'Luxury • Detail',
-    description: 'Glass, liquid, and metallic materials rendered at photographic fidelity.',
-    images: [
-      '/images/renders/collageperf3.webp',
-      '/images/renders/collageperf.webp',
-      '/images/renders/collage1.webp'
-    ],
-    rotation: 1.5,
-    glow: 'rgba(99, 102, 241, 0.5)',
-    fit: 'cover' as const,
-  },
-  {
-    id: 3,
-    title: 'ORIGAMI INTERIOR',
-    tag: 'Architecture • Spatial',
-    description: 'Spatial storytelling that sells the feeling of being there before the space exists.',
-    images: [
-      '/images/renders/origamiinterior.webp'
-    ],
-    rotation: -1.5,
-    glow: 'rgba(245, 158, 11, 0.45)',
-    fit: 'cover' as const,
-  },
-  {
-    id: 4,
-    title: 'PERFUME MODEL',
-    tag: 'PBR • Caustics',
-    description: 'Precise caustic lighting and subsurface scattering on luxury perfume bottles.',
-    images: [
-      '/images/renders/perfmodel2.webp',
-      '/images/renders/pefmodel.webp'
-    ],
-    rotation: 2.5,
-    glow: 'rgba(244, 63, 94, 0.45)',
-    fit: 'cover' as const,
-  },
-  {
-    id: 5,
-    title: 'ELKADUWA SPRINGS',
-    tag: 'Product • Lifestyle',
-    description: 'Premium water bottle brand imagery — clean composition, studio-quality lighting.',
-    images: [
-      '/images/renders/elkaduwa4.webp',
-      '/images/renders/elkaduwamist.webp',
-      '/images/renders/elkaduwa.webp'
-    ],
-    rotation: -2,
-    glow: 'rgba(6, 182, 212, 0.45)',
-    fit: 'cover' as const,
-  },
-  {
-    id: 6,
-    title: 'LUXURY FRAGRANCE — CONCEPT',
-    tag: 'Luxury • Mood',
-    description: 'Warm ambient storytelling with reflective surfaces and botanical elements.',
-    images: [
-      '/images/renders/perf3.webp',
-      '/images/renders/pefmouth.webp'
-    ],
-    rotation: 1,
-    glow: 'rgba(190, 70, 70, 0.5)',
-    fit: 'cover' as const,
-  },
-  {
-    id: 7,
-    title: 'BERGAMOOD — CONCEPT AD',
-    tag: 'Studio • Dramatic',
-    description: 'Dark moody product photography with atmospheric smoke and citrus elements.',
-    images: [
-      '/images/renders/perf1.webp',
-      '/images/renders/perf2.webp'
-    ],
-    rotation: -1,
-    glow: 'rgba(52, 211, 153, 0.45)',
-    fit: 'cover' as const,
-  },
-  {
-    id: 8,
-    title: 'WATCH — MATERIAL STUDY',
-    tag: 'Micro-Detail • Jewellery',
-    description: 'Every scratch, reflection, and bevelled edge rendered to absolute perfection.',
-    images: [
-      '/images/renders/watch-detail.webp',
-      '/images/renders/watchsevit.webp'
-    ],
-    rotation: 1.5,
-    glow: 'rgba(251, 191, 36, 0.5)',
-    fit: 'cover' as const,
-  },
-];
-
-const services = [
-  {
-    icon: Box,
-    title: 'PRODUCT VISUALS',
-    subtitle: 'Show Every Detail',
-    description: `We create materials that look exactly like the real thing. Whether it's the subtle reflection on brushed metal or the precise way light passes through glass, we nail the details so you don't have to hire a photographer.\n\nWe make sure your product looks its absolute best from every single angle.`,
-  },
-  {
-    icon: Globe,
-    title: 'ARCHITECTURE & SPACES',
-    subtitle: 'Build The Vibe',
-    description: `We can build an entire room, building, or landscape before a single brick is actually laid. \n\nIt's not just about showing the layout; it's about making people feel what it's like to actually stand in that space, using lighting and composition to capture the perfect mood.`,
-  },
-  {
-    icon: Play,
-    title: 'MOTION & ANIMATION',
-    subtitle: 'Bring It To Life',
-    description: `Static images are great, but showing your product in motion is what really grabs attention. \n\nWe animate everything from simple, clean product spins to complex, dynamic reveals that would be incredibly difficult (and expensive) to shoot in real life.`,
-  },
-];
-
-const methodologyPoints = [
-  { icon: Cpu, title: 'SMART WORKFLOWS', desc: "We keep our files clean and optimized so you get your renders delivered on time, every time." },
-  { icon: Camera, title: 'EYE FOR DESIGN', desc: "We don't just light a scene; we craft an atmosphere that makes your product shine." },
-  { icon: Zap, title: 'BUILT TO SELL', desc: "Our visuals aren't just pretty pictures—they're designed to make people want to buy." },
-];
-
-const korloffImages = [
-  '/images/renders/saraperf.webp',
-  '/images/renders/saraa.webp',
-  '/images/renders/saraprfu.webp',
-  '/images/renders/3.webp',
-  '/images/renders/perf in mouth.webp',
-  '/images/renders/perfmodel2.webp',
-];
-const fragranceImages = [
-  '/images/renders/collageperf.webp',
-  '/images/renders/collage1.webp',
-];
-const elkaduwaImages = [
-  '/images/renders/elkaduwa4.webp',
-  '/images/renders/elkaduwamist.webp',
-];
-
-function RenderingPage() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const isVisibleRef = useRef(true);
-  const masonryRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  const [korloffIdx, setKorloffIdx] = useState(0);
-  const [fragranceIdx, setFragranceIdx] = useState(0);
-  const [elkaduwaIdx, setElkaduwaIdx] = useState(0);
-
-  const showreelRef = useLazyVideo('/images/renders/showreel.mp4');
-
-  const korloffTimer = useRef<ReturnType<typeof setInterval> | null>(null);
-  const fragranceTimer = useRef<ReturnType<typeof setInterval> | null>(null);
-  const elkaduwaTimer = useRef<ReturnType<typeof setInterval> | null>(null);
-  const korloffResume = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const fragranceResume = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const elkaduwaResume = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    korloffTimer.current = setInterval(() => setKorloffIdx(i => (i + 1) % korloffImages.length), 2000);
-    fragranceTimer.current = setInterval(() => setFragranceIdx(i => (i + 1) % fragranceImages.length), 2000);
-    elkaduwaTimer.current = setInterval(() => setElkaduwaIdx(i => (i + 1) % elkaduwaImages.length), 2000);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowRight') onMove(1);
+      if (e.key === 'ArrowLeft') onMove(-1);
+    };
+    window.addEventListener('keydown', onKey);
+    document.documentElement.style.overflow = 'hidden';
+    getLenis()?.stop();
     return () => {
-      if (korloffTimer.current) clearInterval(korloffTimer.current);
-      if (fragranceTimer.current) clearInterval(fragranceTimer.current);
-      if (elkaduwaTimer.current) clearInterval(elkaduwaTimer.current);
-      if (korloffResume.current) clearTimeout(korloffResume.current);
-      if (fragranceResume.current) clearTimeout(fragranceResume.current);
-      if (elkaduwaResume.current) clearTimeout(elkaduwaResume.current);
+      window.removeEventListener('keydown', onKey);
+      document.documentElement.style.overflow = '';
+      getLenis()?.start();
     };
-  }, []);
-
-  const pauseAndResume = (
-    timerRef: { current: ReturnType<typeof setInterval> | null },
-    resumeRef: { current: ReturnType<typeof setTimeout> | null },
-    setter: (fn: (i: number) => number) => void,
-    length: number
-  ) => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    timerRef.current = null;
-    if (resumeRef.current) clearTimeout(resumeRef.current);
-    resumeRef.current = setTimeout(() => {
-      timerRef.current = setInterval(() => setter(i => (i + 1) % length), 2000);
-    }, 5000);
-  };
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const resize = () => { 
-      if (canvas) {
-        canvas.width = window.innerWidth; 
-        canvas.height = window.innerHeight; 
-      }
-    };
-    resize();
-    window.addEventListener('resize', resize);
-
-    const stars: { x: number; y: number; size: number; speed: number; opacity: number }[] = [];
-    for (let i = 0; i < 80; i++) {
-      stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 1.5 + 0.5, speed: Math.random() * 0.3 + 0.1, opacity: Math.random() * 0.5 + 0.2 });
-    }
-
-    const animate = () => {
-      if (!isVisibleRef.current) { requestAnimationFrame(animate); return; }
-      ctx.fillStyle = 'rgba(5, 5, 5, 0.15)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      stars.forEach((star) => {
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-        ctx.fill();
-        star.y += star.speed;
-        if (star.y > canvas.height) { star.y = 0; star.x = Math.random() * canvas.width; }
-      });
-      requestAnimationFrame(animate);
-    };
-    animate();
-
-    const observer = new IntersectionObserver(
-      (entries) => { entries.forEach((entry) => { isVisibleRef.current = entry.isIntersecting; }); },
-      { threshold: 0 }
-    );
-    observer.observe(canvas);
-
-    return () => {
-      window.removeEventListener('resize', resize);
-      observer.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo('.hero-line',
-        { opacity: 0, y: 100 },
-        { opacity: 1, y: 0, duration: 1.2, stagger: 0.2, ease: 'power3.out', delay: 0.3 }
-      );
-      gsap.fromTo('.hero-sub',
-        { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.9 }
-      );
-      gsap.fromTo('.hero-cta',
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 1.1 }
-      );
-
-      // Desktop gallery
-      gsap.fromTo('.showcase-item',
-        { opacity: 0, y: 120, rotateX: 15, scale: 0.85 },
-        { opacity: 1, y: 0, rotateX: 0, scale: 1, duration: 1.2, stagger: 0.2, ease: 'power4.out',
-          scrollTrigger: { trigger: '.showcase-section', start: 'top 80%', once: true } }
-      );
-      gsap.fromTo('.floating-orb',
-        { opacity: 0, scale: 0 },
-        { opacity: 1, scale: 1, duration: 1.5, stagger: 0.1, ease: 'elastic.out(1, 0.5)',
-          scrollTrigger: { trigger: '.showcase-section', start: 'top 70%', once: true } }
-      );
-      gsap.fromTo('.service-card',
-        { opacity: 0, x: -60 },
-        { opacity: 1, x: 0, duration: 0.8, stagger: 0.2, ease: 'power2.out',
-          scrollTrigger: { trigger: '.services-section', start: 'top 75%', once: true } }
-      );
-      gsap.fromTo('.method-point',
-        { opacity: 0, y: 50 },
-        { opacity: 1, y: 0, duration: 0.7, stagger: 0.15, ease: 'power2.out',
-          scrollTrigger: { trigger: '.method-section', start: 'top 80%', once: true } }
-      );
-
-      // Mobile masonry — stagger in on scroll
-      masonryRefs.current.forEach((el, i) => {
-        if (!el) return;
-        gsap.fromTo(el,
-          { opacity: 0, y: 40 },
-          { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
-            scrollTrigger: { trigger: el, start: 'top 90%', once: true },
-            delay: (i % 2) * 0.1,
-          }
-        );
-      });
-    });
-    return () => ctx.revert();
-  }, []);
-
-  // Mobile accordion items for services
-  const mobileServiceItems: AccordionCardItem[] = services.map((s) => ({
-    icon: s.icon,
-    title: s.title,
-    subtitle: s.subtitle,
-    description: s.description.split('\n\n')[0],
-    accentColor: VIOLET.color,
-    accentClass: VIOLET.accentClass,
-    bgClass: VIOLET.bgClass,
-    borderClass: VIOLET.borderClass,
-  }));
+  }, [onClose, onMove]);
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden">
-      <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-0" />
-
-      {/* ── HERO ─────────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center justify-center px-6 lg:px-12 pt-28 pb-32 md:pt-32 md:pb-40 z-10 text-center text-center">
-        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 60%)' }} />
-
-        <div className="relative z-10 max-w-6xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-violet-500/10 border border-violet-500/30 rounded-full mb-8 md:mb-10 mx-auto">
-            <Layers className="w-4 h-4 text-violet-500" />
-            <span className="text-xs uppercase tracking-[0.3em] text-violet-400">3D Render & Virtual Ads</span>
-          </div>
-
-          <h1 className="text-5xl sm:text-7xl lg:text-9xl font-black leading-[0.85] tracking-tighter mb-8 md:mb-10 uppercase text-center text-center">
-            <span className="hero-line block opacity-0">REPLACE</span>
-            <span className="hero-line block text-transparent bg-clip-text bg-gradient-to-r from-violet-500 via-purple-500 to-violet-500 opacity-0 text-center text-center">
-              REALITY.
-            </span>
-            <span className="hero-line block opacity-0">COMMAND</span>
-            <span className="hero-line block text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-violet-500 to-purple-500 opacity-0 text-center text-center">
-              ATTENTION.
-            </span>
-          </h1>
-
-          <p className="hero-sub text-sm sm:text-base text-violet-300/80 font-semibold uppercase tracking-[0.2em] max-w-2xl mx-auto mb-5 opacity-0 text-center text-center">
-            Studio-quality product photography and lifestyle ads. No camera. No studio. Fraction of the cost.
-          </p>
-
-          <p className="hero-sub text-base sm:text-lg md:text-xl text-white/60 max-w-3xl mx-auto mb-10 md:mb-12 leading-relaxed opacity-0 text-center text-center text-center">
-            We create photorealistic 3D visuals and AI-powered virtual ad campaigns that look indistinguishable from real photography — no studio, no crew, no scheduling. Show off your products from every angle, in any setting, before they even exist.
-          </p>
-
-          <div className="hero-cta opacity-0 flex justify-center text-center text-center">
-            <Link
-              to={{ pathname: '/', hash: '#chat' }}
-              className="inline-flex items-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-violet-500 text-white rounded-full font-bold text-base md:text-lg uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300 group"
-            >
-              <span>Request a Custom Visual Strategy Session</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
+    <div role="dialog" aria-modal="true" aria-label={s.title} className="fixed inset-0 z-[80] flex flex-col bg-black/95 backdrop-blur-xl [animation:svc-in_.4s_var(--ease-out)_both]" onClick={onClose}>
+      <div className="flex items-center justify-between p-4 sm:p-6">
+        <div>
+          <p className="font-medium">{s.title}</p>
+          <p className="font-mono text-xs text-white/40">{s.tag} · {index + 1}/{SHOTS.length}</p>
         </div>
-
-        {/* Mobile scroll hint */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30 md:hidden">
-          <span className="text-[10px] uppercase tracking-widest">Scroll</span>
-          <div className="w-px h-6 bg-gradient-to-b from-violet-500 to-transparent" />
-        </div>
-      </section>
-
-      {/* ── DIMENSIONAL GALLERY ───────────────────────────────────────────────── */}
-      <section className="showcase-section relative py-24 md:py-32 px-6 lg:px-12 z-10 border-t border-white/10 overflow-hidden">
-        {/* Floating decorative orbs */}
-        {[...Array(12)].map((_, i) => (
-          <div
-            key={`orb-${i}`}
-            className="floating-orb absolute rounded-full pointer-events-none opacity-0"
-            style={{
-              width: `${Math.random() * 6 + 3}px`,
-              height: `${Math.random() * 6 + 3}px`,
-              top: `${10 + Math.random() * 80}%`,
-              left: `${5 + Math.random() * 90}%`,
-              background: `rgba(139, 92, 246, ${Math.random() * 0.5 + 0.3})`,
-              boxShadow: `0 0 ${Math.random() * 15 + 5}px rgba(139, 92, 246, 0.4)`,
-              animation: `float-orb ${3 + Math.random() * 4}s ease-in-out infinite alternate`,
-              animationDelay: `${Math.random() * 3}s`,
+        <button type="button" onClick={onClose} className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 hover:bg-white/10" aria-label="Close">
+          <X className="h-5 w-5" />
+        </button>
+      </div>
+      <div className="relative flex min-h-0 flex-1 items-center justify-center px-4 pb-6 sm:px-20">
+        <img key={s.full} src={s.full} alt={`${s.title}, 3D render by sevIT`} className="max-h-full max-w-full rounded-xl object-contain [animation:svc-in_.5s_var(--ease-out)_both]" onClick={(e) => e.stopPropagation()} />
+        {[-1, 1].map((d) => (
+          <button
+            key={d}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onMove(d);
             }}
-          />
+            aria-label={d < 0 ? 'Previous' : 'Next'}
+            className={cn('absolute top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/60 hover:bg-white/10', d < 0 ? 'left-3 sm:left-6' : 'right-3 sm:right-6')}
+          >
+            {d < 0 ? <ChevronLeft className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+          </button>
         ))}
-
-        <div className="max-w-7xl mx-auto relative z-10">
-          {/* Section Header */}
-          <div className="text-center mb-16 md:mb-24">
-            <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full mb-6 mx-auto text-center text-center">
-              <Sparkles className="w-3 h-3 text-violet-400" />
-              <span className="text-xs uppercase tracking-[0.2em] text-white/40 text-center">Dimensional Exhibit</span>
-            </span>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight uppercase text-center text-center text-center">
-              TECHNICAL DOMINANCE
-            </h2>
-            <p className="text-xl sm:text-2xl md:text-3xl text-violet-500 font-bold mt-2 uppercase tracking-wider text-center text-center text-center">
-              On Display
-            </p>
-          </div>
-
-          {/* Desktop Gallery — 8 cards, 4 rows */}
-          <div className="relative hidden lg:block">
-
-            {/* Row 1 — wide hero (Korloff) + portrait (Fragrance) */}
-            <div className="flex items-start gap-5 mb-5 text-center">
-              <div
-                className="showcase-item gpu-accelerated group relative w-[60%] flex-shrink-0 opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
-                style={{ transform: `rotate(${showcaseItems[0].rotation}deg)`, zIndex: 10 }}
-                onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 60px ${showcaseItems[0].glow}`)}
-                onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
-              >
-                <div className="aspect-[4/3] relative overflow-hidden" style={{ background: '#6e8c6b' }}>
-                  <LazyImage src={korloffImages[korloffIdx]} alt={showcaseItems[0].title}
-                    className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-[1.03]"
-                    objectClass="object-contain" blurFill
-                    loading="eager" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent pointer-events-none" />
-                  {/* Carousel buttons */}
-                  <button onClick={() => { pauseAndResume(korloffTimer, korloffResume, setKorloffIdx, korloffImages.length); setKorloffIdx(i => (i - 1 + korloffImages.length) % korloffImages.length); }}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => { pauseAndResume(korloffTimer, korloffResume, setKorloffIdx, korloffImages.length); setKorloffIdx(i => (i + 1) % korloffImages.length); }}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                  {/* Dot indicators */}
-                  <div className="absolute bottom-16 right-5 z-20 flex gap-1.5">
-                    {korloffImages.map((_, i) => (
-                      <div key={i} className="w-1.5 h-1.5 rounded-full transition-all duration-300"
-                        style={{ background: i === korloffIdx ? 'rgba(139,92,246,1)' : 'rgba(255,255,255,0.3)' }} />
-                    ))}
-                  </div>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-7 text-left z-20">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-1 h-7 rounded-full" style={{ background: showcaseItems[0].glow }} />
-                    <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[0].tag}</span>
-                  </div>
-                  <h3 className="text-2xl lg:text-3xl font-black tracking-tight mb-2 group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[0].title}</h3>
-                  <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
-                  <p className="text-white/50 text-sm leading-relaxed">{showcaseItems[0].description}</p>
-                </div>
-              </div>
-
-              <div
-                className="showcase-item gpu-accelerated group relative flex-1 opacity-0 mt-12 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
-                style={{ transform: `rotate(${showcaseItems[1].rotation}deg)`, zIndex: 9 }}
-                onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 50px ${showcaseItems[1].glow}`)}
-                onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
-              >
-                <div className="aspect-[3/4] relative overflow-hidden bg-black/60">
-                  <LazyImage src={fragranceImages[fragranceIdx]} alt={showcaseItems[1].title}
-                    className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-[1.04]"
-                    objectClass="object-contain" blurFill
-                    loading="eager" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-                  {/* Carousel buttons */}
-                  <button onClick={() => { pauseAndResume(fragranceTimer, fragranceResume, setFragranceIdx, fragranceImages.length); setFragranceIdx(i => (i - 1 + fragranceImages.length) % fragranceImages.length); }}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => { pauseAndResume(fragranceTimer, fragranceResume, setFragranceIdx, fragranceImages.length); setFragranceIdx(i => (i + 1) % fragranceImages.length); }}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                  {/* Dot indicators */}
-                  <div className="absolute bottom-16 right-4 z-20 flex gap-1.5">
-                    {fragranceImages.map((_, i) => (
-                      <div key={i} className="w-1.5 h-1.5 rounded-full transition-all duration-300"
-                        style={{ background: i === fragranceIdx ? 'rgba(99,102,241,1)' : 'rgba(255,255,255,0.3)' }} />
-                    ))}
-                  </div>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-left z-20">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-1 h-6 rounded-full" style={{ background: showcaseItems[1].glow }} />
-                    <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[1].tag}</span>
-                  </div>
-                  <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[1].title}</h3>
-                  <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Row 2 — ORIGAMI (wider) + ELKADUWA SPRINGS (carousel) */}
-            <div className="flex items-start gap-5 mb-5">
-              {/* ORIGAMI INTERIOR — wider */}
-              <div
-                className="showcase-item gpu-accelerated group relative flex-[1.7] opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
-                style={{ transform: `rotate(${showcaseItems[2].rotation}deg)`, zIndex: 8 }}
-                onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 50px ${showcaseItems[2].glow}`)}
-                onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
-              >
-                <div className="aspect-[3/4] relative overflow-hidden">
-                  <LazyImage src={showcaseItems[2].images[0]} alt={showcaseItems[2].title}
-                    className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-[1.04]"
-                    objectClass="object-contain" blurFill
-                    loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent pointer-events-none" />
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-5 text-left z-20">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-1 h-5 rounded-full" style={{ background: showcaseItems[2].glow }} />
-                    <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400">{showcaseItems[2].tag}</span>
-                  </div>
-                  <h3 className="text-base font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[2].title}</h3>
-                  <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
-                </div>
-              </div>
-
-              {/* ELKADUWA SPRINGS — carousel */}
-              <div
-                className="showcase-item gpu-accelerated group relative flex-1 opacity-0 mt-10 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
-                style={{ transform: `rotate(${showcaseItems[4].rotation}deg)`, zIndex: 8 }}
-                onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 50px ${showcaseItems[4].glow}`)}
-                onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
-              >
-                <div className="aspect-[3/4] relative overflow-hidden">
-                  <LazyImage src={elkaduwaImages[elkaduwaIdx]} alt={showcaseItems[4].title}
-                    className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-[1.04]"
-                    objectClass="object-contain" blurFill
-                    loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent pointer-events-none" />
-                  {/* Carousel buttons */}
-                  <button onClick={() => { pauseAndResume(elkaduwaTimer, elkaduwaResume, setElkaduwaIdx, elkaduwaImages.length); setElkaduwaIdx(i => (i - 1 + elkaduwaImages.length) % elkaduwaImages.length); }}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => { pauseAndResume(elkaduwaTimer, elkaduwaResume, setElkaduwaIdx, elkaduwaImages.length); setElkaduwaIdx(i => (i + 1) % elkaduwaImages.length); }}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/70 transition-colors">
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                  {/* Dot indicators */}
-                  <div className="absolute bottom-16 right-4 z-20 flex gap-1.5">
-                    {elkaduwaImages.map((_, i) => (
-                      <div key={i} className="w-1.5 h-1.5 rounded-full transition-all duration-300"
-                        style={{ background: i === elkaduwaIdx ? 'rgba(6,182,212,1)' : 'rgba(255,255,255,0.3)' }} />
-                    ))}
-                  </div>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-5 text-left z-20">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-1 h-5 rounded-full" style={{ background: showcaseItems[4].glow }} />
-                    <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400">{showcaseItems[4].tag}</span>
-                  </div>
-                  <h3 className="text-base font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[4].title}</h3>
-                  <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Row 3 — two portrait cards (Bergamood + Tom Ford) */}
-            <div className="flex items-start gap-5 mb-5">
-              {[5, 6].map((idx, i) => (
-                <div
-                  key={idx}
-                  className="showcase-item gpu-accelerated group relative flex-1 opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
-                  style={{ transform: `rotate(${showcaseItems[idx].rotation}deg)`, marginTop: i === 1 ? '32px' : '0', zIndex: 10 }}
-                  onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 55px ${showcaseItems[idx].glow}`)}
-                  onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
-                >
-                  <div className="aspect-[3/4] relative overflow-hidden">
-                    <LazyImage src={showcaseItems[idx].images[0]} alt={showcaseItems[idx].title}
-                      className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-[1.04]"
-                      objectClass="object-contain" blurFill
-                      loading="lazy" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none" />
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-6 text-left z-20">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-1 h-6 rounded-full" style={{ background: showcaseItems[idx].glow }} />
-                      <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[idx].tag}</span>
-                    </div>
-                    <h3 className="text-lg font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[idx].title}</h3>
-                    <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Row 4 — cinematic watch strip */}
-            <div
-              className="showcase-item gpu-accelerated group relative w-[88%] mx-auto opacity-0 rounded-2xl overflow-hidden border border-white/10 transition-all duration-500"
-              style={{ transform: `rotate(${showcaseItems[7].rotation}deg)`, zIndex: 12 }}
-              onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 0 70px ${showcaseItems[7].glow}`)}
-              onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
-            >
-              <div className="aspect-[21/9] relative overflow-hidden">
-                <LazyImage src={showcaseItems[7].images[0]} alt={showcaseItems[7].title}
-                  className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-[1.02]"
-                  objectClass="object-contain" blurFill
-                  loading="lazy" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-10 text-left z-20">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-1 h-8 rounded-full" style={{ background: showcaseItems[7].glow }} />
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-medium">{showcaseItems[7].tag}</span>
-                </div>
-                <h3 className="text-2xl lg:text-3xl font-black tracking-tight group-hover:text-violet-200 transition-colors uppercase">{showcaseItems[7].title}</h3>
-                <p className="text-white/30 text-[10px] uppercase tracking-widest mt-1.5 italic">Concept visualization by <span className="normal-case">sev</span>IT.</p>
-                <p className="text-white/40 text-sm leading-relaxed mt-2 max-w-lg">
-                  {showcaseItems[7].description}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* ── Mobile Creative Gallery ─────────────────────────────────────────── */}
-          <div className="lg:hidden">
-            <MobilePerspectiveGallery 
-              items={showcaseItems.map(item => ({
-                id: item.id,
-                title: item.title,
-                tag: item.tag,
-                description: item.description,
-                images: item.images, // Now correctly passing multiple images
-                glow: item.glow
-              }))} 
-            />
-          </div>
-        </div>
-
-        <style>{`
-          @keyframes float-orb {
-            0% { transform: translateY(0px) translateX(0px); }
-            100% { transform: translateY(-20px) translateX(10px); }
-          }
-        `}</style>
-      </section>
-
-      {/* ── VIDEO SHOWREEL — Full-bleed cinematic strip ─────────────────────── */}
-      <section className="relative z-10 overflow-hidden" style={{ marginTop: '-1px' }}>
-        {/* Diagonal cut top edge */}
-        <div
-          className="absolute top-0 left-0 right-0 h-24 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(to bottom right, #050505 49.9%, transparent 50%)' }}
-        />
-        {/* Diagonal cut bottom edge */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-24 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(to top left, #050505 49.9%, transparent 50%)' }}
-        />
-
-        {/* Full-bleed video — no box, no bars */}
-        <div className="relative w-full" style={{ height: 'clamp(45vh, 56vw, 720px)' }}>
-          <video
-            ref={showreelRef}
-            className="absolute inset-0 w-full h-full object-cover"
-            muted
-            loop
-            playsInline
-            autoPlay
-            preload="metadata"
-            poster="/images/posters/showreel-poster.webp"
-            aria-label="sevIT 3D rendering showreel"
-          />
-
-          {/* Dark vignette overlay */}
-          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, transparent 30%, rgba(5,5,5,0.55) 100%)' }} />
-          {/* Gradient edges to bleed into page bg */}
-          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#050505] to-transparent" />
-          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#050505] to-transparent" />
-
-          {/* Floating centre label */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center z-10 text-center px-6">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-sm rounded-full mb-5 border border-white/10 mx-auto text-center text-center">
-              <Play className="w-3 h-3 text-violet-400" />
-              <span className="text-xs uppercase tracking-[0.25em] text-white/50 text-center">Motion Showreel</span>
-            </span>
-            <h2 className="text-4xl xs:text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter drop-shadow-2xl uppercase text-center text-center text-center text-center">
-              SEE IT IN
-            </h2>
-            <p className="text-3xl xs:text-4xl sm:text-5xl md:text-7xl font-black text-violet-400 uppercase tracking-wider drop-shadow-2xl text-center text-center text-center text-center text-center">
-              MOTION
-            </p>
-          </div>
-
-          {/* Bottom-left badge */}
-          <div className="absolute bottom-10 left-6 lg:left-12 z-10 flex items-center gap-3">
-            <div className="w-2 h-2 rounded-full bg-violet-500 animate-pulse" />
-            <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-medium text-center">sevIT Digital — 2025 Render Showreel</span>
-          </div>
-        </div>
-      </section>
-
-
-      {/* ── SERVICES SECTION ─────────────────────────────────────────────────── */}
-      <section className="services-section relative py-24 md:py-32 px-6 lg:px-12 z-10 border-t border-white/10 text-center text-center text-center">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-14 md:mb-20 text-center">
-            <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full mb-6 mx-auto text-center">
-              <Cpu className="w-3 h-3 text-violet-400" />
-              <span className="text-xs uppercase tracking-[0.2em] text-white/40">Technical Stack</span>
-            </span>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight uppercase text-center text-center text-center">
-              THE RENDERING
-            </h2>
-            <p className="text-xl sm:text-2xl md:text-3xl text-violet-500 font-bold mt-2 uppercase tracking-wider text-center text-center">
-              Engineering Stack
-            </p>
-          </div>
-
-          {/* Desktop Grid */}
-          <div className="hidden lg:grid grid-cols-3 gap-8 text-center text-center">
-            {services.map((service, index) => {
-              const Icon = service.icon;
-              return (
-                <div key={index} className="service-card group relative opacity-0 h-full">
-                  <div className="relative h-full p-8 lg:p-10 rounded-3xl bg-white/[0.02] border border-white/10 hover:border-violet-500/50 transition-all duration-500 overflow-hidden flex flex-col text-center text-center">
-                    <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-violet-500/20 blur-3xl opacity-20 group-hover:opacity-40 transition-opacity" />
-                    <div className="relative w-16 h-16 rounded-2xl bg-violet-500/20 flex items-center justify-center mb-8 shrink-0 mx-auto text-center">
-                      <Icon className="w-8 h-8 text-violet-500" />
-                    </div>
-                    <span className="text-xs uppercase tracking-[0.2em] text-violet-400 mb-4 block text-center">{service.subtitle}</span>
-                    <h3 className="text-2xl lg:text-3xl font-black mb-6 uppercase text-center text-center text-center">{service.title}</h3>
-                    <div className="text-white/60 text-sm leading-relaxed whitespace-pre-line flex-1 text-center text-center">{service.description}</div>
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-violet-500 to-transparent" />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Mobile — Accordion */}
-          <MobileAccordionCards items={mobileServiceItems} />
-        </div>
-      </section>
-
-      {/* ── METHODOLOGY ───────────────────────────────────────────────────────── */}
-      <section className="method-section relative py-24 md:py-32 px-6 lg:px-12 z-10 border-t border-white/10 text-center text-center text-center text-center">
-        <div className="max-w-5xl mx-auto">
-          <div className="mb-12 md:mb-16 text-center text-center">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-4 uppercase text-center text-center">
-              WHY OUR RENDERS
-            </h2>
-            <p className="text-2xl sm:text-3xl md:text-4xl text-violet-500 font-bold uppercase tracking-wider text-center text-center">
-              LOOK "OVER-THE-TOP"
-            </p>
-          </div>
-
-          <div className="mb-14 md:mb-20 text-center text-center">
-            <p className="text-lg sm:text-xl md:text-2xl text-white/70 leading-relaxed max-w-4xl mx-auto text-center text-center text-center">
-              Because we sweat the <span className="text-violet-500 font-bold">details</span>.
-            </p>
-            <p className="text-white/50 leading-relaxed max-w-3xl mx-auto mt-6 text-center text-center text-center">
-              We don't just push a button and hope for the best. We meticulously craft every texture, light, and angle to make sure your product looks exactly how you want it to.
-            </p>
-            <p className="text-white/50 leading-relaxed max-w-3xl mx-auto mt-4 text-center text-center text-center">
-              Behind the scenes, we keep our files clean and our processes tight. This means we can iterate quickly, hit your deadlines, and deliver image files that are ready to use everywhere—from your website to massive billboards.
-            </p>
-            <p className="text-xl md:text-2xl font-bold text-white mt-8 uppercase tracking-wider text-center text-center text-center text-center">
-              The result? Visuals that actually grab attention and drive sales—
-            </p>
-            <p className="text-2xl md:text-3xl font-black text-violet-500 mt-4 uppercase tracking-widest text-center text-center text-center text-center">
-              Without the massive photoshoot budget.
-            </p>
-          </div>
-
-          {/* Desktop Grid */}
-          <div className="hidden lg:grid grid-cols-3 gap-8 text-center text-center text-center">
-            {methodologyPoints.map((point, index) => {
-              const Icon = point.icon;
-              return (
-                <div key={index} className="method-point text-center p-8 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-violet-500/30 hover:bg-white/[0.04] transition-all opacity-0 text-center text-center">
-                  <div className="w-14 h-14 rounded-xl bg-violet-500/10 flex items-center justify-center mx-auto mb-6 text-center">
-                    <Icon className="w-7 h-7 text-violet-500" />
-                  </div>
-                  <h4 className="text-sm font-bold uppercase tracking-wider mb-3 text-center text-center">{point.title}</h4>
-                  <p className="text-white/50 text-sm leading-relaxed text-center text-center">{point.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Mobile — Stacked cards (all visible) */}
-          <div className="lg:hidden space-y-4">
-            {methodologyPoints.map((point, index) => {
-              const Icon = point.icon;
-              return (
-                <div key={index} className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.03] border border-white/10 text-left text-left text-left">
-                  <div className="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center shrink-0 text-center">
-                    <Icon className="w-6 h-6 text-violet-500" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold uppercase tracking-wider mb-2 text-white">{point.title}</h4>
-                    <p className="text-white/50 text-sm leading-relaxed">{point.desc}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── FINAL CTA ─────────────────────────────────────────────────────────── */}
-      <section className="relative py-24 md:py-32 px-6 lg:px-12 z-10 border-t border-white/10 overflow-hidden text-center text-center text-center text-center">
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse at center, rgba(139, 92, 246, 0.25) 0%, transparent 60%)', animation: 'pulse 4s ease-in-out infinite' }}
-        />
-        <style>{`
-          @keyframes pulse {
-            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
-          }
-        `}</style>
-
-        <div className="relative z-10 max-w-4xl mx-auto">
-          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight mb-8 uppercase text-center text-center text-center">
-            READY TO STOP USING
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-purple-500">
-              STOCK PHOTOS?
-            </span>
-          </h2>
-
-          <p className="text-base sm:text-lg md:text-xl text-white/60 leading-relaxed max-w-2xl mx-auto mb-6 text-center text-center text-center">
-            Your competitors are still shooting on white backgrounds.
-            Your products deserve better. Your brand demands better.
-          </p>
-
-          <p className="text-lg sm:text-xl md:text-2xl text-white font-bold mb-10 md:mb-12 text-center text-center text-center">
-            It's time to <span className="text-violet-500">dominate</span>.
-          </p>
-
-          <div className="flex justify-center text-center">
-            <Link
-              to={{ pathname: '/', hash: '#chat' }}
-              className="inline-flex items-center gap-3 px-8 md:px-12 py-5 md:py-6 bg-violet-500 text-white rounded-full font-bold text-base md:text-xl uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300 group"
-            >
-              <span>Book Your Visual Strategy Session</span>
-              <ArrowRight className="w-5 md:w-6 h-5 md:h-6 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-
-          <p className="text-white/30 text-sm mt-8 uppercase tracking-widest text-center text-center text-center">
-            No commitment required. We'll analyze your current visual strategy and show you exactly
-            where 3D renders and virtual ads can replace costly production.
-          </p>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }
 
-export default RenderingPage;
+function Gallery() {
+  const [open, setOpen] = useState<number | null>(null);
+  const move = useCallback((d: number) => setOpen((i) => (i === null ? i : (i + d + SHOTS.length) % SHOTS.length)), []);
+  const close = useCallback(() => setOpen(null), []);
+  return (
+    <section id="work" className="relative scroll-mt-24 py-20 sm:py-28">
+      <div className="container-x">
+        <SectionHeader eyebrow="Recent renders" title="None of these products were ever in front of a camera." intro="Tap any image to see it full size." />
+        <div className="columns-2 gap-3 sm:gap-4 lg:columns-4">
+          {SHOTS.map((s, i) => (
+            <Reveal key={s.file} delay={(i % 4) * 70} className="mb-3 break-inside-avoid sm:mb-4">
+              <button type="button" onClick={() => setOpen(i)} className="group relative block w-full overflow-hidden rounded-2xl border border-white/[0.08]" aria-label={`Open ${s.title}`}>
+                <img src={s.file} alt={`${s.title}, ${s.tag}`} loading="lazy" className="w-full transition-transform [transition-duration:1.2s] [transition-timing-function:var(--ease-out)] group-hover:scale-[1.06]" />
+                <span className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/0 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <span className="absolute inset-x-0 bottom-0 translate-y-3 p-4 text-left opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+                  <span className="block text-sm font-semibold">{s.title}</span>
+                  <span className="block text-[13px] text-a3">{s.tag}</span>
+                </span>
+              </button>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+      {open !== null && <Lightbox index={open} onClose={close} onMove={move} />}
+    </section>
+  );
+}
+
+function Films() {
+  return (
+    <section className="relative border-t border-white/[0.06] py-24 sm:py-32">
+      <div className="container-x">
+        <SectionHeader eyebrow="Films" title="We animate them too." intro="CGI ad films for social, web and screens, complete with sound design." />
+        <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
+          <div className="grid gap-4">
+            <Reveal><VideoCard src="/images/video/bergamood.mp4" poster="/images/video/bergamood.webp" title="Bergamood" tag="Fragrance · Concept film" aspect="aspect-[1280/550]" /></Reveal>
+            <Reveal delay={80}><VideoCard src="/images/video/chocolate.mp4" poster="/images/video/chocolate.webp" title="Choco bar" tag="FMCG · Character ad" /></Reveal>
+          </div>
+          <Reveal delay={160}><VideoCard src="/images/video/showreel.mp4" poster="/images/video/showreel.webp" title="Headphones" tag="Tech · Product reveal" aspect="aspect-[600/1024]" className="h-full" /></Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const COLUMNS = [
+  ['perf1', 'saraperf', 'elkaduwamist', 'watchsevit'],
+  ['1', 'collageperf', 'perf3', 'elkaduwa4'],
+  ['watch-detail', 'pefmouth', 'saraa', 'perf2'],
+  ['elkaduwaskin', '3', 'perfmodel2', 'collage1'],
+];
+
+/** Full-bleed wall of renders drifting upward behind the hero. */
+function RenderWall() {
+  return (
+    <div className="absolute inset-0 grid grid-cols-3 gap-3 overflow-hidden px-3 opacity-70 sm:grid-cols-4" aria-hidden>
+      {COLUMNS.map((col, i) => (
+        <div key={i} className={i === 3 ? 'hidden sm:block' : ''}>
+          <div className="marquee-y flex flex-col gap-3" style={{ '--dur': `${50 + i * 12}s`, animationDirection: i % 2 ? 'reverse' : 'normal' } as React.CSSProperties}>
+            {[...col, ...col].map((n, k) => (
+              <img key={k} src={sm(n)} alt="" className="w-full rounded-xl" />
+            ))}
+          </div>
+        </div>
+      ))}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_80%,rgba(5,5,5,0.92),rgba(5,5,5,0.55)_60%,rgba(5,5,5,0.3))]" />
+    </div>
+  );
+}
+
+function Hero() {
+  return (
+    <div className="container-x flex min-h-[72vh] flex-col justify-end pb-16">
+      <h1 className="display max-w-[14ch] text-[clamp(3rem,8vw,7.5rem)] [animation:svc-in_.9s_var(--ease-out)_both]">Product photos, without the photoshoot.</h1>
+      <div className="mt-8 grid gap-6 md:grid-cols-12">
+        <p className="max-w-[46ch] text-lg leading-relaxed text-white/75 md:col-span-6">
+          Everything behind this text is CGI. Photoreal renders and ad films for fragrance, drinks, tech and fashion brands, in any setting, with no studio or samples to ship.
+        </p>
+        <HeroCtas className="md:col-span-6 md:justify-end md:self-end" />
+      </div>
+    </div>
+  );
+}
+
+export default function RenderingPage() {
+  return (
+    <ServiceLayout
+      slug="3d-rendering"
+      hero={<Hero />}
+      heroBackdrop={<RenderWall />}
+      offeringsTitle="Once your product is in 3D, every new campaign is quicker."
+      offeringsIntro="Once your product exists in 3D, every new campaign, colourway or format is a render away."
+      offerings={[
+        { icon: Box, title: 'Product visuals', text: 'Hero shots, packshots and close-ups with true-to-life glass, liquid, metal and fabric.' },
+        { icon: Camera, title: 'Virtual photoshoots', text: 'Your product in lifestyle scenes and with models, art-directed like a real campaign.' },
+        { icon: Building, title: 'Architecture & interiors', text: 'Spaces visualised before they’re built, for pre-sales, listings and approvals.' },
+        { icon: Film, title: 'Motion & ad films', text: 'Animated reveals and short ad films sized for Reels, TikTok, YouTube and screens.' },
+      ]}
+      faqs={[
+        { q: 'What do you need from us to start?', a: 'Photos of the product from a few angles, dimensions and any packaging artwork. If you have CAD or design files, even better.' },
+        { q: 'Are these real photos or AI images?', a: 'They’re built in 3D and composited by our team, sometimes with AI-assisted elements like backgrounds or models. Your product itself is modelled accurately so labels and shapes stay true.' },
+        { q: 'How long does a render project take?', a: 'A set of product stills usually takes 1–2 weeks. Animated films depend on length and complexity.' },
+        { q: 'Can we reuse the 3D model later?', a: 'Yes, that’s the big win. New angles, scenes and seasonal campaigns are faster and cheaper once the model exists.' },
+      ]}
+    >
+      <Gallery />
+      <Films />
+      <StepsSection
+        title="From your photos to a finished campaign"
+        steps={[
+          { title: 'Brief & references', text: 'Mood, angles, formats and where the visuals will live.' },
+          { title: 'Modelling', text: 'Product built accurately in 3D, labels and materials matched.' },
+          { title: 'Lighting & scenes', text: 'Art direction, lighting and environments, reviewed as drafts.' },
+          { title: 'Final delivery', text: 'High-res stills and films, cropped for every channel.' },
+        ]}
+      />
+    </ServiceLayout>
+  );
+}
