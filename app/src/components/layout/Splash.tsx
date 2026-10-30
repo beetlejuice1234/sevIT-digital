@@ -1,27 +1,17 @@
-import { useEffect, useState } from 'react';
-import { THEMES } from '@/lib/theme';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { getLenis } from '@/lib/lenis';
+import { CUT, SPARK_BOTTOM, SPARK_TOP } from '@/lib/spark';
 
 /**
- * First-visit splash.
- *  1. The sevIT spark draws itself in white.
- *  2. It flashes through every service colour, naming each service.
- *  3. The wordmark slides in and the counter reaches 100 once fonts + page are ready.
- *  4. Seven columns, each edged in a service colour, lift away to reveal the site.
- * Shown once per browser session; skipped for reduced motion; click/tap or any key to skip.
+ * First-visit splash, built from the logo itself.
+ *  1. The two halves of the sevIT spark glide together along their cut.
+ *  2. The cut extends as a thin line across the whole screen.
+ *  3. The screen splits along that line, each side carrying its half of the
+ *     mark, and the site is underneath.
+ * Shown once per browser session, skipped for reduced motion; click or any key skips.
  */
-const SEQUENCE: [string, string][] = [
-  ['Websites', 'web-design'],
-  ['POS systems', 'software-pos'],
-  ['AI assistants', 'ai-solutions'],
-  ['3D renders', '3d-rendering'],
-  ['Brands', 'branding'],
-  ['Ad campaigns', 'advertising'],
-  ['Growth', 'marketing'],
-];
 const KEY = 'sevit-splash-seen';
-const SPARK =
-  'M14.5 1c.5 3.6 1.9 5 5.5 5.5-3.6.5-5 1.9-5.5 5.5-.5-3.6-1.9-5-5.5-5.5 3.6-.5 5-1.9 5.5-5.5ZM8 11c.6 4.3 2.2 5.9 6.5 6.5-4.3.6-5.9 2.2-6.5 6.5-.6-4.3-2.2-5.9-6.5-6.5C5.8 16.9 7.4 15.3 8 11Z';
+type Phase = 'join' | 'cut' | 'open';
 
 const shouldShow = () => {
   try {
@@ -32,157 +22,146 @@ const shouldShow = () => {
   }
 };
 
+/** Polygon (in px) covering the half of the viewport on one side of the cut line. */
+function halfPlane(w: number, h: number, side: 1 | -1) {
+  const cx = w / 2;
+  const cy = h / 2;
+  const big = w + h;
+  const p1 = [cx - CUT.dx * big, cy - CUT.dy * big];
+  const p2 = [cx + CUT.dx * big, cy + CUT.dy * big];
+  const off = [CUT.nx * big * side, CUT.ny * big * side];
+  const pts = [p1, p2, [p2[0] + off[0], p2[1] + off[1]], [p1[0] + off[0], p1[1] + off[1]]];
+  return `polygon(${pts.map(([x, y]) => `${x.toFixed(0)}px ${y.toFixed(0)}px`).join(', ')})`;
+}
+
+function Half({ side, d, w, h, mark, opening }: { side: 1 | -1; d: string; w: number; h: number; mark: number; opening: boolean }) {
+  const travel = Math.hypot(w, h) * 0.75;
+  return (
+    <div
+      className="absolute inset-0 bg-[#050505]"
+      style={{
+        clipPath: halfPlane(w, h, side),
+        transform: opening ? `translate(${CUT.nx * travel * side}px, ${CUT.ny * travel * side}px)` : 'none',
+        transition: 'transform 1.1s cubic-bezier(0.76, 0, 0.24, 1)',
+      }}
+    >
+      <svg
+        viewBox="-1 -1 2 2"
+        width={mark}
+        height={mark}
+        className="splash-half absolute left-1/2 top-1/2 overflow-visible"
+        style={{ '--sx': `${CUT.nx * 70 * side}px`, '--sy': `${CUT.ny * 70 * side}px`, marginLeft: -mark / 2, marginTop: -mark / 2 } as CSSProperties}
+        aria-hidden
+      >
+        <path d={d} fill="#f97316" />
+      </svg>
+    </div>
+  );
+}
+
 export default function Splash() {
   const [show, setShow] = useState(shouldShow);
-  const [step, setStep] = useState(-1); // which service colour is showing
-  const [pct, setPct] = useState(0);
-  const [leaving, setLeaving] = useState(false);
+  const [phase, setPhase] = useState<Phase>('join');
+  const [size, setSize] = useState(() => ({ w: window.innerWidth, h: window.innerHeight }));
 
   useEffect(() => {
     if (!show) return;
     try {
       sessionStorage.setItem(KEY, '1');
     } catch {
-      /* private mode: fine, it just shows again */
+      /* private mode: it just shows again next time */
     }
-    document.documentElement.style.overflow = 'hidden';
-    document.documentElement.dataset.splash = 'on';
+    const root = document.documentElement;
+    (window as unknown as { __splashStart?: number }).__splashStart ??= performance.now();
+    root.style.overflow = 'hidden';
+    root.dataset.splash = 'on';
     getLenis()?.stop();
 
     const timers: number[] = [];
     const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
-
-    // colour flashes
-    SEQUENCE.forEach((_, i) => at(800 + i * 210, () => setStep(i)));
-    at(800 + SEQUENCE.length * 210, () => setStep(SEQUENCE.length)); // settle on the sevIT orange
-
-    // counter follows real readiness (fonts + window load), with a floor so the sequence plays out
-    let ready = document.readyState === 'complete';
-    const onLoad = () => (ready = true);
-    window.addEventListener('load', onLoad);
-    const fontsReady = document.fonts?.ready ?? Promise.resolve();
-    let fonts = false;
-    fontsReady.then(() => (fonts = true));
-    const start = performance.now();
-    let raf = 0;
-    const tick = (now: number) => {
-      const t = now - start;
-      const floor = Math.min(1, t / 2900);
-      const cap = ready && fonts ? 1 : 0.9;
-      const p = Math.min(cap, floor);
-      setPct(Math.round(p * 100));
-      if (p >= 1 || t > 4500) {
-        setPct(100);
-        at(250, () => setLeaving(true));
-        at(1350, finish);
-        return;
-      }
-      raf = requestAnimationFrame(tick);
+    const release = () => {
+      delete root.dataset.splash;
     };
-    raf = requestAnimationFrame(tick);
-
     const finish = () => {
-      document.documentElement.style.overflow = '';
-      delete document.documentElement.dataset.splash;
+      root.style.overflow = '';
+      release();
       getLenis()?.start();
       setShow(false);
     };
-    const skip = () => {
-      cancelAnimationFrame(raf);
-      setLeaving(true);
-      at(1100, finish);
+    const open = (delay: number) => {
+      at(delay, () => {
+        setPhase('open');
+        release();
+      });
+      at(delay + 1150, finish);
     };
+
+    at(1000, () => setPhase('cut'));
+    open(1650);
+
+    const skip = () => {
+      timers.forEach(clearTimeout);
+      timers.length = 0;
+      open(0);
+    };
+    const onResize = () => setSize({ w: window.innerWidth, h: window.innerHeight });
     window.addEventListener('keydown', skip, { once: true });
+    window.addEventListener('pointerdown', skip, { once: true });
+    window.addEventListener('resize', onResize);
 
     return () => {
       timers.forEach(clearTimeout);
-      cancelAnimationFrame(raf);
-      window.removeEventListener('load', onLoad);
       window.removeEventListener('keydown', skip);
-      document.documentElement.style.overflow = '';
-      delete document.documentElement.dataset.splash;
+      window.removeEventListener('pointerdown', skip);
+      window.removeEventListener('resize', onResize);
+      root.style.overflow = '';
+      release();
       getLenis()?.start();
     };
   }, [show]);
 
-  useEffect(() => {
-    if (leaving) delete document.documentElement.dataset.splash;
-  }, [leaving]);
-
   if (!show) return null;
 
-  const current = step >= 0 && step < SEQUENCE.length ? SEQUENCE[step] : null;
-  const colour = current ? `rgb(${THEMES[current[1]].a2})` : step >= SEQUENCE.length ? `rgb(${THEMES.home.a2})` : 'transparent';
+  const { w, h } = size;
+  const mark = Math.min(200, Math.max(120, w * 0.14));
+  const opening = phase === 'open';
+  const reach = w + h;
 
   return (
-    <div
-      className="fixed inset-0 z-[200] cursor-pointer select-none"
-      role="status"
-      aria-label="Loading sevIT"
-      onClick={() => {
-        setLeaving(true);
-        window.setTimeout(() => {
-          document.documentElement.style.overflow = '';
-          delete document.documentElement.dataset.splash;
-          getLenis()?.start();
-          setShow(false);
-        }, 1100);
-      }}
-    >
-      {/* the curtain: seven columns, each edged with a service colour */}
-      <div className="absolute inset-0 flex">
-        {SEQUENCE.map(([, slug], i) => (
-          <div
-            key={slug}
-            className="relative h-full flex-1 bg-[#050505] transition-transform [transition-duration:900ms] [transition-timing-function:cubic-bezier(0.76,0,0.24,1)]"
-            style={{ transform: leaving ? 'translateY(-101%)' : 'none', transitionDelay: leaving ? `${Math.abs(i - 3) * 55}ms` : '0ms' }}
-          >
-            <span
-              className="absolute inset-x-0 bottom-0 h-1 transition-opacity duration-300"
-              style={{ background: `rgb(${THEMES[slug].a2})`, opacity: leaving ? 1 : 0 }}
-            />
-          </div>
-        ))}
-      </div>
+    <div className="fixed inset-0 z-[200] select-none" role="status" aria-label="Loading sevIT">
+      <Half side={1} d={SPARK_TOP} w={w} h={h} mark={mark} opening={opening} />
+      <Half side={-1} d={SPARK_BOTTOM} w={w} h={h} mark={mark} opening={opening} />
 
-      {/* colour wash that follows the current service */}
-      <div
-        className={`pointer-events-none absolute inset-0 transition-[background,opacity] duration-200 ${leaving ? 'opacity-0' : ''}`}
-        style={{ background: `radial-gradient(circle at 50% 50%, ${colour === 'transparent' ? 'transparent' : colour.replace('rgb(', 'rgba(').replace(')', ', 0.22)')}, transparent 55%)` }}
-      />
+      {/* the logo's cut, extended across the screen */}
+      <svg className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
+        <line
+          x1={w / 2 - CUT.dx * reach}
+          y1={h / 2 - CUT.dy * reach}
+          x2={w / 2 + CUT.dx * reach}
+          y2={h / 2 + CUT.dy * reach}
+          stroke="#f97316"
+          strokeWidth={1.5}
+          pathLength={1}
+          style={{
+            strokeDasharray: 1,
+            strokeDashoffset: phase === 'join' ? 1 : 0,
+            opacity: opening ? 0 : 1,
+            transition: 'stroke-dashoffset .6s cubic-bezier(0.65,0,0.35,1), opacity .25s ease',
+            filter: 'drop-shadow(0 0 6px #f97316)',
+          }}
+        />
+      </svg>
 
-      {/* centre piece */}
-      <div className={`absolute inset-0 flex flex-col items-center justify-center transition-[opacity,transform] duration-500 ${leaving ? '-translate-y-10 opacity-0' : ''}`}>
-        <div className="relative flex items-center gap-4 sm:gap-6">
-          <svg viewBox="0 0 24 24" className="h-20 w-20 overflow-visible sm:h-28 sm:w-28" aria-hidden>
-            {/* glow follows the colour */}
-            <path d={SPARK} fill={colour} className="transition-[fill] duration-150" style={{ filter: `drop-shadow(0 0 18px ${colour})` }} />
-            <path d={SPARK} fill="none" stroke="#fff" strokeWidth="0.35" pathLength={1} className="splash-draw" />
-          </svg>
-          <span className="flex overflow-hidden font-display text-6xl font-bold tracking-[-0.04em] sm:text-8xl" aria-hidden>
-            {'sevIT'.split('').map((c, i) => (
-              <span key={i} className="splash-letter inline-block" style={{ animationDelay: `${2000 + i * 60}ms` }}>
-                {c}
-              </span>
-            ))}
-          </span>
-        </div>
-
-        <p className="mt-8 h-6 text-lg font-medium transition-colors duration-150" style={{ color: colour }}>
-          {current ? current[0] : step >= SEQUENCE.length ? 'Designed and built in Sri Lanka' : ''}
-        </p>
-      </div>
-
-      <div className={`absolute inset-x-0 bottom-0 flex items-end justify-between p-6 text-sm text-white/45 transition-opacity duration-300 sm:p-10 ${leaving ? 'opacity-0' : ''}`}>
-        <span>Click anywhere to skip</span>
-        <span className="font-display text-5xl font-bold tabular-nums text-white sm:text-7xl">{pct}</span>
-      </div>
+      <p className="absolute inset-x-0 bottom-8 text-center text-sm text-white/40 transition-opacity duration-300" style={{ opacity: opening ? 0 : 1 }}>
+        Designed and built in Sri Lanka
+      </p>
 
       <style>{`
-        .splash-draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: splash-draw .9s cubic-bezier(.65,0,.35,1) .1s forwards }
-        @keyframes splash-draw { to { stroke-dashoffset: 0 } }
-        .splash-letter { transform: translateY(110%); animation: splash-up .7s cubic-bezier(.22,1,.36,1) forwards }
-        @keyframes splash-up { to { transform: none } }
+        .splash-half { animation: splash-join 1s cubic-bezier(.22,1,.36,1) .05s both }
+        @keyframes splash-join {
+          from { transform: translate(var(--sx), var(--sy)) scale(.8); opacity: 0 }
+          to { transform: none; opacity: 1 }
+        }
       `}</style>
     </div>
   );
