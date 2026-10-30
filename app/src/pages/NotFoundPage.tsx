@@ -13,7 +13,7 @@ export default function NotFoundPage() {
         <p className="eyebrow mb-6">Error 404</p>
         <h1 className="display text-[clamp(6rem,22vw,18rem)] leading-[0.8]">
           <span className="text-outline">4</span>
-          <span className="text-gradient">0</span>
+          <span className="text-a2">0</span>
           <span className="text-outline">4</span>
         </h1>
         <p className="mt-8 max-w-md text-lg text-white/60">This page wandered off. Let’s get you somewhere useful.</p>

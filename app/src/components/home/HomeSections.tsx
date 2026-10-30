@@ -1,17 +1,19 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowUpRight, Quote, Search, PenTool, Code2, Rocket } from 'lucide-react';
-import { Reveal, SectionHeader, SpotlightCard, Sparkle } from '@/components/kit';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { SectionHeader } from '@/components/kit';
 import { TESTIMONIALS } from '@/lib/site';
+import { cn } from '@/lib/utils';
 
-/* ─── Studio statement: words light up as you scroll ─────────────────── */
+/* ─── Studio: the one loud block on the page, set on the page accent ───── */
 const STATEMENT =
-  'We’re three friends who got tired of watching good businesses settle for average digital work. So we built a studio where design, code and visuals live under one roof — and every project gets the founders’ full attention.';
+  'sevIT started with three friends who kept getting asked to fix the same things: slow websites, clunky billing systems and product photos that cost a fortune. So we built one studio that handles all of it.';
 
 export function Studio() {
   const ref = useRef<HTMLParagraphElement>(null);
   const words = STATEMENT.split(' ');
 
+  // words darken in as you scroll through the block
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -26,9 +28,9 @@ export function Studio() {
       raf = requestAnimationFrame(() => {
         const r = el.getBoundingClientRect();
         const vh = window.innerHeight;
-        const p = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (r.height + vh * 0.35)));
+        const p = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (r.height + vh * 0.3)));
         const lit = p * spans.length;
-        spans.forEach((s, i) => (s.style.opacity = String(Math.min(1, Math.max(0.14, lit - i + 0.14)))));
+        spans.forEach((s, i) => (s.style.opacity = String(Math.min(1, Math.max(0.22, lit - i + 0.22)))));
       });
     };
     onScroll();
@@ -36,172 +38,107 @@ export function Studio() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const facts = [
-    { k: '3', v: 'Founders on every project' },
-    { k: '7', v: 'Disciplines, all in-house' },
-    { k: '1', v: 'Point of contact, start to finish' },
-    { k: '24h', v: 'Typical first response' },
-  ];
-
   return (
-    <section id="about" className="relative py-28 sm:py-40">
-      <div className="container-x">
-        <Reveal className="eyebrow mb-10">The studio</Reveal>
-        <p ref={ref} className="display max-w-5xl text-balance text-3xl leading-[1.12] sm:text-5xl lg:text-[3.6rem]">
-          {words.map((w, i) => (
-            <span key={i} data-w="" className="transition-opacity duration-200" style={{ opacity: 0.14 }}>
-              {w}{' '}
-            </span>
-          ))}
-        </p>
-        <div className="mt-20 grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.08] lg:grid-cols-4">
-          {facts.map((f, i) => (
-            <Reveal key={f.v} delay={i * 80} className="bg-background p-6 sm:p-8">
-              <p className="display text-gradient text-5xl sm:text-6xl">{f.k}</p>
-              <p className="mt-3 text-sm text-white/50">{f.v}</p>
-            </Reveal>
-          ))}
+    <section id="about" className="relative bg-a2 py-24 text-black sm:py-36">
+      <div className="container-x grid gap-10 md:grid-cols-12 md:gap-8">
+        <p className="text-[15px] font-medium md:col-span-3 md:pt-4">About the studio</p>
+        <div className="md:col-span-9">
+          <p ref={ref} className="display text-balance text-[clamp(2rem,4.6vw,4rem)] leading-[1.02]">
+            {words.map((w, i) => (
+              <span key={i} data-w="" style={{ opacity: 0.22 }}>
+                {w}{' '}
+              </span>
+            ))}
+          </p>
+          <div className="mt-14 grid gap-8 border-t border-black/20 pt-8 text-[17px] leading-relaxed sm:grid-cols-2">
+            <p>You talk to the founders, not an account manager. The person on your first call is one of the people designing or coding your project.</p>
+            <p>Design, code, 3D and ads sit at the same desk, so your website, your POS and your launch campaign actually look like they belong together.</p>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-/* ─── Process ───────────────────────────────────────────────────────── */
+/* ─── Process: a real sequence, so it gets numbers ─────────────────────── */
 const STEPS = [
-  { icon: Search, title: 'Discover', sub: 'Audit & strategy', text: 'We learn your business, customers and goals, look at what you have today and agree on what success looks like — in numbers.' },
-  { icon: PenTool, title: 'Design', sub: 'UX, UI & identity', text: 'Wireframes, visual direction and clickable prototypes you can react to early, before a single line of production code.' },
-  { icon: Code2, title: 'Build', sub: 'Code, content & CGI', text: 'Engineering, renders and copy come together in weekly drops you can review. No black box, no surprise invoices.' },
-  { icon: Rocket, title: 'Launch & grow', sub: 'Ship, measure, improve', text: 'We deploy, train your team, wire up analytics and keep tuning after go-live. Launch day is the start, not the end.' },
+  { title: 'We listen', text: 'A call or a visit. We learn how your business runs, who your customers are and what has to change.' },
+  { title: 'We sketch', text: 'Wireframes, moodboards or a clickable prototype, so you can react before anything is built for real.' },
+  { title: 'We build', text: 'Code, renders and copy in weekly drops on a live preview link. You see progress every week.' },
+  { title: 'We launch', text: 'Go-live, training for your team and analytics set up. Then we stay around to fix and improve.' },
 ];
 
 export function Process() {
-  const listRef = useRef<HTMLOListElement>(null);
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    const el = listRef.current;
-    if (!el) return;
-    let raf = 0;
-    const onScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        const r = el.getBoundingClientRect();
-        const vh = window.innerHeight;
-        setProgress(Math.min(1, Math.max(0, (vh * 0.6 - r.top) / r.height)));
-      });
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
   return (
-    <section id="process" className="relative scroll-mt-24 border-t border-white/[0.06] py-24 sm:py-32">
-      <div className="container-x grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
-        <div className="lg:sticky lg:top-32 lg:self-start">
-          <SectionHeader
-            className="!mb-0"
-            eyebrow="How we work"
-            title={
-              <>
-                A process you can <span className="text-gradient">actually see.</span>
-              </>
-            }
-            intro="Four clear stages, weekly check-ins and a shared board so you always know what’s happening and what’s next."
-          />
-        </div>
-
-        <ol ref={listRef} className="relative space-y-4 pl-10 sm:pl-14">
-          <span className="absolute left-[15px] top-2 h-[calc(100%-1rem)] w-px bg-white/10 sm:left-[19px]" aria-hidden />
-          <span
-            className="absolute left-[15px] top-2 w-px origin-top bg-gradient-to-b from-a1 to-a2 sm:left-[19px]"
-            style={{ height: `calc((100% - 1rem) * ${progress})` }}
-            aria-hidden
-          />
-          {STEPS.map((s, i) => {
-            const active = progress >= i / STEPS.length - 0.02;
-            return (
-              <li key={s.title} className="relative">
-                <span
-                  className={`absolute -left-10 top-7 flex h-8 w-8 items-center justify-center rounded-full border text-xs font-semibold transition-all duration-500 sm:-left-14 sm:h-10 sm:w-10 ${
-                    active ? 'border-transparent bg-gradient-to-br from-a1 to-a2 text-white shadow-[0_0_24px_rgb(var(--a2)/0.5)]' : 'border-white/15 bg-background text-white/40'
-                  }`}
-                >
-                  {i + 1}
-                </span>
-                <SpotlightCard className="p-6 sm:p-8">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-a3/80">{s.sub}</p>
-                      <h3 className="mt-2 font-display text-2xl font-bold sm:text-3xl">{s.title}</h3>
-                    </div>
-                    <s.icon className="h-6 w-6 text-white/30" />
-                  </div>
-                  <p className="mt-4 max-w-lg leading-relaxed text-white/55">{s.text}</p>
-                </SpotlightCard>
-              </li>
-            );
-          })}
+    <section id="process" className="relative scroll-mt-24 py-24 sm:py-32">
+      <div className="container-x">
+        <SectionHeader eyebrow="How a project runs" title="Four steps, with a preview link you can open from day one." />
+        <ol className="grid gap-x-8 border-t border-white/10 sm:grid-cols-2 lg:grid-cols-4">
+          {STEPS.map((s, i) => (
+            <li key={s.title} className="group border-b border-white/10 py-8 lg:border-b-0 lg:border-r lg:pr-8 lg:last:border-r-0">
+              <span className="display block text-[5.5rem] leading-none text-white/15 transition-colors duration-500 group-hover:text-a2">{i + 1}</span>
+              <h3 className="mt-6 text-2xl font-bold">{s.title}</h3>
+              <p className="mt-3 max-w-[34ch] leading-relaxed text-white/60">{s.text}</p>
+            </li>
+          ))}
         </ol>
       </div>
     </section>
   );
 }
 
-/* ─── Testimonials ──────────────────────────────────────────────────── */
+/* ─── Testimonials: one voice at a time ────────────────────────────────── */
 export function Testimonials() {
-  const [lead, ...rest] = TESTIMONIALS;
+  const [i, setI] = useState(0);
+  const t = TESTIMONIALS[i];
+  const go = (d: number) => setI((n) => (n + d + TESTIMONIALS.length) % TESTIMONIALS.length);
+
   return (
-    <section id="testimonials" className="relative scroll-mt-24 py-24 sm:py-32">
-      <div className="container-x">
-        <SectionHeader eyebrow="Client stories" title={<>Kind words from <span className="text-white/40">real clients.</span></>} />
-        <div className="grid gap-4 lg:grid-cols-3">
-          <Reveal className="lg:row-span-2">
-            <SpotlightCard as="figure" className="flex h-full flex-col bg-gradient-to-br from-a2/[0.09] to-transparent p-8 sm:p-10">
-              <Quote className="h-10 w-10 text-a2" />
-              <blockquote className="mt-8 font-display text-2xl font-semibold leading-snug tracking-tight sm:text-3xl">“{lead.quote}”</blockquote>
-              <Person name={lead.name} role={lead.role} className="mt-auto pt-10" />
-            </SpotlightCard>
-          </Reveal>
-          {rest.map((t, i) => (
-            <Reveal key={t.name} delay={(i + 1) * 80} className={i === 2 ? 'lg:col-span-2' : ''}>
-              <SpotlightCard as="figure" className="flex h-full flex-col p-7">
-                <div className="flex gap-0.5 text-a2" aria-label="5 out of 5">
-                  {Array.from({ length: 5 }).map((_, n) => (
-                    <Sparkle key={n} className="h-4 w-4" />
-                  ))}
-                </div>
-                <blockquote className="mt-5 leading-relaxed text-white/75">“{t.quote}”</blockquote>
-                <Person name={t.name} role={t.role} className="mt-auto pt-6" />
-              </SpotlightCard>
-            </Reveal>
-          ))}
+    <section id="testimonials" className="relative scroll-mt-24 border-t border-white/10 py-24 sm:py-32">
+      <div className="container-x grid gap-10 md:grid-cols-12 md:gap-8">
+        <div className="md:col-span-3">
+          <p className="eyebrow md:pt-3">From our clients</p>
+          <ul className="mt-6 hidden space-y-1 md:block">
+            {TESTIMONIALS.map((x, n) => (
+              <li key={x.name}>
+                <button
+                  type="button"
+                  onClick={() => setI(n)}
+                  aria-pressed={n === i}
+                  className={cn('text-left text-[15px] transition-colors', n === i ? 'text-white' : 'text-white/40 hover:text-white/70')}
+                >
+                  {x.name}
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
+        <figure className="md:col-span-9" aria-live="polite">
+          <blockquote key={t.name} className="display text-balance text-[clamp(1.8rem,3.6vw,3.2rem)] leading-[1.08] [animation:svc-in_.6s_var(--ease-out)_both]">
+            “{t.quote}”
+          </blockquote>
+          <figcaption className="mt-10 flex flex-wrap items-center justify-between gap-6">
+            <span>
+              <span className="block text-lg font-semibold">{t.name}</span>
+              <span className="block text-white/50">{t.role}</span>
+            </span>
+            <span className="flex gap-2">
+              <button type="button" onClick={() => go(-1)} aria-label="Previous testimonial" className="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 transition-colors hover:border-a2 hover:text-a2">
+                <ArrowLeft className="h-5 w-5" />
+              </button>
+              <button type="button" onClick={() => go(1)} aria-label="Next testimonial" className="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 transition-colors hover:border-a2 hover:text-a2">
+                <ArrowRight className="h-5 w-5" />
+              </button>
+            </span>
+          </figcaption>
+        </figure>
       </div>
     </section>
   );
 }
 
-function Person({ name, role, className }: { name: string; role: string; className?: string }) {
-  const initials = name
-    .split(' ')
-    .map((n) => n[0])
-    .slice(0, 2)
-    .join('');
-  return (
-    <figcaption className={`flex items-center gap-3 ${className ?? ''}`}>
-      <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-sm font-semibold">{initials}</span>
-      <span>
-        <span className="block text-sm font-semibold">{name}</span>
-        <span className="block text-xs text-white/45">{role}</span>
-      </span>
-    </figcaption>
-  );
-}
-
 /* ─── sevAI teaser ──────────────────────────────────────────────────── */
-const PROMPTS = ['How much does a website cost?', 'Can you build a POS for my café?', 'What can AI automate for me?'];
+const PROMPTS = ['How much does a website cost?', 'Can you build a POS for my café?', 'What could AI automate for me?'];
 
 export function AITeaser() {
   const navigate = useNavigate();
@@ -213,49 +150,32 @@ export function AITeaser() {
   };
 
   return (
-    <section className="relative py-12">
-      <div className="container-x">
-        <Reveal>
-          <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b0b0b] p-7 sm:p-12">
-            <div className="pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full bg-a2/20 blur-[100px]" />
-            <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_1.1fr] [&>*]:min-w-0">
-              <div>
-                <p className="eyebrow mb-4">Try it now</p>
-                <h2 className="display text-4xl sm:text-5xl">
-                  Ask <span className="text-gradient">sevAI</span> anything.
-                </h2>
-                <p className="mt-4 max-w-md text-white/55">Our own AI assistant — the same kind we build for clients. Ask about services, pricing or what’s possible for your business.</p>
-              </div>
-              <div>
-                <form onSubmit={submit} className="flex items-center gap-2 rounded-full border border-white/15 bg-black/60 p-1.5 pl-5 focus-within:border-a2/60">
-                  <Sparkle className="h-4 w-4 shrink-0" />
-                  <input
-                    value={q}
-                    onChange={(e) => setQ(e.target.value)}
-                    placeholder="Ask sevAI about your project…"
-                    aria-label="Ask sevAI"
-                    className="min-w-0 flex-1 bg-transparent py-2 text-base placeholder:text-white/30 focus:outline-none sm:text-sm"
-                  />
-                  <button type="submit" className="btn btn-accent !px-4 !py-2.5" aria-label="Ask">
-                    <ArrowUpRight className="h-4 w-4" />
-                  </button>
-                </form>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {PROMPTS.map((p) => (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() => go(p)}
-                      className="rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1.5 text-xs text-white/60 transition-colors hover:border-a2/40 hover:text-white"
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
+    <section className="relative border-t border-white/10 py-20">
+      <div className="container-x grid items-end gap-8 md:grid-cols-12 md:gap-8 [&>*]:min-w-0">
+        <div className="md:col-span-5">
+          <p className="eyebrow">Got a quick question?</p>
+          <h2 className="display mt-4 text-[clamp(2.2rem,4.4vw,3.6rem)]">Ask sevAI, our own assistant.</h2>
+          <p className="mt-4 max-w-[44ch] text-white/60">It knows what we do and roughly how projects work. For a real quote, it will point you to us.</p>
+        </div>
+        <div className="md:col-span-7">
+          <form onSubmit={submit} className="flex items-center gap-2 border-b-2 border-white/25 pb-3 focus-within:border-a2">
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Type a question…"
+              aria-label="Ask sevAI"
+              className="min-w-0 flex-1 bg-transparent py-2 text-xl placeholder:text-white/30 focus:outline-none sm:text-2xl"
+            />
+            <button type="submit" className="btn btn-accent shrink-0 !px-5 !py-2.5">Ask</button>
+          </form>
+          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+            {PROMPTS.map((p) => (
+              <button key={p} type="button" onClick={() => go(p)} className="text-[15px] text-white/50 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white hover:decoration-a2">
+                {p}
+              </button>
+            ))}
           </div>
-        </Reveal>
+        </div>
       </div>
     </section>
   );

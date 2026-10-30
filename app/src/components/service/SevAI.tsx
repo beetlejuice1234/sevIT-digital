@@ -9,17 +9,17 @@ const TTS_API_URL = '/api/tts';
 const VOICE_ID = 'EXAVITQu4vr4xnSDxMaL';
 
 const SYSTEM_PROMPT =
-  'You are sevAI, the AI assistant for sevIT Digital, a digital studio in Sri Lanka founded by three friends. sevIT builds websites and web apps, POS and custom business software, AI chatbots and automation, photoreal 3D product renders and CGI ad films, branding, social and search advertising, and SEO. Be concise, warm and practical. Never invent prices, client names or statistics — for pricing, explain it depends on scope and suggest a quick call or WhatsApp (+94 76 110 7081). Keep replies under 70 words.';
+  'You are sevAI, the AI assistant for sevIT Digital, a digital studio in Sri Lanka founded by three friends. sevIT builds websites and web apps, POS and custom business software, AI chatbots and automation, photoreal 3D product renders and CGI ad films, branding, social and search advertising, and SEO. Be concise, warm and practical. Never invent prices, client names or statistics, for pricing, explain it depends on scope and suggest a quick call or WhatsApp (+94 76 110 7081). Keep replies under 70 words.';
 
 const FALLBACK: [string[], string][] = [
-  [['price', 'cost', 'budget', 'how much'], 'Pricing depends on scope — a focused business website, a POS for one shop and a multi-branch system are very different projects. Share a few details on WhatsApp (+94 76 110 7081) and we’ll come back with a fixed quote.'],
+  [['price', 'cost', 'budget', 'how much'], 'Pricing depends on scope, a focused business website, a POS for one shop and a multi-branch system are very different projects. Share a few details on WhatsApp (+94 76 110 7081) and we’ll come back with a fixed quote.'],
   [['pos', 'billing', 'inventory', 'stock', 'cashier'], 'We build custom POS and inventory systems: fast checkout, receipts, stock alerts, staff roles and sales dashboards, shaped around how your shop or restaurant actually works.'],
-  [['website', 'web site', 'site', 'ecommerce', 'e-commerce', 'store'], 'We design and build fast, SEO-ready websites and online stores — custom, mobile-first and easy to update. Tell us what you sell and who you sell to, and we’ll suggest the right setup.'],
-  [['3d', 'render', 'cgi', 'product shot', 'photo'], 'We create photoreal 3D product renders and CGI ad films — your product in any scene, any angle, without a photoshoot. Send us a few photos of the product to get started.'],
+  [['website', 'web site', 'site', 'ecommerce', 'e-commerce', 'store'], 'We design and build fast, SEO-ready websites and online stores, custom, mobile-first and easy to update. Tell us what you sell and who you sell to, and we’ll suggest the right setup.'],
+  [['3d', 'render', 'cgi', 'product shot', 'photo'], 'We create photoreal 3D product renders and CGI ad films, your product in any scene, any angle, without a photoshoot. Send us a few photos of the product to get started.'],
   [['chatbot', 'bot', 'automation', 'automate', 'ai'], 'We build AI assistants and automations: chatbots that answer customers 24/7, tools that read documents and emails, and workflows that connect the apps you already use.'],
-  [['brand', 'logo', 'identity'], 'Our branding work covers logos, colour and type systems, guidelines and packaging — usually two or three directions, refined together until it feels right.'],
+  [['brand', 'logo', 'identity'], 'Our branding work covers logos, colour and type systems, guidelines and packaging, usually two or three directions, refined together until it feels right.'],
   [['ads', 'advert', 'facebook', 'instagram', 'tiktok', 'google'], 'We run Meta, TikTok and Google campaigns with creative made in-house, and send a simple weekly report of what your budget returned.'],
-  [['seo', 'rank', 'marketing'], 'For growth we focus on SEO, Google Business Profile, conversion improvements and email/WhatsApp flows — steady results that compound over time.'],
+  [['seo', 'rank', 'marketing'], 'For growth we focus on SEO, Google Business Profile, conversion improvements and email/WhatsApp flows, steady results that compound over time.'],
   [['time', 'long', 'timeline'], 'A business website usually takes 2–4 weeks; software and larger platforms take longer. We give you a clear timeline before starting.'],
   [['chamindu', 'prime'], 'Prime Chamindu… now there was a legend. A visionary, a builder, a force of nature. Some people leave a mark; he left a legacy. We carry that torch forward.'],
   [['hello', 'hi', 'hey'], 'Hey! I’m sevAI. Ask me about websites, POS systems, AI, 3D renders or anything else sevIT does.'],
@@ -28,7 +28,7 @@ const FALLBACK: [string[], string][] = [
 const fallback = (q: string) => {
   const l = q.toLowerCase();
   for (const [keys, a] of FALLBACK) if (keys.some((k) => l.includes(k))) return a;
-  return 'Good question! The fastest way to get a proper answer is a quick chat with the team — message us on WhatsApp at +94 76 110 7081 or use the form below.';
+  return 'Good question! The fastest way to get a proper answer is a quick chat with the team, message us on WhatsApp at +94 76 110 7081 or use the form below.';
 };
 
 type Msg = { role: 'user' | 'ai'; text: string };

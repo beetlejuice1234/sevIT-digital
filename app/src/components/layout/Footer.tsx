@@ -2,8 +2,10 @@ import { Link } from 'react-router-dom';
 import { ArrowUp } from 'lucide-react';
 import { SERVICES, SITE } from '@/lib/site';
 import { Logo } from './Navbar';
+import useLocalTime from '@/lib/useLocalTime';
 
 export default function Footer() {
+  const time = useLocalTime();
   return (
     <footer className="relative overflow-hidden border-t border-white/[0.06] pt-20">
       <div className="container-x">
@@ -11,7 +13,7 @@ export default function Footer() {
           <div>
             <Logo className="h-8" />
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/50">
-              A digital studio from Sri Lanka. Websites, software & POS, AI automation, branding and 3D ads — designed and built in-house.
+              A small studio from Sri Lanka. Websites, POS and business software, AI tools, brands and 3D ads, all made in-house.
             </p>
             <a href={`mailto:${SITE.email}`} className="mt-6 inline-block text-lg font-medium underline decoration-white/20 underline-offset-8 transition-colors hover:decoration-a2">
               {SITE.email}
@@ -38,7 +40,7 @@ export default function Footer() {
             <li><a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
             <li><a href={SITE.instagram} target="_blank" rel="noopener noreferrer">Instagram</a></li>
             <li><a href={`tel:${SITE.phone}`}>{SITE.phoneDisplay}</a></li>
-            <li className="text-white/35">Sri Lanka · Working worldwide</li>
+            <li className="text-white/40">{time} in Sri Lanka right now</li>
           </FooterCol>
         </div>
 
@@ -55,7 +57,7 @@ export default function Footer() {
       </div>
 
       <div aria-hidden className="pointer-events-none select-none overflow-hidden">
-        <p className="display -mb-[0.2em] whitespace-nowrap text-center text-[25vw] leading-none text-outline">sevIT</p>
+        <p className="display -mb-[0.18em] whitespace-nowrap text-center text-[24vw] leading-none tracking-[-0.04em] text-outline [font-stretch:100%]">sevIT</p>
       </div>
     </footer>
   );
@@ -64,7 +66,7 @@ export default function Footer() {
 function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.2em] text-white/35">{title}</p>
+      <p className="mb-5 text-[15px] font-medium text-white/40">{title}</p>
       <ul className="space-y-3 text-sm text-white/65 [&_a:hover]:text-white [&_a]:transition-colors">{children}</ul>
     </div>
   );

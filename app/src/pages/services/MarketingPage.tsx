@@ -17,7 +17,7 @@ function Funnel() {
   return (
     <section id="work" className="relative scroll-mt-24 py-20 sm:py-28">
       <div className="container-x">
-        <SectionHeader eyebrow="The growth loop" title={<>Four levers. <span className="text-gradient">Pulled together.</span></>} intro="Tap each stage to see what we work on. Most businesses only pull one of these; growth comes from all four." />
+        <SectionHeader eyebrow="How we think about growth" title="Growth comes from four places. Most businesses only work on one." intro="Tap each stage to see what we work on. Most businesses only pull one of these; growth comes from all four." />
         <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
           <Reveal className="flex flex-col items-center gap-2 rounded-[2rem] border border-white/10 bg-[#0b0b0b] p-6 sm:p-10">
             {STAGES.map((x, n) => (
@@ -38,7 +38,7 @@ function Funnel() {
             ))}
           </Reveal>
           <div key={s.label} className="flex flex-col justify-center [animation:svc-in_.6s_var(--ease-out)_both]">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-a3">Stage 0{i + 1}</p>
+            <p className="text-[13px] text-a3">Stage 0{i + 1}</p>
             <h3 className="display mt-3 text-4xl sm:text-5xl">{s.label}</h3>
             <p className="mt-4 max-w-md leading-relaxed text-white/60">{s.what}</p>
             <ul className="mt-6 grid gap-2 sm:grid-cols-2">
@@ -62,7 +62,7 @@ function SerpPreview() {
     <section className="relative border-t border-white/[0.06] py-24 sm:py-32">
       <div className="container-x grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
         <div>
-          <SectionHeader className="!mb-8" eyebrow="Try it" title={<>See yourself <span className="text-white/40">on page one.</span></>} intro="Type your business details and preview how a well-optimised listing could look when someone nearby searches for you." />
+          <SectionHeader stacked className="!mb-8" eyebrow="Try it" title="Preview your business on Google." intro="Type your business details and preview how a well-optimised listing could look when someone nearby searches for you." />
           <div className="grid gap-3 sm:grid-cols-3">
             {[
               { l: 'Business name', v: name, s: setName },
@@ -105,10 +105,10 @@ function SerpPreview() {
             </div>
             <div className="mt-5">
               <p className="text-xs text-[#4d5156]">https://{slug}.lk</p>
-              <p className="text-lg text-[#1a0dab]">{name || 'Your Business'} — {kind ? kind[0].toUpperCase() + kind.slice(1) : 'Business'} in {city}</p>
+              <p className="text-lg text-[#1a0dab]">{name || 'Your Business'}, {kind ? kind[0].toUpperCase() + kind.slice(1) : 'Business'} in {city}</p>
               <p className="text-sm text-[#4d5156]">Visit {name || 'us'} in {city}. See our menu, opening hours and reviews, and book or order online in seconds.</p>
             </div>
-            <p className="mt-5 text-center text-[11px] text-black/35">Preview for illustration — ratings shown are placeholders</p>
+            <p className="mt-5 text-center text-[11px] text-black/35">Preview for illustration, ratings shown are placeholders</p>
           </div>
         </Reveal>
       </div>
@@ -121,7 +121,7 @@ function HeroVisual() {
   return (
     <div className="relative mx-auto max-w-[520px] rounded-[2rem] border border-white/10 bg-[#0b0b0b]/90 p-6 shadow-2xl backdrop-blur">
       <div className="flex items-center justify-between">
-        <p className="font-mono text-[10px] uppercase tracking-wider text-white/40">Organic sessions · 12 months</p>
+        <p className="text-[13px] text-white/40">Organic visits, last 12 months</p>
         <span className="rounded-full border border-white/10 px-2 py-0.5 font-mono text-[10px] text-white/40">Illustrative</span>
       </div>
       <svg viewBox="0 0 330 110" className="mt-6 h-44 w-full" preserveAspectRatio="none" aria-hidden>
@@ -156,19 +156,19 @@ export default function MarketingPage() {
       slug="marketing"
       title={
         <>
-          Growth that <span className="text-gradient">compounds.</span>
+          SEO and marketing that keeps working after the ad budget runs out.
         </>
       }
-      intro="SEO, conversion and email marketing that keep bringing customers in month after month — instead of stopping the moment you pause your ad spend."
+      intro="SEO, conversion and email marketing that keep bringing customers in month after month, instead of stopping the moment you pause your ad spend."
       heroVisual={<HeroVisual />}
-      offeringsTitle={<>Less noise. <span className="text-white/40">More customers.</span></>}
+      offeringsTitle="Three things we do every month."
       offerings={[
         { icon: Search, title: 'SEO & local search', text: 'Technical fixes, content and Google Business Profile work that help nearby customers find you first.' },
         { icon: MousePointerClick, title: 'Conversion optimisation', text: 'Sharper pages, offers and forms that get more out of the traffic you already have.' },
         { icon: Mail, title: 'Email & WhatsApp', text: 'Automated flows and campaigns that turn one-time buyers into regulars.' },
       ]}
       faqs={[
-        { q: 'How long does SEO take to work?', a: 'Technical fixes can help within weeks, but meaningful ranking gains usually take three to six months. It’s slower than ads — and it keeps working after you stop paying.' },
+        { q: 'How long does SEO take to work?', a: 'Technical fixes can help within weeks, but meaningful ranking gains usually take three to six months. It’s slower than ads, and it keeps working after you stop paying.' },
         { q: 'Do you guarantee first place on Google?', a: 'No honest agency can. We guarantee the work: solid technical foundations, useful content and clear monthly reporting on rankings and traffic.' },
         { q: 'Do I need a new website for this?', a: 'Not necessarily. We start with an audit; sometimes small fixes on your current site are enough, sometimes a rebuild is the better investment.' },
         { q: 'What does a monthly retainer include?', a: 'An agreed set of SEO, content and conversion tasks each month, plus a short report and a review call.' },
@@ -177,12 +177,12 @@ export default function MarketingPage() {
       <Funnel />
       <SerpPreview />
       <StepsSection
-        title={<>Our monthly <span className="text-white/40">rhythm.</span></>}
+        title="What a month with us looks like"
         steps={[
           { title: 'Audit', text: 'Where you rank, where visitors drop off and what competitors do better.' },
           { title: 'Prioritise', text: 'The few changes with the biggest expected impact go first.' },
           { title: 'Execute', text: 'Fixes, content, pages and flows shipped every month.' },
-          { title: 'Review', text: 'Results, learnings and next month’s plan — in plain language.' },
+          { title: 'Review', text: 'Results, learnings and next month’s plan, in plain language.' },
         ]}
       />
     </ServiceLayout>

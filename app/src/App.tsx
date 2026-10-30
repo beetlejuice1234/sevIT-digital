@@ -7,6 +7,7 @@ import { getLenis, setLenis } from './lib/lenis';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import FloatingWhatsApp from './components/layout/FloatingWhatsApp';
+import Cursor from './components/kit/Cursor';
 import ErrorBoundary from './components/ui/ErrorBoundary';
 import SkipToContent from './components/ui/SkipToContent';
 
@@ -103,6 +104,7 @@ export default function App() {
           </main>
           <Footer />
           <FloatingWhatsApp />
+          <Cursor />
         </div>
       </BrowserRouter>
     </ErrorBoundary>

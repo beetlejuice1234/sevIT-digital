@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { ArrowUpRight, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { SERVICES } from '@/lib/site';
 import { cn } from '@/lib/utils';
 import { THEMES, themeStyle } from '@/lib/theme';
@@ -159,9 +159,7 @@ export default function Navbar() {
                         to={s.path}
                         className="group flex gap-3 rounded-2xl p-3 transition-colors hover:bg-white/[0.05]"
                       >
-                        <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white/70 transition-colors group-hover:border-a2/40 group-hover:text-a3">
-                          <s.icon className="h-4 w-4" />
-                        </span>
+                        <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-a2" />
                         <span>
                           <span className="block text-sm font-medium text-white">{s.name}</span>
                           <span className="mt-0.5 block text-xs leading-snug text-white/45">{s.blurb}</span>
@@ -183,10 +181,8 @@ export default function Navbar() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-4">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-a3">Featured</p>
-                    <p className="mt-1 flex items-center gap-1 text-sm font-medium">
-                      Bergamood — CGI ad <ArrowUpRight className="h-3.5 w-3.5" />
-                    </p>
+                    <p className="text-xs text-a3">Recent work</p>
+                    <p className="mt-1 text-sm font-medium">Bergamood, a CGI fragrance film</p>
                   </div>
                 </Link>
               </div>
@@ -203,7 +199,7 @@ export default function Navbar() {
         )}
       >
         <div className="flex h-full flex-col overflow-y-auto px-6 pb-10 pt-28">
-          <p className="eyebrow mb-4">Services</p>
+          <p className="mb-4 text-[15px] text-white/45">Services</p>
           <ul className="space-y-1">
             {SERVICES.map((s, i) => (
               <li
@@ -213,7 +209,7 @@ export default function Navbar() {
               >
                 <Link to={s.path} className="flex items-center justify-between border-b border-white/[0.06] py-3.5 text-lg font-medium">
                   {s.name}
-                  <s.icon className="h-4 w-4 text-a2" />
+                  <span className="h-2 w-2 rounded-full bg-a2" />
                 </Link>
               </li>
             ))}
@@ -226,7 +222,7 @@ export default function Navbar() {
             ))}
           </div>
           <Link to="/#contact" onClick={() => setOpen(false)} className="btn btn-accent mt-auto w-full !py-4">
-            Start a project <ArrowUpRight className="h-4 w-4" />
+            Start a project
           </Link>
         </div>
       </div>

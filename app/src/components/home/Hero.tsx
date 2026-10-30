@@ -1,25 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowDown, ArrowUpRight } from 'lucide-react';
 import ShaderBackdrop from '@/components/kit/ShaderBackdrop';
-import { Marquee, Sparkle } from '@/components/kit';
+import { Sparkle } from '@/components/kit';
+import useLocalTime from '@/lib/useLocalTime';
+import { THEMES } from '@/lib/theme';
 import { cn } from '@/lib/utils';
 
-const WORDS = ['websites', 'POS systems', 'AI assistants', '3D ad films', 'brands', 'web apps'];
-const CAPABILITIES = [
-  'Web Design',
-  'E-commerce',
-  'POS & Billing',
-  'Inventory Systems',
-  'AI Chatbots',
-  'Workflow Automation',
-  '3D Product Renders',
-  'CGI Ad Films',
-  'Brand Identity',
-  'Meta & Google Ads',
-  'SEO',
+const WORDS: [string, string][] = [
+  ['Websites', 'web-design'],
+  ['POS systems', 'software-pos'],
+  ['AI assistants', 'ai-solutions'],
+  ['3D product ads', '3d-rendering'],
+  ['Brand identities', 'branding'],
+  ['Ad campaigns', 'advertising'],
 ];
-
 function RotatingWord() {
   const [i, setI] = useState(0);
   useEffect(() => {
@@ -27,13 +21,14 @@ function RotatingWord() {
     return () => window.clearInterval(id);
   }, []);
   return (
-    <span className="relative inline-grid h-[1.02em] overflow-hidden align-bottom" aria-live="polite">
-      {WORDS.map((w, n) => (
+    <span className="relative grid h-[1.02em] overflow-hidden" aria-live="polite">
+      {WORDS.map(([w, slug], n) => (
         <span
           key={w}
           aria-hidden={n !== i}
+          style={{ color: `rgb(${THEMES[slug].a2})` }}
           className={cn(
-            'text-gradient col-start-1 row-start-1 whitespace-nowrap pb-[0.06em] transition-all duration-700 [transition-timing-function:var(--ease-out)]',
+            'col-start-1 row-start-1 whitespace-nowrap pb-[0.06em] transition-all duration-700 [transition-timing-function:var(--ease-out)]',
             n === i ? 'translate-y-0 opacity-100' : n === (i - 1 + WORDS.length) % WORDS.length ? '-translate-y-full opacity-0' : 'translate-y-full opacity-0',
           )}
         >
@@ -136,36 +131,26 @@ function WorkFan() {
 }
 
 export default function Hero() {
+  const time = useLocalTime();
   return (
     <section className="relative flex min-h-[100svh] flex-col overflow-hidden pt-28 sm:pt-32">
       <ShaderBackdrop />
-      <div className="grid-bg pointer-events-none absolute inset-0 opacity-60" aria-hidden />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" aria-hidden />
 
-      <div className="container-x relative grid flex-1 items-center gap-12 pb-10 lg:grid-cols-[1.25fr_1fr] lg:gap-6">
+      <div className="container-x relative grid flex-1 items-center gap-12 pb-10 lg:grid-cols-[1.3fr_1fr] lg:gap-6 [&>*]:min-w-0">
         <div className="hero-copy">
-          <p className="eyebrow mb-7">Digital studio · Sri Lanka</p>
-          <h1 className="display text-[clamp(2.9rem,7vw,6.2rem)]">
-            <span className="block">We build</span>
+          <h1 className="display text-[clamp(2.8rem,6.4vw,6rem)]">
             <RotatingWord />
-            <span className="block text-white/90">
-              that grow <br className="sm:hidden" />
-              your business.
-            </span>
+            <span className="block">designed and built</span>
+            <span className="block text-white/45">in Sri Lanka.</span>
           </h1>
-          <p className="mt-8 max-w-xl text-pretty text-lg leading-relaxed text-white/60">
-            sevIT designs and engineers websites, POS &amp; business software, AI automation, brands and photoreal 3D ads —
-            everything in-house, from first sketch to launch day.
+          <p className="mt-8 max-w-[46ch] text-pretty text-lg leading-relaxed text-white/65">
+            sevIT is a small studio run by three friends. We make websites, POS and business software, AI tools, brands and
+            3D product ads, and the people you talk to are the people who build it.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
-            <Link to="/#contact" className="btn btn-accent group">
-              Start a project
-              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </Link>
-            <Link to="/#work" className="btn btn-ghost group">
-              See our work
-              <ArrowDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
-            </Link>
+            <Link to="/#contact" className="btn btn-accent">Start a project</Link>
+            <Link to="/#work" className="btn btn-ghost">See recent work</Link>
           </div>
         </div>
 
@@ -174,15 +159,11 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="relative border-y border-white/[0.06] bg-black/30 py-5 backdrop-blur-sm">
-        <Marquee duration={45} pauseOnHover={false}>
-          {CAPABILITIES.map((c) => (
-            <span key={c} className="flex items-center gap-8 pr-8 font-display text-lg font-semibold tracking-tight text-white/40 sm:text-xl">
-              {c}
-              <Sparkle className="h-4 w-4 opacity-70" />
-            </span>
-          ))}
-        </Marquee>
+      <div className="container-x relative flex items-center justify-between border-t border-white/10 py-5 text-sm text-white/50">
+        <span>Scroll for recent work</span>
+        <span>
+          {time} in Sri Lanka
+        </span>
       </div>
 
       <style>{`

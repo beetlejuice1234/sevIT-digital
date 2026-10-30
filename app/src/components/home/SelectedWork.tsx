@@ -16,9 +16,9 @@ type Case = {
 const CASES: Case[] = [
   {
     client: 'ClickZone Mobiles',
-    title: 'An iPhone store that sells while the shop is closed.',
+    title: 'An iPhone store that keeps selling after the shutters come down.',
     summary:
-      'Full e-commerce site and launch campaigns for one of Kandy’s go-to iPhone retailers — fast product browsing, WhatsApp ordering and a look that matches the product.',
+      'Online store and launch campaigns for one of Kandy’s go-to iPhone shops. Fast browsing, ordering over WhatsApp and a look that matches the phones.',
     services: ['Web design', 'Development', 'Advertising'],
     link: { label: 'Visit live site', to: 'https://clickzonemobiles.com' },
     tint: 'from-sky-500/20',
@@ -36,7 +36,7 @@ const CASES: Case[] = [
   },
   {
     client: 'Bergamood',
-    title: 'A fragrance ad film — no camera, no studio, no bottle.',
+    title: 'A fragrance ad film made without a camera, a studio or a real bottle.',
     summary:
       'A cinematic concept spot and still campaign built entirely in CGI. Smoke, glass, citrus and light, art-directed frame by frame.',
     services: ['3D rendering', 'Motion', 'Ad creative'],
@@ -60,9 +60,9 @@ const CASES: Case[] = [
   },
   {
     client: 'Elkaduwa Springs',
-    title: 'Premium water, rendered like a luxury product.',
+    title: 'Bottled water, shot like a perfume.',
     summary:
-      'A full set of product visuals for a mineral water brand — misty glass, mossy forest floors and clean studio shots for packaging, socials and print.',
+      'A full set of product visuals for a mineral water brand: misty glass, mossy forest floors and clean studio shots for packaging, social and print.',
     services: ['3D product visuals', 'Art direction'],
     link: { label: 'See 3D work', to: '/services/3d-rendering' },
     tint: 'from-lime-500/20',
@@ -83,9 +83,9 @@ const CASES: Case[] = [
   },
   {
     client: 'BodyLab · Golden Hour',
-    title: 'Sites with personality, built for the phone first.',
+    title: 'Two brands, two personalities, both built for the phone first.',
     summary:
-      'A membership-first platform for BodyLab Fitness with schedules and booking, plus Golden Hour Coffee — a hospitality concept exploring a menu-led brand experience.',
+      'A membership-first platform for BodyLab Fitness with schedules and booking, plus Golden Hour Coffee, a hospitality concept exploring a menu-led brand experience.',
     services: ['Web design', 'Development'],
     link: { label: 'Visit live site', to: 'https://bodylabfitness.vercel.app' },
     tint: 'from-a1/25',
@@ -147,23 +147,14 @@ function CaseCard({ c, i }: { c: Case; i: number }) {
     <div className="sticky" style={{ top: 96 + i * 16 }}>
       <div
         ref={ref}
-        className="relative grid origin-top overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b0b0b] will-change-transform lg:min-h-[560px] lg:grid-cols-[0.85fr_1.15fr]"
+        className="relative grid origin-top overflow-hidden rounded-[2rem] border border-white/10 bg-[#090909] will-change-transform lg:min-h-[560px] lg:grid-cols-[0.85fr_1.15fr]"
       >
         <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${c.tint} via-transparent to-transparent opacity-60`} />
         <div className="relative flex flex-col p-7 sm:p-10">
-          <div className="flex items-center justify-between font-mono text-xs text-white/40">
-            <span>{String(i + 1).padStart(2, '0')} / {String(CASES.length).padStart(2, '0')}</span>
-            <span className="uppercase tracking-[0.2em]">{c.client}</span>
-          </div>
+          <p className="text-[15px] font-medium text-a3">{c.client}</p>
           <h3 className="display mt-8 text-balance text-3xl sm:text-4xl lg:mt-auto lg:text-[2.8rem]">{c.title}</h3>
           <p className="mt-4 max-w-md text-pretty leading-relaxed text-white/55">{c.summary}</p>
-          <div className="mt-6 flex flex-wrap gap-2">
-            {c.services.map((s) => (
-              <span key={s} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-white/60">
-                {s}
-              </span>
-            ))}
-          </div>
+          <p className="mt-6 text-sm text-white/40">{c.services.join(', ')}</p>
           {external ? (
             <a href={c.link.to} target="_blank" rel="noopener noreferrer" className={linkCls}>
               {linkInner}
@@ -174,7 +165,7 @@ function CaseCard({ c, i }: { c: Case; i: number }) {
             </Link>
           )}
         </div>
-        <div className="relative m-2 min-h-[320px] overflow-hidden rounded-[1.6rem] bg-black sm:min-h-[420px] lg:m-3">{c.visual}</div>
+        <div data-cursor={c.client === 'Bergamood' ? 'Watch' : 'View'} className="relative m-2 min-h-[320px] overflow-hidden rounded-[1.6rem] bg-black sm:min-h-[420px] lg:m-3">{c.visual}</div>
       </div>
     </div>
   );
@@ -185,13 +176,9 @@ export default function SelectedWork() {
     <section id="work" className="relative scroll-mt-24 pt-24 sm:pt-32">
       <div className="container-x">
         <SectionHeader
-          eyebrow="Selected work"
-          title={
-            <>
-              Proof, not <span className="text-gradient">promises.</span>
-            </>
-          }
-          intro="A few recent projects across web, CGI and product visuals. Everything here was designed and built by the sevIT team."
+          eyebrow="Recent work"
+          title="A few things we made recently."
+          intro="Websites, CGI films and product visuals. Everything here was designed and built in-house by the three of us."
         />
         <div className="relative space-y-6 pb-8">
           {CASES.map((c, i) => (
@@ -208,7 +195,7 @@ export default function SelectedWork() {
                 key={n}
                 to="/services/3d-rendering"
                 className="group mr-4 block h-56 w-40 shrink-0 overflow-hidden rounded-2xl border border-white/10 sm:h-72 sm:w-52"
-                aria-label="View 3D rendering portfolio"
+                aria-label="View 3D rendering portfolio" data-cursor="View"
               >
                 <img src={`/images/renders/sm/${n}.webp`} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
               </Link>

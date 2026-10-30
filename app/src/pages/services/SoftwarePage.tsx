@@ -9,13 +9,10 @@ import {
   Minus,
   Plus,
   Check,
-  ScanBarcode,
-  Printer,
-  Users,
   RotateCcw,
 } from 'lucide-react';
 import ServiceLayout, { StepsSection } from '@/components/service/ServiceLayout';
-import { Reveal, SectionHeader, SpotlightCard } from '@/components/kit';
+import { Reveal, SectionHeader } from '@/components/kit';
 import { cn } from '@/lib/utils';
 
 /* ─── Interactive POS demo ───────────────────────────────────────────── */
@@ -87,7 +84,7 @@ function PosDemo() {
               </button>
             ))}
           </div>
-          <span className="hidden items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-emerald-400 sm:flex">
+          <span className="hidden items-center gap-1.5 text-[13px] text-emerald-400 sm:flex">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" /> Synced
           </span>
         </div>
@@ -173,7 +170,7 @@ function PosDemo() {
           { label: 'Low stock', value: low.length ? low.map((l) => l.name).join(', ') : 'All good' },
         ].map((s) => (
           <div key={s.label} className="rounded-2xl border border-white/10 bg-[#0b0b0b] p-4">
-            <p className="font-mono text-[10px] uppercase tracking-wider text-white/40">{s.label}</p>
+            <p className="text-[13px] text-white/40">{s.label}</p>
             <p className="mt-1.5 truncate font-display text-lg font-bold sm:text-xl" key={s.value}>
               {s.value}
             </p>
@@ -189,7 +186,7 @@ function HeroVisual() {
     <div className="relative mx-auto max-w-[520px]">
       <div className="float-slow rounded-[1.8rem] border border-white/10 bg-[#0b0b0b]/90 p-5 shadow-2xl backdrop-blur [--r:1.5deg]">
         <div className="flex items-center justify-between">
-          <p className="font-mono text-[10px] uppercase tracking-wider text-white/40">Sales · this week</p>
+          <p className="text-[13px] text-white/40">Sales · this week</p>
           <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">Live</span>
         </div>
         <p className="mt-2 font-display text-3xl font-bold">Rs 1,284,600</p>
@@ -242,33 +239,33 @@ export default function SoftwarePage() {
       slug="software-pos"
       title={
         <>
-          Software that runs <span className="text-gradient">your business</span>, not the other way round.
+          POS and business software, built around how your shop runs.
         </>
       }
-      intro="Point-of-sale, billing, inventory and custom business software — designed around how your team actually works, and built to grow from one counter to many branches."
+      intro="Point-of-sale, billing, inventory and custom business software, designed around how your team actually works, and built to grow from one counter to many branches."
       heroVisual={<HeroVisual />}
-      offeringsTitle={<>Everything behind <span className="text-white/40">the counter.</span></>}
+      offeringsTitle="Everything behind the counter, and the office behind that."
       offerings={[
         { icon: Receipt, title: 'POS & billing', text: 'Fast checkout for shops and restaurants: barcode or tap-to-add, discounts, split bills, receipts and returns.' },
         { icon: Boxes, title: 'Inventory & stock', text: 'Live stock levels, low-stock alerts, suppliers, purchase orders and stock transfers between locations.' },
-        { icon: BarChart3, title: 'Reports & dashboards', text: 'Daily sales, best sellers, staff performance and profit — on your phone, wherever you are.' },
-        { icon: Building2, title: 'Custom business systems', text: 'Booking, job cards, customer records, quotations and invoicing — tailored software for workflows off-the-shelf tools miss.' },
+        { icon: BarChart3, title: 'Reports & dashboards', text: 'Daily sales, best sellers, staff performance and profit, on your phone, wherever you are.' },
+        { icon: Building2, title: 'Custom business systems', text: 'Booking, job cards, customer records, quotations and invoicing, tailored software for workflows off-the-shelf tools miss.' },
         { icon: Plug, title: 'Hardware & integrations', text: 'Receipt printers, barcode scanners, cash drawers, card terminals, SMS and accounting exports.' },
         { icon: CloudOff, title: 'Cloud-synced, outage-ready', text: 'Data backed up to the cloud, with designs that keep selling through a bad connection or a power cut.' },
       ]}
       faqs={[
-        { q: 'Is this an off-the-shelf POS or custom software?', a: 'Custom. We build around your products, pricing rules and workflow instead of forcing you into someone else’s. You get software that fits — and you’re not paying for features you’ll never use.' },
+        { q: 'Is this an off-the-shelf POS or custom software?', a: 'Custom. We build around your products, pricing rules and workflow instead of forcing you into someone else’s. You get software that fits, and you’re not paying for features you’ll never use.' },
         { q: 'Will it work with my existing printer and scanner?', a: 'Most standard thermal receipt printers, USB/Bluetooth barcode scanners and cash drawers work. Tell us what you have and we’ll confirm before we start.' },
         { q: 'Can I see sales from more than one branch?', a: 'Yes. Multi-branch setups share one dashboard, with per-branch stock, staff and reports.' },
         { q: 'What happens if the internet goes down?', a: 'We design for Sri Lankan reality: the system keeps recording sales and syncs when the connection comes back.' },
-        { q: 'Do you provide training and support?', a: 'Yes — we train your staff on-site or remotely and stay available for fixes, updates and new features after launch.' },
+        { q: 'Do you provide training and support?', a: 'Yes, we train your staff on-site or remotely and stay available for fixes, updates and new features after launch.' },
       ]}
     >
       <section id="work" className="relative scroll-mt-24 py-20 sm:py-28">
         <div className="container-x">
           <SectionHeader
-            eyebrow="Try it — live demo"
-            title={<>Go on, <span className="text-gradient">ring something up.</span></>}
+            eyebrow="Live demo"
+            title="Try ringing up an order."
             intro="A working mini-POS built for this page. Add items, charge the order and watch stock and the dashboard update. Imagine it shaped around your business."
           />
           <Reveal>
@@ -279,7 +276,7 @@ export default function SoftwarePage() {
 
       <section className="relative border-t border-white/[0.06] py-24 sm:py-32">
         <div className="container-x grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
-          <SectionHeader className="!mb-0" eyebrow="Who it's for" title={<>Built for <span className="text-white/40">businesses like yours.</span></>} intro="If you sell, book, stock or invoice anything, there's probably a few hours a week we can give back to you." />
+          <SectionHeader stacked className="!mb-0" eyebrow="Who it's for" title="Who we build it for" intro="If you sell, book, stock or invoice anything, there's probably a few hours a week we can give back to you." />
           <div>
             <div className="flex flex-wrap gap-2">
               {INDUSTRIES.map((x, i) => (
@@ -288,26 +285,16 @@ export default function SoftwarePage() {
                 </Reveal>
               ))}
             </div>
-            <div className="mt-8 grid gap-3 sm:grid-cols-3">
-              {[
-                { icon: ScanBarcode, t: 'Barcode-ready' },
-                { icon: Printer, t: 'Thermal receipts' },
-                { icon: Users, t: 'Staff roles & PINs' },
-              ].map((f, i) => (
-                <Reveal key={f.t} delay={i * 60}>
-                  <SpotlightCard className="p-5">
-                    <f.icon className="h-5 w-5 text-a3" />
-                    <p className="mt-6 text-sm font-medium">{f.t}</p>
-                  </SpotlightCard>
-                </Reveal>
-              ))}
-            </div>
+            <p className="mt-8 max-w-[52ch] border-t border-white/10 pt-6 leading-relaxed text-white/60">
+              Every system comes ready for barcode scanners, thermal receipt printers and cash drawers, with staff logins and roles so
+              cashiers only see what they need.
+            </p>
           </div>
         </div>
       </section>
 
       <StepsSection
-        title={<>From walkthrough <span className="text-white/40">to go-live.</span></>}
+        title="From a walkthrough of your shop to go-live"
         steps={[
           { title: 'Shadow your floor', text: 'We watch how sales, stock and staff actually flow today.' },
           { title: 'Prototype', text: 'Clickable screens your team can try before we build.' },

@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
-import { ArrowUpRight, Mail, MessageCircle, Instagram, Check } from 'lucide-react';
-import { Reveal, SpotlightCard } from '@/components/kit';
+import { Mail, MessageCircle, Check } from 'lucide-react';
+import { Reveal } from '@/components/kit';
 import ShaderBackdrop from '@/components/kit/ShaderBackdrop';
 import { SERVICES, SITE, waLink } from '@/lib/site';
 import { cn } from '@/lib/utils';
@@ -33,7 +33,7 @@ export default function ContactSection({ defaultService }: { defaultService?: st
   };
 
   const mailto = () =>
-    `mailto:${SITE.email}?subject=${encodeURIComponent(`Project enquiry${business ? ` — ${business}` : ''}`)}&body=${encodeURIComponent(body())}`;
+    `mailto:${SITE.email}?subject=${encodeURIComponent(`Project enquiry${business ? `, ${business}` : ''}`)}&body=${encodeURIComponent(body())}`;
 
   return (
     <section id="contact" className="relative scroll-mt-24 overflow-hidden py-24 sm:py-32">
@@ -41,40 +41,37 @@ export default function ContactSection({ defaultService }: { defaultService?: st
       <div className="container-x relative">
         <div className="grid gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
           <div className="flex flex-col">
-            <Reveal className="eyebrow mb-6">Start a project</Reveal>
-            <Reveal as="h2" delay={80} className="display text-balance text-5xl sm:text-6xl lg:text-7xl xl:text-8xl">
-              Let's build <span className="text-gradient">something</span> worth talking about.
-            </Reveal>
-            <Reveal as="p" delay={160} className="mt-6 max-w-md text-lg leading-relaxed text-white/60">
-              Tell us what you're working on. You'll hear back from one of the founders — usually the same day.
-            </Reveal>
+            <p className="eyebrow mb-6">Start a project</p>
+            <h2 className="display text-balance text-[clamp(3rem,7vw,6.4rem)]">Tell us what you’re building.</h2>
+            <p className="mt-6 max-w-[42ch] text-lg leading-relaxed text-white/60">
+              A rough idea is enough. One of the three of us will reply, usually the same day.
+            </p>
 
-            <Reveal delay={240} className="mt-10 grid gap-3 sm:grid-cols-3 lg:mt-auto">
+            <dl className="mt-12 grid gap-6 text-[15px] sm:grid-cols-2 lg:mt-auto">
               {[
-                { icon: MessageCircle, label: 'WhatsApp', value: SITE.phoneDisplay, href: SITE.whatsapp },
-                { icon: Mail, label: 'Email', value: SITE.email, href: `mailto:${SITE.email}` },
-                { icon: Instagram, label: 'Instagram', value: '@sevitdigital', href: SITE.instagram },
+                { label: 'WhatsApp', value: SITE.phoneDisplay, href: SITE.whatsapp },
+                { label: 'Email', value: SITE.email, href: `mailto:${SITE.email}` },
+                { label: 'Instagram', value: '@sevitdigital', href: SITE.instagram },
+                { label: 'Based in', value: 'Sri Lanka, working with clients anywhere' },
               ].map((c) => (
-                <a
-                  key={c.label}
-                  href={c.href}
-                  target={c.href.startsWith('http') ? '_blank' : undefined}
-                  rel="noopener noreferrer"
-                  className="group rounded-2xl border border-white/10 bg-black/40 p-4 backdrop-blur transition-colors hover:border-a2/40"
-                >
-                  <c.icon className="h-4 w-4 text-a3" />
-                  <p className="mt-3 text-xs text-white/45">{c.label}</p>
-                  <p className="mt-0.5 flex items-center gap-1 truncate text-sm font-medium">
-                    <span className="truncate">{c.value}</span>
-                    <ArrowUpRight className="h-3.5 w-3.5 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
-                  </p>
-                </a>
+                <div key={c.label} className="border-t border-white/15 pt-3">
+                  <dt className="text-white/45">{c.label}</dt>
+                  <dd className="mt-1 break-words text-lg">
+                    {c.href ? (
+                      <a href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" className="underline decoration-white/25 underline-offset-4 transition-colors hover:text-a3 hover:decoration-a2">
+                        {c.value}
+                      </a>
+                    ) : (
+                      c.value
+                    )}
+                  </dd>
+                </div>
               ))}
-            </Reveal>
+            </dl>
           </div>
 
           <Reveal delay={120}>
-            <SpotlightCard as="form" onSubmit={submit} className="bg-black/50 p-6 backdrop-blur-xl sm:p-8">
+            <form onSubmit={submit} className="rounded-[2rem] border border-white/10 bg-black/60 p-6 backdrop-blur-xl sm:p-8">
               <fieldset>
                 <legend className="mb-3 text-sm font-medium text-white/80">What do you need?</legend>
                 <div className="flex flex-wrap gap-2">
@@ -124,8 +121,8 @@ export default function ContactSection({ defaultService }: { defaultService?: st
                   <Mail className="h-4 w-4" /> Send by email
                 </a>
               </div>
-              <p className="mt-4 text-center text-xs text-white/35">Opens WhatsApp or your mail app with your message ready to send.</p>
-            </SpotlightCard>
+              <p className="mt-4 text-center text-sm text-white/40">This opens WhatsApp or your mail app with the message filled in.</p>
+            </form>
           </Reveal>
         </div>
       </div>

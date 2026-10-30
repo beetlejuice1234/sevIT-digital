@@ -56,43 +56,35 @@ export function Reveal<T extends ElementType = 'div'>({ as, delay = 0, className
   );
 }
 
-/* ─── Section header ─────────────────────────────────────────────────── */
+/* ─── Section header ─────────────────────────────────────────────────
+ * Swiss-style: a short label sits in its own left column, the heading and
+ * intro take the rest. On mobile the label sits above.
+ */
 export function SectionHeader({
   eyebrow,
   title,
   intro,
-  align = 'left',
   className,
   action,
+  stacked = false,
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: ReactNode;
   intro?: ReactNode;
   align?: 'left' | 'center';
   className?: string;
   action?: ReactNode;
+  /** label above the title (for headers that sit inside a half-width column) */
+  stacked?: boolean;
 }) {
-  const center = align === 'center';
   return (
-    <div
-      className={cn(
-        'mb-12 flex flex-col gap-6 md:mb-16',
-        center ? 'items-center text-center' : 'md:flex-row md:items-end md:justify-between',
-        className,
-      )}
-    >
-      <div className={cn('max-w-3xl', center && 'mx-auto')}>
-        <Reveal className="eyebrow mb-5">{eyebrow}</Reveal>
-        <Reveal as="h2" delay={80} className="display text-balance text-4xl sm:text-5xl lg:text-6xl">
-          {title}
-        </Reveal>
-        {intro && (
-          <Reveal as="p" delay={160} className={cn('mt-5 max-w-xl text-pretty text-base leading-relaxed text-white/55 sm:text-lg', center && 'mx-auto')}>
-            {intro}
-          </Reveal>
-        )}
+    <div className={cn('mb-12 grid gap-4 md:mb-16', !stacked && 'md:grid-cols-12 md:gap-8', className)}>
+      <div className={cn(!stacked && 'md:col-span-3')}>{eyebrow && <p className={cn('eyebrow', !stacked && 'md:pt-3')}>{eyebrow}</p>}</div>
+      <div className={cn(!stacked && 'md:col-span-9')}>
+        <h2 className="display text-balance text-[clamp(2.4rem,5.2vw,4.6rem)]">{title}</h2>
+        {intro && <p className="mt-5 max-w-[58ch] text-pretty text-lg leading-relaxed text-white/60">{intro}</p>}
+        {action && <div className="mt-8">{action}</div>}
       </div>
-      {action && <Reveal delay={200}>{action}</Reveal>}
     </div>
   );
 }
@@ -159,7 +151,7 @@ type BtnProps = {
   className?: string;
   arrow?: boolean;
 };
-export function ButtonLink({ to, variant = 'primary', children, className, arrow = true }: BtnProps) {
+export function ButtonLink({ to, variant = 'primary', children, className, arrow = false }: BtnProps) {
   const external = /^(https?:|mailto:|tel:)/.test(to);
   const cls = cn('btn group', `btn-${variant}`, className);
   const inner = (

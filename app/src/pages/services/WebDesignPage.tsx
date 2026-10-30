@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { ArrowUpRight, Gauge, Smartphone, Search, ShoppingBag, LayoutTemplate, Wrench, Check } from 'lucide-react';
+import { ArrowUpRight, Gauge, Smartphone, Search, ShoppingBag, LayoutTemplate, Wrench } from 'lucide-react';
 import ServiceLayout, { StepsSection } from '@/components/service/ServiceLayout';
-import { BrowserFrame, PhoneFrame, Reveal, SectionHeader, Marquee } from '@/components/kit';
+import { BrowserFrame, PhoneFrame, SectionHeader, Marquee } from '@/components/kit';
 import { cn } from '@/lib/utils';
 
 const PROJECTS = [
@@ -10,7 +10,7 @@ const PROJECTS = [
     type: 'E-commerce',
     url: 'clickzonemobiles.com',
     href: 'https://clickzonemobiles.com',
-    text: 'iPhone retail store with product catalogue, live stock, WhatsApp ordering and warranty info — designed to feel as premium as the phones it sells.',
+    text: 'iPhone retail store with product catalogue, live stock, WhatsApp ordering and warranty info, designed to feel as premium as the phones it sells.',
     desktop: '/images/renders/sm/clickzone.webp',
     mobile: '/images/renders/sm/clickzone-mobile.webp',
   },
@@ -28,7 +28,7 @@ const PROJECTS = [
     type: 'Hospitality concept',
     url: 'goldencafe.vercel.app',
     href: 'https://goldencafe.vercel.app',
-    text: 'A concept project exploring a menu-led brand experience for a specialty café — warm, editorial and quick to order from.',
+    text: 'A concept project exploring a menu-led brand experience for a specialty café, warm, editorial and quick to order from.',
     desktop: null,
     mobile: '/images/renders/sm/goldencafe-mobile.webp',
   },
@@ -37,7 +37,7 @@ const PROJECTS = [
 const STACK = ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Vite', 'Node.js', 'Supabase', 'PostgreSQL', 'Vercel', 'Shopify', 'WordPress', 'GSAP', 'Three.js'];
 
 const INCLUDED = [
-  'Custom design — no recycled templates',
+  'Custom design, no recycled templates',
   'Mobile-first, tested on real devices',
   'Technical SEO, sitemap & structured data',
   'Analytics and conversion tracking',
@@ -57,7 +57,7 @@ function HeroVisual() {
         <img src="/images/renders/sm/bodylab-mobile.webp" alt="BodyLab Fitness mobile website" className="w-full" />
       </PhoneFrame>
       <div className="absolute -left-4 bottom-6 hidden rounded-2xl border border-white/10 bg-black/70 px-4 py-3 backdrop-blur-xl sm:block">
-        <p className="font-mono text-[10px] uppercase tracking-wider text-white/40">Built with</p>
+        <p className="text-[13px] text-white/40">Built with</p>
         <p className="mt-1 text-sm font-medium">React · TypeScript · Tailwind</p>
       </div>
     </div>
@@ -70,7 +70,7 @@ function ProjectSwitcher() {
   return (
     <section id="work" className="relative scroll-mt-24 py-20 sm:py-28">
       <div className="container-x">
-        <SectionHeader eyebrow="Recent builds" title={<>Websites that do <span className="text-gradient">real work.</span></>} />
+        <SectionHeader eyebrow="Recent work" title="Some sites we’ve built" />
         <div role="tablist" aria-label="Projects" className="no-scrollbar mb-8 flex gap-2 overflow-x-auto">
           {PROJECTS.map((x, n) => (
             <button
@@ -108,7 +108,7 @@ function ProjectSwitcher() {
             )}
           </div>
           <div className="flex flex-col justify-center">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-a3">{p.type}</p>
+            <p className="text-[13px] text-a3">{p.type}</p>
             <h3 className="display mt-4 text-4xl sm:text-5xl">{p.name}</h3>
             <p className="mt-5 leading-relaxed text-white/60">{p.text}</p>
             <a href={p.href} target="_blank" rel="noopener noreferrer" className="btn btn-ghost group mt-8 self-start">
@@ -127,16 +127,13 @@ function Included() {
     <section className="relative border-t border-white/[0.06] py-24 sm:py-32">
       <div className="container-x grid gap-12 lg:grid-cols-2 lg:gap-20">
         <div>
-          <SectionHeader className="!mb-8" eyebrow="Every build" title={<>The boring stuff, <span className="text-white/40">done properly.</span></>} intro="The details most agencies skip are the ones that decide whether a site actually ranks, loads and converts." />
+          <SectionHeader stacked className="!mb-8" eyebrow="Every build" title="What every site gets, whatever the budget" intro="The details most agencies skip are the ones that decide whether a site actually ranks, loads and converts." />
         </div>
-        <ul className="grid gap-3 sm:grid-cols-2">
-          {INCLUDED.map((x, i) => (
-            <Reveal as="li" key={x} delay={i * 50} className="flex items-start gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4 text-sm text-white/75">
-              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-a1 to-a2">
-                <Check className="h-3 w-3" />
-              </span>
+        <ul className="grid gap-x-8 sm:grid-cols-2">
+          {INCLUDED.map((x) => (
+            <li key={x} className="border-t border-white/10 py-4 text-[17px] text-white/80">
               {x}
-            </Reveal>
+            </li>
           ))}
         </ul>
       </div>
@@ -159,12 +156,12 @@ export default function WebDesignPage() {
       slug="web-design"
       title={
         <>
-          Websites that <span className="text-gradient">sell</span> while you sleep.
+          Websites and online stores, designed and coded in-house.
         </>
       }
-      intro="Custom-designed, fast and search-ready websites and web apps — from a sharp one-page presence to full e-commerce. Built by the same people who design them."
+      intro="Custom-designed, fast and search-ready websites and web apps, from a sharp one-page presence to full e-commerce. Built by the same people who design them."
       heroVisual={<HeroVisual />}
-      offeringsTitle={<>From landing page <span className="text-white/40">to full platform.</span></>}
+      offeringsTitle="From a one-page site to a full online store."
       offerings={[
         { icon: LayoutTemplate, title: 'Business websites', text: 'Polished multi-page sites that explain what you do and turn visitors into enquiries.' },
         { icon: ShoppingBag, title: 'E-commerce', text: 'Online stores with catalogues, carts, payments, delivery options and WhatsApp ordering.' },
@@ -174,7 +171,7 @@ export default function WebDesignPage() {
         { icon: Wrench, title: 'Care & updates', text: 'Ongoing changes, monitoring and improvements after launch, so the site never goes stale.' },
       ]}
       faqs={[
-        { q: 'How long does a website take?', a: 'A focused business site usually takes 2–4 weeks from kickoff to launch. E-commerce and custom web apps take longer depending on features — we give you a clear timeline before we start.' },
+        { q: 'How long does a website take?', a: 'A focused business site usually takes 2–4 weeks from kickoff to launch. E-commerce and custom web apps take longer depending on features, we give you a clear timeline before we start.' },
         { q: 'How much does a website cost?', a: 'It depends on the number of pages, features and integrations. We quote a fixed price after a short discovery call so there are no surprises.' },
         { q: 'Will I be able to update the site myself?', a: 'Yes. Where you need it we add simple content editing, and we walk you through it at handover. We can also handle updates for you.' },
         { q: 'Do you handle domains and hosting?', a: 'We can set up and manage your domain, hosting, SSL and business email, or work with what you already have.' },
@@ -184,7 +181,7 @@ export default function WebDesignPage() {
       <ProjectSwitcher />
       <Included />
       <StepsSection
-        title={<>How a site comes together.</>}
+        title="How a site comes together"
         steps={[
           { title: 'Discovery', text: 'Goals, audience, competitors and the pages you actually need.' },
           { title: 'Wireframes', text: 'Structure and user journeys mapped out before any visuals.' },

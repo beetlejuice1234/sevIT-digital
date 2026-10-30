@@ -70,7 +70,7 @@ export const SERVICES: Service[] = [
     path: '/services/3d-rendering',
     name: '3D Render & Virtual Ads',
     short: '3D & Virtual Ads',
-    blurb: 'Photoreal product visuals and ad films — no camera crew, no studio hire.',
+    blurb: 'Photoreal product visuals and ad films, no camera crew, no studio hire.',
     icon: Box,
     image: '/images/renders/sm/saraperf.webp',
     tags: ['Product', 'Motion', 'CGI'],

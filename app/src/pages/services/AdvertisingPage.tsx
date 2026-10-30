@@ -16,7 +16,7 @@ function AdPhone({ src, poster, brand, caption, tilt = 0, className }: { src: st
     <PhoneFrame className={className}>
       <div className="relative aspect-[9/19] bg-black" style={{ transform: `rotate(${tilt}deg)` }}>
         <video ref={ref} src={src} poster={poster} muted loop playsInline preload="none" className="absolute inset-0 h-full w-full object-cover" aria-label={`${brand} ad creative`} />
-        <div className="absolute inset-x-0 top-0 flex items-center gap-2 bg-gradient-to-b from-black/70 to-transparent p-3 pt-8 text-[11px]">
+        <div className="absolute inset-x-0 top-0 flex items-center gap-2 bg-gradient-to-b from-black/70 to-transparent p-2 pt-7 text-[9px] sm:p-3 sm:pt-8 sm:text-[11px]">
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-a1 to-a2">
             <Sparkle className="h-3 w-3 [&_path]:fill-white" />
           </span>
@@ -42,11 +42,11 @@ function Creatives() {
   return (
     <section id="work" className="relative scroll-mt-24 overflow-hidden py-20 sm:py-28">
       <div className="container-x">
-        <SectionHeader eyebrow="Ad creative" title={<>Creative that <span className="text-gradient">stops the scroll.</span></>} intro="Most ads fail in the first second. We make CGI and motion creative in-house, so your campaigns look like nobody else’s in the feed." />
+        <SectionHeader eyebrow="Our ads" title="We make the ads ourselves, so they don’t look like everyone else’s." intro="Most ads fail in the first second. We make CGI and motion creative in-house, so your campaigns look like nobody else’s in the feed." />
         <div className="relative flex items-end justify-center gap-3 sm:gap-6">
           <div className="pointer-events-none absolute inset-x-0 bottom-0 top-1/3 bg-[radial-gradient(ellipse_at_center,rgb(var(--a2)/0.22),transparent_65%)]" />
           <Reveal className="w-[30%] max-w-[250px] translate-y-6">
-            <AdPhone src="/images/video/chocolate.mp4" poster="/images/video/chocolate.webp" brand="Choco Bar" caption="Crunch you can hear. New Hazelnut Crunch — out now." />
+            <AdPhone src="/images/video/chocolate.mp4" poster="/images/video/chocolate.webp" brand="Choco Bar" caption="Crunch you can hear. New Hazelnut Crunch, out now." />
           </Reveal>
           <Reveal delay={100} className="w-[34%] max-w-[280px]">
             <AdPhone src="/images/video/showreel.mp4" poster="/images/video/showreel.webp" brand="Sound Studio" caption="Silence everything but the music. Pre-order today." />
@@ -72,16 +72,16 @@ function Report() {
     <section className="relative border-t border-white/[0.06] py-24 sm:py-32">
       <div className="container-x grid items-center gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
         <SectionHeader
-          className="!mb-0"
+          stacked className="!mb-0"
           eyebrow="Reporting"
-          title={<>Numbers you can <span className="text-white/40">actually read.</span></>}
+          title="One page a week on what your budget did."
           intro="Every week you get one simple page: where the money went, what came back and what we’re changing next. No 40-tab spreadsheets."
         />
         <Reveal>
           <div className="rounded-[2rem] border border-white/10 bg-[#0b0b0b] p-5 sm:p-7">
             <div className="flex items-center justify-between">
               <p className="font-display text-lg font-bold">Weekly snapshot</p>
-              <span className="rounded-full border border-white/10 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-white/40">Example</span>
+              <span className="rounded-full border border-white/10 px-2.5 py-1 text-[13px] text-white/40">Example</span>
             </div>
             <div className="mt-6 space-y-3">
               {ROWS.map((r) => (
@@ -140,21 +140,21 @@ export default function AdvertisingPage() {
       slug="advertising"
       title={
         <>
-          Ads that earn the <span className="text-gradient">second look.</span>
+          Social and search ads, with creative we make ourselves.
         </>
       }
-      intro="Social and search campaigns with scroll-stopping creative, careful targeting and honest reporting — run by the same team that makes the visuals."
+      intro="Social and search campaigns with scroll-stopping creative, careful targeting and honest reporting, run by the same team that makes the visuals."
       heroVisual={<HeroVisual />}
-      offeringsTitle={<>Creative, media <span className="text-white/40">and maths.</span></>}
+      offeringsTitle="Everything a campaign needs, under one roof."
       offerings={[
         { icon: Instagram, title: 'Social ads', text: 'Facebook, Instagram and TikTok campaigns built around Reels-first creative.' },
         { icon: Search, title: 'Search & Maps', text: 'Google Search and Maps ads that catch people the moment they’re looking for you.' },
-        { icon: Target, title: 'Targeting & retargeting', text: 'Audiences built from your customers, site visitors and lookalikes — not guesswork.' },
+        { icon: Target, title: 'Targeting & retargeting', text: 'Audiences built from your customers, site visitors and lookalikes, not guesswork.' },
         { icon: LineChart, title: 'Tracking & reporting', text: 'Pixels, conversions and a weekly one-pager showing exactly what your budget returned.' },
       ]}
       faqs={[
         { q: 'How much should I spend on ads?', a: 'It depends on your goals and market. We’ll suggest a starting budget that’s big enough to learn from, then scale what works.' },
-        { q: 'Do you make the ad creative too?', a: 'Yes — that’s our edge. Video, CGI, graphics and copy are all made in-house, so testing new ideas is fast.' },
+        { q: 'Do you make the ad creative too?', a: 'Yes, that’s our edge. Video, CGI, graphics and copy are all made in-house, so testing new ideas is fast.' },
         { q: 'How soon will I see results?', a: 'Campaigns usually start producing data within days. Expect two to four weeks of testing before performance settles.' },
         { q: 'Who owns the ad accounts?', a: 'You do. We work inside your Business Manager and Google Ads accounts so you keep all the data and history.' },
       ]}
@@ -162,7 +162,7 @@ export default function AdvertisingPage() {
       <Creatives />
       <Report />
       <StepsSection
-        title={<>How campaigns <span className="text-white/40">get better.</span></>}
+        title="How a campaign gets better each week"
         steps={[
           { title: 'Learn the business', text: 'Customers, margins, seasons and what a good lead is worth to you.' },
           { title: 'Build the campaign', text: 'Tracking, audiences and three or more creative angles.' },

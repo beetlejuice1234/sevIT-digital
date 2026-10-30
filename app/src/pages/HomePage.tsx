@@ -1,7 +1,7 @@
 import Seo from '@/components/Seo';
 import { organizationLd } from '@/seo/schema';
 import Hero from '@/components/home/Hero';
-import ServicesBento from '@/components/home/ServicesBento';
+import ServicesIndex from '@/components/home/ServicesIndex';
 import SelectedWork from '@/components/home/SelectedWork';
 import { Studio, Process, Testimonials, AITeaser } from '@/components/home/HomeSections';
 import ContactSection from '@/components/layout/ContactSection';
@@ -24,7 +24,7 @@ export default function HomePage() {
         ]}
       />
       <Hero />
-      <ServicesBento />
+      <ServicesIndex />
       <SelectedWork />
       <Studio />
       <Process />

@@ -1,23 +1,23 @@
 import { useState, type FormEvent } from 'react';
-import { ArrowUpRight, Globe, Zap, Heart, Rocket, Mail, Check } from 'lucide-react';
+import { Mail, Check } from 'lucide-react';
 import Seo from '@/components/Seo';
 import ShaderBackdrop from '@/components/kit/ShaderBackdrop';
-import { Reveal, SectionHeader, SpotlightCard } from '@/components/kit';
+import { Reveal, SectionHeader } from '@/components/kit';
 import { SITE } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
 const ROLES = [
-  { title: 'Senior UI/UX Designer', type: 'Full-time · Remote', team: 'Design', text: 'Lead the visual direction of websites, apps and brand systems — from wireframe to polished prototype.' },
+  { title: 'Senior UI/UX Designer', type: 'Full-time · Remote', team: 'Design', text: 'Lead the visual direction of websites, apps and brand systems, from wireframe to polished prototype.' },
   { title: 'Frontend Engineer (React)', type: 'Full-time · Remote', team: 'Engineering', text: 'Build fast, animation-rich sites and web apps with React, TypeScript and Tailwind.' },
   { title: 'AI Automation Specialist', type: 'Project-based · Remote', team: 'AI', text: 'Design and deploy chatbots, document pipelines and automations for real businesses.' },
   { title: '3D Render Artist', type: 'Project-based · Remote', team: 'Creative', text: 'Create photoreal product renders and short CGI ad films for brands.' },
 ];
 
 const PERKS = [
-  { icon: Globe, title: 'Remote-first', text: 'Work from anywhere. We care about output, not office hours.' },
-  { icon: Zap, title: 'Modern tools', text: 'The latest frameworks, AI tools and 3D software — and time to learn them.' },
-  { icon: Heart, title: 'Real ownership', text: 'Small team, no red tape. Your work ships and clients see your name on it.' },
-  { icon: Rocket, title: 'Grow fast', text: 'Work across web, software, AI and CGI. You’ll learn more in a year than most do in three.' },
+  { title: 'Work from anywhere', text: 'Work from anywhere. We care about output, not office hours.' },
+  { title: 'Good tools', text: 'Current frameworks, AI tools and 3D software, plus time to actually learn them.' },
+  { title: 'Your name on it', text: 'Small team, no red tape. Your work ships and clients see your name on it.' },
+  { title: 'Range', text: 'Work across web, software, AI and CGI. You’ll learn more in a year than most do in three.' },
 ];
 
 export default function CareersPage() {
@@ -35,7 +35,7 @@ export default function CareersPage() {
   const submit = (e: FormEvent) => {
     e.preventDefault();
     const body = [`Name: ${name}`, `Role: ${role || 'General application'}`, link ? `Portfolio / LinkedIn: ${link}` : null, '', note, '', '(CV attached)'].filter((x) => x !== null).join('\n');
-    window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(`Application — ${role || 'General'} — ${name}`)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(`Application, ${role || 'General'}, ${name}`)}&body=${encodeURIComponent(body)}`;
     setOpened(true);
   };
 
@@ -45,18 +45,17 @@ export default function CareersPage() {
 
       <section className="relative overflow-hidden pb-20 pt-36 sm:pt-44">
         <ShaderBackdrop intensity={0.7} />
-        <div className="grid-bg pointer-events-none absolute inset-0 opacity-50" aria-hidden />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" aria-hidden />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" aria-hidden />
         <div className="container-x relative">
           <Reveal className="eyebrow mb-7">Careers at sevIT</Reveal>
           <Reveal as="h1" delay={80} className="display max-w-5xl text-balance text-[clamp(3rem,8vw,7rem)]">
-            Do the best work of <span className="text-gradient">your career.</span>
+            Come build things with us.
           </Reveal>
           <Reveal as="p" delay={160} className="mt-7 max-w-xl text-lg leading-relaxed text-white/60">
-            We’re a small studio that takes on big, varied projects — websites, software, AI and CGI. If you love shipping things you’re proud of, we should talk.
+            We’re a small studio doing varied work: websites, software, AI tools and CGI. If you like shipping things you’re proud of, we should talk.
           </Reveal>
           <Reveal delay={240} className="mt-10">
-            <a href="#roles" className="btn btn-accent">See open roles <ArrowUpRight className="h-4 w-4" /></a>
+            <a href="#roles" className="btn btn-accent">See open roles</a>
           </Reveal>
         </div>
       </section>
@@ -65,11 +64,10 @@ export default function CareersPage() {
         <div className="container-x grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {PERKS.map((p, i) => (
             <Reveal key={p.title} delay={i * 70}>
-              <SpotlightCard className="h-full p-6">
-                <p.icon className="h-5 w-5 text-a3" />
-                <h3 className="mt-6 font-display text-lg font-bold">{p.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-white/55">{p.text}</p>
-              </SpotlightCard>
+              <div className="h-full border-t border-white/15 pt-5">
+                <h3 className="text-xl font-bold">{p.title}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-white/60">{p.text}</p>
+              </div>
             </Reveal>
           ))}
         </div>
@@ -77,7 +75,7 @@ export default function CareersPage() {
 
       <section id="roles" className="scroll-mt-24 py-20 sm:py-28">
         <div className="container-x">
-          <SectionHeader eyebrow="Open roles" title={<>Find your <span className="text-white/40">seat.</span></>} />
+          <SectionHeader eyebrow="Hiring now" title="Open roles" />
           <ul className="border-t border-white/[0.08]">
             {ROLES.map((r, i) => (
               <Reveal as="li" key={r.title} delay={i * 50} className="border-b border-white/[0.08]">
@@ -90,22 +88,20 @@ export default function CareersPage() {
                     <span className="rounded-full border border-white/10 px-3 py-1 text-white/60">{r.team}</span>
                     <span className="rounded-full border border-white/10 px-3 py-1 text-white/60">{r.type}</span>
                   </span>
-                  <span className="hidden h-12 w-12 items-center justify-center rounded-full border border-white/15 transition-all duration-500 group-hover:rotate-45 group-hover:border-transparent group-hover:bg-white group-hover:text-black sm:flex">
-                    <ArrowUpRight className="h-5 w-5" />
-                  </span>
+                  <span className="hidden text-[15px] font-semibold text-a3 opacity-0 transition-opacity group-hover:opacity-100 sm:block">Apply</span>
                 </button>
               </Reveal>
             ))}
           </ul>
-          <p className="mt-6 text-sm text-white/45">Don’t see your role? Apply anyway — we read every message.</p>
+          <p className="mt-6 text-sm text-white/45">Don’t see your role? Apply anyway, we read every message.</p>
         </div>
       </section>
 
       <section id="apply" className="scroll-mt-24 border-t border-white/[0.06] py-24 sm:py-32">
         <div className="container-x grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
-          <SectionHeader className="!mb-0" eyebrow="Apply" title={<>Introduce <span className="text-white/40">yourself.</span></>} intro="Fill this in and we’ll open an email to the team with your details. Attach your CV or portfolio PDF and hit send." />
+          <SectionHeader stacked className="!mb-0" eyebrow="Apply" title="Introduce yourself" intro="Fill this in and we’ll open an email to the team with your details. Attach your CV or portfolio PDF and hit send." />
           <Reveal>
-            <SpotlightCard as="form" onSubmit={submit} className="space-y-5 p-6 sm:p-8">
+            <form onSubmit={submit} className="space-y-5 rounded-[2rem] border border-white/10 bg-white/[0.02] p-6 sm:p-8">
               <div>
                 <p className="mb-2 text-sm text-white/60">Role</p>
                 <div className="flex flex-wrap gap-2">
@@ -137,12 +133,12 @@ export default function CareersPage() {
               </label>
               <button type="submit" className="btn btn-accent w-full !py-4">
                 {opened ? <Check className="h-4 w-4" /> : <Mail className="h-4 w-4" />}
-                {opened ? 'Email opened — attach your CV and send' : 'Continue in email'}
+                {opened ? 'Email opened, attach your CV and send' : 'Continue in email'}
               </button>
               <p className="text-center text-xs text-white/35">
                 Or email us directly at <a className="underline" href={`mailto:${SITE.email}`}>{SITE.email}</a>
               </p>
-            </SpotlightCard>
+            </form>
           </Reveal>
         </div>
       </section>
