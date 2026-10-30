@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ArrowUpRight, ChevronDown } from 'lucide-react';
 import { SERVICES } from '@/lib/site';
 import { cn } from '@/lib/utils';
+import { THEMES, themeStyle } from '@/lib/theme';
 
 const LINKS = [
   { label: 'Work', to: '/#work' },
@@ -153,12 +154,12 @@ export default function Navbar() {
               <div className="grid grid-cols-[1fr_240px] gap-2 rounded-3xl border border-white/10 bg-[#0b0b0b]/95 p-2 shadow-2xl shadow-black/80 backdrop-blur-xl">
                 <ul className="grid grid-cols-2 gap-1 p-1">
                   {SERVICES.map((s) => (
-                    <li key={s.slug}>
+                    <li key={s.slug} style={themeStyle(THEMES[s.slug])}>
                       <Link
                         to={s.path}
                         className="group flex gap-3 rounded-2xl p-3 transition-colors hover:bg-white/[0.05]"
                       >
-                        <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white/70 transition-colors group-hover:border-orange-400/40 group-hover:text-orange-300">
+                        <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white/70 transition-colors group-hover:border-a2/40 group-hover:text-a3">
                           <s.icon className="h-4 w-4" />
                         </span>
                         <span>
@@ -182,7 +183,7 @@ export default function Navbar() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-4">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-orange-300">Featured</p>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-a3">Featured</p>
                     <p className="mt-1 flex items-center gap-1 text-sm font-medium">
                       Bergamood — CGI ad <ArrowUpRight className="h-3.5 w-3.5" />
                     </p>
@@ -207,12 +208,12 @@ export default function Navbar() {
             {SERVICES.map((s, i) => (
               <li
                 key={s.slug}
+                style={{ ...themeStyle(THEMES[s.slug]), transitionDelay: open ? `${80 + i * 40}ms` : '0ms' }}
                 className={cn('transition-all duration-500', open ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0')}
-                style={{ transitionDelay: open ? `${80 + i * 40}ms` : '0ms' }}
               >
                 <Link to={s.path} className="flex items-center justify-between border-b border-white/[0.06] py-3.5 text-lg font-medium">
                   {s.name}
-                  <s.icon className="h-4 w-4 text-white/40" />
+                  <s.icon className="h-4 w-4 text-a2" />
                 </Link>
               </li>
             ))}

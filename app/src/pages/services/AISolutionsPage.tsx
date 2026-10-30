@@ -33,7 +33,7 @@ function Flows() {
           {FLOWS.map((f, n) => (
             <Reveal key={f.title} delay={n * 100}>
               <SpotlightCard className="p-6 sm:p-8">
-                <p className="font-mono text-xs uppercase tracking-[0.2em] text-orange-300">{f.title}</p>
+                <p className="font-mono text-xs uppercase tracking-[0.2em] text-a3">{f.title}</p>
                 <ol className="mt-6 space-y-2">
                   {f.steps.map((s, i) => (
                     <li key={s.t} className="flex items-center gap-3">

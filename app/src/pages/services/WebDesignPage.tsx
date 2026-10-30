@@ -89,7 +89,7 @@ function ProjectSwitcher() {
         </div>
 
         <div key={p.name} role="tabpanel" className="grid gap-8 lg:grid-cols-[1.5fr_1fr] [animation:svc-in_.7s_var(--ease-out)_both]">
-          <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_30%_20%,rgba(249,115,22,0.18),transparent_60%)] p-4 sm:p-10">
+          <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_30%_20%,rgb(var(--a2)/0.18),transparent_60%)] p-4 sm:p-10">
             {p.desktop ? (
               <div className="relative pb-8">
                 <BrowserFrame url={p.url}>
@@ -108,7 +108,7 @@ function ProjectSwitcher() {
             )}
           </div>
           <div className="flex flex-col justify-center">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-orange-300">{p.type}</p>
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-a3">{p.type}</p>
             <h3 className="display mt-4 text-4xl sm:text-5xl">{p.name}</h3>
             <p className="mt-5 leading-relaxed text-white/60">{p.text}</p>
             <a href={p.href} target="_blank" rel="noopener noreferrer" className="btn btn-ghost group mt-8 self-start">
@@ -132,7 +132,7 @@ function Included() {
         <ul className="grid gap-3 sm:grid-cols-2">
           {INCLUDED.map((x, i) => (
             <Reveal as="li" key={x} delay={i * 50} className="flex items-start gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4 text-sm text-white/75">
-              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-orange-400">
+              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-a1 to-a2">
                 <Check className="h-3 w-3" />
               </span>
               {x}

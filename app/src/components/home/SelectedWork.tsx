@@ -88,9 +88,9 @@ const CASES: Case[] = [
       'A membership-first platform for BodyLab Fitness with schedules and booking, plus Golden Hour Coffee — a hospitality concept exploring a menu-led brand experience.',
     services: ['Web design', 'Development'],
     link: { label: 'Visit live site', to: 'https://bodylabfitness.vercel.app' },
-    tint: 'from-red-500/25',
+    tint: 'from-a1/25',
     visual: (
-      <div className="flex h-full items-center justify-center gap-4 bg-[radial-gradient(circle_at_50%_40%,rgba(239,68,68,0.25),transparent_60%)] p-6">
+      <div className="flex h-full items-center justify-center gap-4 bg-[radial-gradient(circle_at_50%_40%,rgb(var(--a1)/0.25),transparent_60%)] p-6">
         {['bodylab', 'goldencafe'].map((n, i) => (
           <img
             key={n}
@@ -138,7 +138,7 @@ function CaseCard({ c, i }: { c: Case; i: number }) {
   const linkCls = 'group mt-8 inline-flex items-center gap-2 self-start text-sm font-semibold';
   const linkInner = (
     <>
-      <span className="border-b border-white/30 pb-0.5 transition-colors group-hover:border-orange-400">{c.link.label}</span>
+      <span className="border-b border-white/30 pb-0.5 transition-colors group-hover:border-a2">{c.link.label}</span>
       <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
     </>
   );

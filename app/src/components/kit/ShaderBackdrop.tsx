@@ -1,5 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
+import { themeFor } from '@/lib/theme';
+
+const rgb = (t: string) => t.split(' ').map((n) => Number(n) / 255) as [number, number, number];
 
 /**
  * Lightweight WebGL "molten light" backdrop in the brand red→orange.
@@ -12,6 +15,9 @@ uniform vec2 uRes;
 uniform float uTime;
 uniform vec2 uMouse;
 uniform float uIntensity;
+uniform vec3 uA1;
+uniform vec3 uA2;
+uniform vec3 uA3;
 
 float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }
 float noise(vec2 p){
@@ -42,9 +48,9 @@ void main(){
   float k = f * f * (0.55 + 0.9 * glow + 0.6 * mglow);
 
   vec3 black = vec3(0.02);
-  vec3 red = vec3(0.86, 0.16, 0.12);
-  vec3 orange = vec3(0.98, 0.45, 0.09);
-  vec3 cream = vec3(1.0, 0.82, 0.62);
+  vec3 red = uA1;
+  vec3 orange = uA2;
+  vec3 cream = uA3;
 
   vec3 col = mix(black, red, smoothstep(0.08, 0.55, k));
   col = mix(col, orange, smoothstep(0.32, 0.8, k * (0.8 + length(q))));
@@ -106,6 +112,10 @@ export default function ShaderBackdrop({ className, intensity = 1 }: { className
     const uMouse = gl.getUniformLocation(prog, 'uMouse');
     const uInt = gl.getUniformLocation(prog, 'uIntensity');
     gl.uniform1f(uInt, intensity);
+    const theme = themeFor(window.location.pathname);
+    gl.uniform3f(gl.getUniformLocation(prog, 'uA1'), ...rgb(theme.a1));
+    gl.uniform3f(gl.getUniformLocation(prog, 'uA2'), ...rgb(theme.a2));
+    gl.uniform3f(gl.getUniformLocation(prog, 'uA3'), ...rgb(theme.a3));
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const scale = Math.min(window.devicePixelRatio, 1.5) * (window.innerWidth < 768 ? 0.45 : 0.6);
@@ -166,7 +176,7 @@ export default function ShaderBackdrop({ className, intensity = 1 }: { className
   return (
     <div className={cn('pointer-events-none absolute inset-0 overflow-hidden', className)} aria-hidden>
       {/* CSS fallback / first paint */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_75%_25%,rgba(239,68,68,0.35),rgba(249,115,22,0.08)_45%,transparent_70%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_75%_25%,rgb(var(--a1)/0.3),rgb(var(--a2)/0.08)_45%,transparent_70%)]" />
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-1000" />
     </div>
   );

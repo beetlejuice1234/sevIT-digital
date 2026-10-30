@@ -60,9 +60,9 @@ export default function ContactSection({ defaultService }: { defaultService?: st
                   href={c.href}
                   target={c.href.startsWith('http') ? '_blank' : undefined}
                   rel="noopener noreferrer"
-                  className="group rounded-2xl border border-white/10 bg-black/40 p-4 backdrop-blur transition-colors hover:border-orange-400/40"
+                  className="group rounded-2xl border border-white/10 bg-black/40 p-4 backdrop-blur transition-colors hover:border-a2/40"
                 >
-                  <c.icon className="h-4 w-4 text-orange-300" />
+                  <c.icon className="h-4 w-4 text-a3" />
                   <p className="mt-3 text-xs text-white/45">{c.label}</p>
                   <p className="mt-0.5 flex items-center gap-1 truncate text-sm font-medium">
                     <span className="truncate">{c.value}</span>
@@ -89,11 +89,11 @@ export default function ContactSection({ defaultService }: { defaultService?: st
                         className={cn(
                           'flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm transition-all duration-300',
                           on
-                            ? 'border-orange-400/70 bg-orange-500/15 text-white'
+                            ? 'border-a2/70 bg-a2/15 text-white'
                             : 'border-white/10 bg-white/[0.03] text-white/60 hover:border-white/25 hover:text-white',
                         )}
                       >
-                        {on && <Check className="h-3.5 w-3.5 text-orange-300" />}
+                        {on && <Check className="h-3.5 w-3.5 text-a3" />}
                         {s.short}
                       </button>
                     );
@@ -112,7 +112,7 @@ export default function ContactSection({ defaultService }: { defaultService?: st
                   onChange={(e) => setMessage(e.target.value)}
                   rows={4}
                   placeholder="Goals, timeline, links to anything you like…"
-                  className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-white/25 focus:border-orange-400/60 focus:outline-none sm:text-sm"
+                  className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-white/25 focus:border-a2/60 focus:outline-none sm:text-sm"
                 />
               </label>
 
@@ -146,7 +146,7 @@ function Field({
         {...rest}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-white/25 focus:border-orange-400/60 focus:outline-none sm:text-sm"
+        className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-white/25 focus:border-a2/60 focus:outline-none sm:text-sm"
       />
     </label>
   );

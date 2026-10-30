@@ -61,7 +61,7 @@ function BrandBoard() {
           <Reveal delay={160} className="relative flex min-h-[200px] items-center justify-center overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b0b0b] lg:col-span-2">
             <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.05)_1px,transparent_1px)] bg-[size:20px_20px]" />
             <div className="absolute h-36 w-36 rounded-full border border-dashed border-white/15" />
-            <div className="absolute h-20 w-20 rounded-full border border-dashed border-orange-400/30" />
+            <div className="absolute h-20 w-20 rounded-full border border-dashed border-a2/30" />
             <Sparkle className="spin-slow relative h-24 w-24 [animation-duration:60s]" />
             <p className="absolute bottom-4 left-5 font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">The spark · construction</p>
           </Reveal>
@@ -84,14 +84,14 @@ function BrandBoard() {
             <p className="text-sm leading-relaxed text-white/50">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 — set tight, loud and confident.</p>
           </Reveal>
           {/* applications */}
-          <Reveal className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_30%_30%,rgba(249,115,22,0.25),#0b0b0b_60%)] p-8 lg:col-span-3">
+          <Reveal className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_30%_30%,rgb(var(--a2)/0.25),#0b0b0b_60%)] p-8 lg:col-span-3">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">Business card</p>
             <div className="mt-8 flex justify-center gap-4 [perspective:900px]">
               <div className="aspect-[1.75] w-[46%] rounded-xl bg-[#050505] p-4 shadow-2xl ring-1 ring-white/10 [transform:rotateY(14deg)_rotateX(6deg)]">
                 <img src="/images/logo-sevit.webp" alt="" className="h-5 w-auto" />
                 <p className="mt-6 text-[9px] text-white/50 sm:text-[10px]">sevit@sevitdigital.com</p>
               </div>
-              <div className="flex aspect-[1.75] w-[46%] items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-orange-400 shadow-2xl [transform:rotateY(-14deg)_rotateX(6deg)]">
+              <div className="flex aspect-[1.75] w-[46%] items-center justify-center rounded-xl bg-gradient-to-br from-a1 to-a2 shadow-2xl [transform:rotateY(-14deg)_rotateX(6deg)]">
                 <Sparkle className="h-10 w-10 [&_path]:fill-white" />
               </div>
             </div>
@@ -113,8 +113,8 @@ function HeroVisual() {
     <div className="relative mx-auto flex aspect-square max-w-[460px] items-center justify-center">
       <div className="absolute inset-0 rounded-full border border-white/[0.06]" />
       <div className="spin-slow absolute inset-6 rounded-full border border-dashed border-white/10" />
-      <div className="absolute inset-16 rounded-full bg-[radial-gradient(circle,rgba(249,115,22,0.3),transparent_65%)] blur-2xl" />
-      <div className="float-slow relative w-[80%] overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_40px_100px_-30px_rgba(249,115,22,0.6)]">
+      <div className="absolute inset-16 rounded-full bg-[radial-gradient(circle,rgb(var(--a2)/0.3),transparent_65%)] blur-2xl" />
+      <div className="float-slow relative w-[80%] overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_40px_100px_-30px_rgb(var(--a2)/0.6)]">
         <img src="/images/3dlogo.webp" alt="sevIT spark logo mark in 3D" className="aspect-square w-full object-cover" fetchPriority="high" />
       </div>
       {['Logo', 'Colour', 'Type', 'Voice'].map((t, i) => (

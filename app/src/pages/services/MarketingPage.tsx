@@ -28,7 +28,7 @@ function Funnel() {
                 aria-pressed={n === i}
                 className={cn(
                   'relative flex h-16 items-center justify-between rounded-2xl px-5 text-left transition-all duration-500 [transition-timing-function:var(--ease-out)] sm:h-20',
-                  n === i ? 'bg-gradient-to-r from-red-500 to-orange-400 text-white shadow-[0_10px_40px_-10px_rgba(249,115,22,0.7)]' : 'bg-white/[0.04] text-white/55 hover:bg-white/[0.08]',
+                  n === i ? 'bg-gradient-to-r from-a1 to-a2 text-white shadow-[0_10px_40px_-10px_rgb(var(--a2)/0.7)]' : 'bg-white/[0.04] text-white/55 hover:bg-white/[0.08]',
                 )}
                 style={{ width: `${x.width}%`, minWidth: 220 }}
               >
@@ -38,7 +38,7 @@ function Funnel() {
             ))}
           </Reveal>
           <div key={s.label} className="flex flex-col justify-center [animation:svc-in_.6s_var(--ease-out)_both]">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-orange-300">Stage 0{i + 1}</p>
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-a3">Stage 0{i + 1}</p>
             <h3 className="display mt-3 text-4xl sm:text-5xl">{s.label}</h3>
             <p className="mt-4 max-w-md leading-relaxed text-white/60">{s.what}</p>
             <ul className="mt-6 grid gap-2 sm:grid-cols-2">
@@ -71,7 +71,7 @@ function SerpPreview() {
             ].map((f) => (
               <label key={f.l} className="block">
                 <span className="mb-1.5 block text-xs text-white/50">{f.l}</span>
-                <input value={f.v} onChange={(e) => f.s(e.target.value)} className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-base focus:border-orange-400/60 focus:outline-none sm:text-sm" />
+                <input value={f.v} onChange={(e) => f.s(e.target.value)} className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-base focus:border-a2/60 focus:outline-none sm:text-sm" />
               </label>
             ))}
           </div>
@@ -127,12 +127,12 @@ function HeroVisual() {
       <svg viewBox="0 0 330 110" className="mt-6 h-44 w-full" preserveAspectRatio="none" aria-hidden>
         <defs>
           <linearGradient id="mk-g" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stopColor="#f97316" stopOpacity=".45" />
-            <stop offset="1" stopColor="#f97316" stopOpacity="0" />
+            <stop offset="0" style={{ stopColor: 'rgb(var(--a2))' }} stopOpacity=".45" />
+            <stop offset="1" style={{ stopColor: 'rgb(var(--a2))' }} stopOpacity="0" />
           </linearGradient>
         </defs>
         <path d={`M0 ${pts[0]} ${pts.map((p, i) => `L${i * 30} ${p}`).join(' ')} L330 110 L0 110Z`} fill="url(#mk-g)" />
-        <polyline points={pts.map((p, i) => `${i * 30},${p}`).join(' ')} fill="none" stroke="#fb923c" strokeWidth="2.5" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
+        <polyline points={pts.map((p, i) => `${i * 30},${p}`).join(' ')} fill="none" style={{ stroke: 'rgb(var(--a2))' }} strokeWidth="2.5" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
         {pts.map((p, i) => i % 3 === 2 && <circle key={i} cx={i * 30} cy={p} r="3" fill="#fff" />)}
       </svg>
       <div className="mt-5 grid grid-cols-3 gap-2">
@@ -142,7 +142,7 @@ function HeroVisual() {
           { i: Mail, l: 'Email' },
         ].map((x) => (
           <div key={x.l} className="flex items-center gap-2 rounded-xl bg-white/[0.04] px-3 py-2.5 text-xs text-white/70">
-            <x.i className="h-3.5 w-3.5 text-orange-300" /> {x.l}
+            <x.i className="h-3.5 w-3.5 text-a3" /> {x.l}
           </div>
         ))}
       </div>

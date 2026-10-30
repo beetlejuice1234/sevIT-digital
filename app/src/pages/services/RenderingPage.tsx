@@ -95,7 +95,7 @@ function Gallery() {
                 <span className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/0 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                 <span className="absolute inset-x-0 bottom-0 translate-y-3 p-4 text-left opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
                   <span className="block text-sm font-semibold">{s.title}</span>
-                  <span className="block font-mono text-[10px] uppercase tracking-wider text-orange-300">{s.tag}</span>
+                  <span className="block font-mono text-[10px] uppercase tracking-wider text-a3">{s.tag}</span>
                 </span>
               </button>
             </Reveal>

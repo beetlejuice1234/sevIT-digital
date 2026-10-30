@@ -3,10 +3,11 @@ import { ArrowUpRight } from 'lucide-react';
 import { Reveal, SectionHeader, SpotlightCard, Sparkle } from '@/components/kit';
 import { serviceBySlug, type Service } from '@/lib/site';
 import { cn } from '@/lib/utils';
+import { THEMES, themeStyle } from '@/lib/theme';
 
 function CardShell({ service, className, children, delay = 0 }: { service: Service; className?: string; children: React.ReactNode; delay?: number }) {
   return (
-    <Reveal delay={delay} className={className}>
+    <Reveal delay={delay} className={className} style={themeStyle(THEMES[service.slug])}>
       <SpotlightCard as={Link} to={service.path} className="group flex h-full flex-col">
         <div className="relative min-h-[200px] flex-1 overflow-hidden">{children}</div>
         <div className="relative flex items-end justify-between gap-4 p-6 sm:p-7">
@@ -64,7 +65,7 @@ function PosVisual() {
           {bars.map((h, i) => (
             <span
               key={i}
-              className="flex-1 origin-bottom rounded-t bg-gradient-to-t from-red-500/60 to-orange-400 transition-transform duration-700 [transition-timing-function:var(--ease-out)] group-hover:scale-y-110"
+              className="flex-1 origin-bottom rounded-t bg-gradient-to-t from-a1/60 to-a2 transition-transform duration-700 [transition-timing-function:var(--ease-out)] group-hover:scale-y-110"
               style={{ height: `${h}%`, transitionDelay: `${i * 40}ms` }}
             />
           ))}
@@ -85,7 +86,7 @@ function PosVisual() {
           <span>Total</span>
           <span className="font-mono">3,000</span>
         </div>
-        <div className="rounded-lg bg-gradient-to-r from-red-500 to-orange-500 py-1.5 text-center font-semibold">Charge</div>
+        <div className="rounded-lg bg-gradient-to-r from-a1 to-a2 py-1.5 text-center font-semibold">Charge</div>
       </div>
     </div>
   );
@@ -96,7 +97,7 @@ function AIVisual() {
     <div className="absolute inset-6 flex flex-col justify-center gap-2.5 sm:inset-8">
       <div className="ml-auto max-w-[75%] rounded-2xl rounded-br-md bg-white px-3.5 py-2 text-xs text-black">Do you deliver to Kandy today?</div>
       <div className="flex max-w-[85%] items-start gap-2">
-        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-orange-400">
+        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-a1 to-a2">
           <Sparkle className="h-3 w-3 [&_path]:fill-white" />
         </span>
         <div className="rounded-2xl rounded-tl-md border border-white/10 bg-white/[0.06] px-3.5 py-2 text-xs text-white/80">
@@ -105,7 +106,7 @@ function AIVisual() {
       </div>
       <div className="ml-8 flex gap-1">
         {[0, 1, 2].map((i) => (
-          <span key={i} className="h-1.5 w-1.5 animate-bounce rounded-full bg-orange-300/70" style={{ animationDelay: `${i * 120}ms` }} />
+          <span key={i} className="h-1.5 w-1.5 animate-bounce rounded-full bg-a3/70" style={{ animationDelay: `${i * 120}ms` }} />
         ))}
       </div>
     </div>
@@ -133,8 +134,8 @@ function GrowthVisual() {
       <svg viewBox="0 0 300 140" className="h-full w-full overflow-visible" preserveAspectRatio="none" aria-hidden>
         <defs>
           <linearGradient id="gv-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#f97316" stopOpacity=".35" />
-            <stop offset="1" stopColor="#f97316" stopOpacity="0" />
+            <stop offset="0" style={{ stopColor: 'rgb(var(--a2))' }} stopOpacity=".35" />
+            <stop offset="1" style={{ stopColor: 'rgb(var(--a2))' }} stopOpacity="0" />
           </linearGradient>
         </defs>
         {[35, 70, 105].map((y) => (
@@ -144,7 +145,7 @@ function GrowthVisual() {
         <path
           d="M0 120 C40 115 60 100 90 96 S140 90 165 70 S220 50 245 32 S285 14 300 8"
           fill="none"
-          stroke="#fb923c"
+          style={{ stroke: 'rgb(var(--a2))' }}
           strokeWidth="2.5"
           vectorEffect="non-scaling-stroke"
           className="[stroke-dasharray:420] [stroke-dashoffset:420] [transition:stroke-dashoffset_1.6s_var(--ease-out)] group-hover:[stroke-dashoffset:0] [.is-in_&]:[stroke-dashoffset:0]"
@@ -152,7 +153,7 @@ function GrowthVisual() {
       </svg>
       <div className="absolute right-0 top-0 rounded-xl border border-white/10 bg-black/60 px-3 py-2 backdrop-blur">
         <p className="font-mono text-[10px] uppercase tracking-wider text-white/40">Organic traffic</p>
-        <p className="font-display text-lg font-bold text-orange-300">↑ trending</p>
+        <p className="font-display text-lg font-bold text-a3">↑ trending</p>
       </div>
     </div>
   );

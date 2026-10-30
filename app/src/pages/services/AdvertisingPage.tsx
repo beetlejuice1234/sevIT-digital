@@ -17,7 +17,7 @@ function AdPhone({ src, poster, brand, caption, tilt = 0, className }: { src: st
       <div className="relative aspect-[9/19] bg-black" style={{ transform: `rotate(${tilt}deg)` }}>
         <video ref={ref} src={src} poster={poster} muted loop playsInline preload="none" className="absolute inset-0 h-full w-full object-cover" aria-label={`${brand} ad creative`} />
         <div className="absolute inset-x-0 top-0 flex items-center gap-2 bg-gradient-to-b from-black/70 to-transparent p-3 pt-8 text-[11px]">
-          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-orange-400">
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-a1 to-a2">
             <Sparkle className="h-3 w-3 [&_path]:fill-white" />
           </span>
           <span>
@@ -44,7 +44,7 @@ function Creatives() {
       <div className="container-x">
         <SectionHeader eyebrow="Ad creative" title={<>Creative that <span className="text-gradient">stops the scroll.</span></>} intro="Most ads fail in the first second. We make CGI and motion creative in-house, so your campaigns look like nobody else’s in the feed." />
         <div className="relative flex items-end justify-center gap-3 sm:gap-6">
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 top-1/3 bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.22),transparent_65%)]" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 top-1/3 bg-[radial-gradient(ellipse_at_center,rgb(var(--a2)/0.22),transparent_65%)]" />
           <Reveal className="w-[30%] max-w-[250px] translate-y-6">
             <AdPhone src="/images/video/chocolate.mp4" poster="/images/video/chocolate.webp" brand="Choco Bar" caption="Crunch you can hear. New Hazelnut Crunch — out now." />
           </Reveal>
@@ -92,18 +92,18 @@ function Report() {
                   </div>
                   <div className="col-span-2 row-start-2 sm:col-span-1 sm:row-start-auto">
                     <div className="h-2 overflow-hidden rounded-full bg-white/10">
-                      <div className="h-full rounded-full bg-gradient-to-r from-red-500 to-orange-400" style={{ width: `${r.spend * 2}%` }} />
+                      <div className="h-full rounded-full bg-gradient-to-r from-a1 to-a2" style={{ width: `${r.spend * 2}%` }} />
                     </div>
                     <p className="mt-1 font-mono text-[10px] text-white/40">{r.spend}% of budget</p>
                   </div>
                   <svg viewBox="0 0 70 24" className="h-6 w-20" aria-hidden>
-                    <polyline points={r.trend.map((v, i) => `${i * 11},${24 - v * 2.2}`).join(' ')} fill="none" stroke="#fb923c" strokeWidth="2" strokeLinejoin="round" />
+                    <polyline points={r.trend.map((v, i) => `${i * 11},${24 - v * 2.2}`).join(' ')} fill="none" style={{ stroke: 'rgb(var(--a2))' }} strokeWidth="2" strokeLinejoin="round" />
                   </svg>
                 </div>
               ))}
             </div>
-            <div className="mt-5 rounded-2xl border border-orange-400/20 bg-orange-500/[0.06] p-4 text-sm text-white/75">
-              <span className="font-semibold text-orange-300">Next week:</span> move 10% from Search to Reels, test two new hooks on the hero video.
+            <div className="mt-5 rounded-2xl border border-a2/20 bg-a2/[0.06] p-4 text-sm text-white/75">
+              <span className="font-semibold text-a3">Next week:</span> move 10% from Search to Reels, test two new hooks on the hero video.
             </div>
           </div>
         </Reveal>

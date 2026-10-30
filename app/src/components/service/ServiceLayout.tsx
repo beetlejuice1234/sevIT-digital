@@ -9,6 +9,7 @@ import ContactSection from '@/components/layout/ContactSection';
 import seo from '@/seo/routes.json';
 import { SERVICES, serviceBySlug } from '@/lib/site';
 import { cn } from '@/lib/utils';
+import { THEMES, themeStyle } from '@/lib/theme';
 import type { LucideIcon } from 'lucide-react';
 
 export type Offering = { icon: LucideIcon; title: string; text: string; points?: string[] };
@@ -51,7 +52,7 @@ export default function ServiceLayout({ slug, title, intro, heroVisual, heroNote
               <ChevronRight className="h-3 w-3" />
               <Link to="/#services" className="hover:text-white">Services</Link>
               <ChevronRight className="h-3 w-3" />
-              <span className="text-orange-300">{service.short}</span>
+              <span className="text-a3">{service.short}</span>
             </nav>
             <h1 className="display text-balance text-[clamp(2.6rem,5.6vw,5.2rem)]">{title}</h1>
             <p className="mt-7 max-w-xl text-pretty text-lg leading-relaxed text-white/60">{intro}</p>
@@ -82,7 +83,7 @@ export default function ServiceLayout({ slug, title, intro, heroVisual, heroNote
             {offerings.map((o, i) => (
               <Reveal key={o.title} delay={i * 70}>
                 <SpotlightCard className="flex h-full flex-col p-7">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-red-500/20 to-orange-400/10 text-orange-300">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-a1/20 to-a2/10 text-a3">
                     <o.icon className="h-5 w-5" />
                   </span>
                   <h3 className="mt-6 font-display text-xl font-bold">{o.title}</h3>
@@ -91,7 +92,7 @@ export default function ServiceLayout({ slug, title, intro, heroVisual, heroNote
                     <ul className="mt-5 space-y-2 border-t border-white/[0.06] pt-5 text-sm text-white/65">
                       {o.points.map((p) => (
                         <li key={p} className="flex gap-2">
-                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-orange-400" />
+                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-a2" />
                           {p}
                         </li>
                       ))}
@@ -129,10 +130,10 @@ function FaqSection({ faqs }: { faqs: Faq[] }) {
                     type="button"
                     onClick={() => setOpen(isOpen ? null : i)}
                     aria-expanded={isOpen}
-                    className="flex w-full items-center justify-between gap-6 py-6 text-left text-lg font-medium transition-colors hover:text-orange-200"
+                    className="flex w-full items-center justify-between gap-6 py-6 text-left text-lg font-medium transition-colors hover:text-a3"
                   >
                     {f.q}
-                    <span className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/15 transition-transform duration-500', isOpen && 'rotate-45 border-orange-400/60 text-orange-300')}>
+                    <span className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/15 transition-transform duration-500', isOpen && 'rotate-45 border-a2/60 text-a3')}>
                       <Plus className="h-4 w-4" />
                     </span>
                   </button>
@@ -159,9 +160,9 @@ function Related({ current }: { current: string }) {
         <Reveal className="eyebrow mb-8">Pairs well with</Reveal>
         <div className="no-scrollbar -mx-5 flex snap-x gap-3 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:px-0 lg:grid-cols-6">
           {others.map((s, i) => (
-            <Reveal key={s.slug} delay={i * 50} className="w-[70%] shrink-0 snap-start sm:w-auto">
+            <Reveal key={s.slug} delay={i * 50} className="w-[70%] shrink-0 snap-start sm:w-auto" style={themeStyle(THEMES[s.slug])}>
               <SpotlightCard as={Link} to={s.path} className="group flex h-full flex-col p-5">
-                <s.icon className="h-5 w-5 text-white/50 transition-colors group-hover:text-orange-300" />
+                <s.icon className="h-5 w-5 text-a2" />
                 <p className="mt-8 text-sm font-semibold leading-snug">{s.name}</p>
                 <ArrowUpRight className="mt-3 h-4 w-4 text-white/30 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
               </SpotlightCard>
@@ -182,7 +183,7 @@ export function StepsSection({ eyebrow = 'Process', title, steps }: { eyebrow?: 
         <ol className={cn('grid gap-px overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.08] sm:grid-cols-2', steps.length === 4 ? 'lg:grid-cols-4' : steps.length === 5 ? 'lg:grid-cols-5' : 'lg:grid-cols-3')}>
           {steps.map((s, i) => (
             <Reveal as="li" key={s.title} delay={i * 80} className="group relative bg-background p-7 transition-colors hover:bg-[#0b0b0b]">
-              <span className="display text-outline block text-6xl transition-all duration-500 group-hover:[-webkit-text-stroke-color:rgba(251,146,60,0.8)]">
+              <span className="display text-outline block text-6xl transition-all duration-500 group-hover:[-webkit-text-stroke-color:rgb(var(--a2)/0.8)]">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <h3 className="mt-8 font-display text-xl font-bold">{s.title}</h3>

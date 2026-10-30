@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useId,
   useRef,
   type CSSProperties,
   type ElementType,
@@ -184,16 +185,17 @@ export function ButtonLink({ to, variant = 'primary', children, className, arrow
 
 /* ─── Sparkle (brand mark) ───────────────────────────────────────────── */
 export function Sparkle({ className }: { className?: string }) {
+  const id = `spk${useId().replace(/:/g, '')}`;
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <defs>
-        <linearGradient id="spk" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#fdba74" />
-          <stop offset="1" stopColor="#ef4444" />
+        <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" style={{ stopColor: 'rgb(var(--a3))' }} />
+          <stop offset="1" style={{ stopColor: 'rgb(var(--a1))' }} />
         </linearGradient>
       </defs>
       <path
-        fill="url(#spk)"
+        fill={`url(#${id})`}
         d="M14.5 1c.5 3.6 1.9 5 5.5 5.5-3.6.5-5 1.9-5.5 5.5-.5-3.6-1.9-5-5.5-5.5 3.6-.5 5-1.9 5.5-5.5ZM8 11c.6 4.3 2.2 5.9 6.5 6.5-4.3.6-5.9 2.2-6.5 6.5-.6-4.3-2.2-5.9-6.5-6.5C5.8 16.9 7.4 15.3 8 11Z"
       />
     </svg>

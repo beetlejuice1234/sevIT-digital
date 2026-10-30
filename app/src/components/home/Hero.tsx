@@ -95,7 +95,7 @@ function WorkFan() {
           <img src="/images/renders/sm/saraperf.webp" alt="Fragrance campaign with model, virtual product shoot" className="aspect-[9/16] w-full object-cover" fetchPriority="high" />
           <figcaption className="absolute inset-x-3 bottom-3 flex items-center justify-between rounded-xl border border-white/10 bg-black/55 px-3 py-2 text-[11px] backdrop-blur-md">
             <span className="text-white/80">Virtual product shoot</span>
-            <span className="font-mono text-orange-300">3D</span>
+            <span className="font-mono text-a3">3D</span>
           </figcaption>
         </figure>
 
@@ -122,7 +122,7 @@ function WorkFan() {
           className="float-slow absolute -right-[6%] bottom-[22%] flex items-center gap-2.5 rounded-2xl border border-white/10 bg-black/70 px-3 py-2.5 shadow-2xl backdrop-blur-xl sm:-right-[12%]"
           style={{ transform: 'translate3d(calc(var(--tx,0) * -1),calc(var(--ty,0) * -1),100px)', animationDelay: '-3s', '--r': '4deg' } as React.CSSProperties}
         >
-          <span className="relative flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-orange-400">
+          <span className="relative flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-a1 to-a2">
             <Sparkle className="h-3.5 w-3.5 [&_path]:fill-white" />
           </span>
           <div className="text-[11px] leading-tight">

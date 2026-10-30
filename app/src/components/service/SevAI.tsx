@@ -151,13 +151,13 @@ export default function SevAI() {
   };
 
   return (
-    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a] shadow-[0_40px_120px_-40px_rgba(249,115,22,0.35)]">
+    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a] shadow-[0_40px_120px_-40px_rgb(var(--a2)/0.35)]">
       {/* header */}
       <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
         <div className="flex items-center gap-3">
           <span className="relative flex h-10 w-10 items-center justify-center">
-            <span className={cn('absolute inset-0 rounded-full bg-gradient-to-br from-red-500 to-orange-400', (thinking || listening) && 'animate-pulse')} />
-            {(thinking || listening) && <span className="pulse-ring absolute inset-0 rounded-full border border-orange-400" />}
+            <span className={cn('absolute inset-0 rounded-full bg-gradient-to-br from-a1 to-a2', (thinking || listening) && 'animate-pulse')} />
+            {(thinking || listening) && <span className="pulse-ring absolute inset-0 rounded-full border border-a2" />}
             <Sparkle className="relative h-5 w-5 [&_path]:fill-white" />
           </span>
           <div>
@@ -169,7 +169,7 @@ export default function SevAI() {
           </div>
         </div>
         <div className="flex gap-1.5">
-          <button type="button" onClick={() => setVoice((v) => !v)} className={cn('flex h-9 w-9 items-center justify-center rounded-full border transition-colors', voice ? 'border-orange-400/50 text-orange-300' : 'border-white/10 text-white/50 hover:text-white')} aria-label={voice ? 'Turn voice replies off' : 'Turn voice replies on'} aria-pressed={voice}>
+          <button type="button" onClick={() => setVoice((v) => !v)} className={cn('flex h-9 w-9 items-center justify-center rounded-full border transition-colors', voice ? 'border-a2/50 text-a3' : 'border-white/10 text-white/50 hover:text-white')} aria-label={voice ? 'Turn voice replies off' : 'Turn voice replies on'} aria-pressed={voice}>
             {voice ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
           </button>
           <button type="button" onClick={() => setMsgs(msgs.slice(0, 1))} className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/50 hover:text-white" aria-label="Restart conversation">
@@ -195,14 +195,14 @@ export default function SevAI() {
         {thinking && (
           <div className="flex gap-1 rounded-3xl rounded-tl-lg border border-white/[0.08] bg-white/[0.04] px-4 py-4" style={{ width: 'fit-content' }}>
             {[0, 1, 2].map((i) => (
-              <span key={i} className="h-1.5 w-1.5 animate-bounce rounded-full bg-orange-300" style={{ animationDelay: `${i * 120}ms` }} />
+              <span key={i} className="h-1.5 w-1.5 animate-bounce rounded-full bg-a3" style={{ animationDelay: `${i * 120}ms` }} />
             ))}
           </div>
         )}
         {msgs.length === 1 && !thinking && (
           <div className="flex flex-wrap gap-2 pt-2">
             {SUGGESTIONS.map((s) => (
-              <button key={s} type="button" onClick={() => send(s)} className="rounded-full border border-white/10 px-3.5 py-2 text-xs text-white/60 transition-colors hover:border-orange-400/40 hover:text-white">
+              <button key={s} type="button" onClick={() => send(s)} className="rounded-full border border-white/10 px-3.5 py-2 text-xs text-white/60 transition-colors hover:border-a2/40 hover:text-white">
                 {s}
               </button>
             ))}
@@ -222,9 +222,9 @@ export default function SevAI() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask about your project…"
           aria-label="Message sevAI"
-          className="min-w-0 flex-1 rounded-full bg-white/[0.04] px-4 py-3 text-base placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-orange-400/50 sm:text-sm"
+          className="min-w-0 flex-1 rounded-full bg-white/[0.04] px-4 py-3 text-base placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-a2/50 sm:text-sm"
         />
-        <button type="submit" disabled={!input.trim() || thinking} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-orange-400 transition-opacity disabled:opacity-30" aria-label="Send">
+        <button type="submit" disabled={!input.trim() || thinking} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-a1 to-a2 transition-opacity disabled:opacity-30" aria-label="Send">
           <ArrowUp className="h-4 w-4" />
         </button>
       </form>

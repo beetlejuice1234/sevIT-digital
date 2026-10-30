@@ -13,7 +13,7 @@ export default function Footer() {
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/50">
               A digital studio from Sri Lanka. Websites, software & POS, AI automation, branding and 3D ads — designed and built in-house.
             </p>
-            <a href={`mailto:${SITE.email}`} className="mt-6 inline-block text-lg font-medium underline decoration-white/20 underline-offset-8 transition-colors hover:decoration-orange-400">
+            <a href={`mailto:${SITE.email}`} className="mt-6 inline-block text-lg font-medium underline decoration-white/20 underline-offset-8 transition-colors hover:decoration-a2">
               {SITE.email}
             </a>
           </div>

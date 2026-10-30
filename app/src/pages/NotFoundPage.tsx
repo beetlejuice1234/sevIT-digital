@@ -23,7 +23,7 @@ export default function NotFoundPage() {
         </div>
         <div className="mt-14 flex flex-wrap gap-2">
           {SERVICES.map((s) => (
-            <Link key={s.slug} to={s.path} className="rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm text-white/60 backdrop-blur transition-colors hover:border-orange-400/40 hover:text-white">
+            <Link key={s.slug} to={s.path} className="rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm text-white/60 backdrop-blur transition-colors hover:border-a2/40 hover:text-white">
               {s.name}
             </Link>
           ))}

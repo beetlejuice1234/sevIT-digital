@@ -98,7 +98,7 @@ function PosDemo() {
               type="button"
               onClick={() => add(m.id, 1)}
               disabled={stock[m.id] - (cart[m.id] ?? 0) <= 0}
-              className="group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.03] p-3 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-orange-400/40 active:scale-[0.97] disabled:opacity-40"
+              className="group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.03] p-3 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-a2/40 active:scale-[0.97] disabled:opacity-40"
             >
               <span
                 className="mb-6 block h-8 w-8 rounded-xl"
@@ -110,7 +110,7 @@ function PosDemo() {
                 <span className={cn(stock[m.id] <= 8 && 'text-amber-400')}>{stock[m.id]} left</span>
               </span>
               {cart[m.id] ? (
-                <span className="absolute right-2 top-2 flex h-6 min-w-6 items-center justify-center rounded-full bg-orange-500 px-1.5 text-xs font-bold">{cart[m.id]}</span>
+                <span className="absolute right-2 top-2 flex h-6 min-w-6 items-center justify-center rounded-full bg-a2 px-1.5 text-xs font-bold">{cart[m.id]}</span>
               ) : null}
             </button>
           ))}
@@ -196,12 +196,12 @@ function HeroVisual() {
         <svg viewBox="0 0 300 100" className="mt-4 h-28 w-full" preserveAspectRatio="none" aria-hidden>
           <defs>
             <linearGradient id="sw-g" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" stopColor="#f97316" stopOpacity=".4" />
-              <stop offset="1" stopColor="#f97316" stopOpacity="0" />
+              <stop offset="0" style={{ stopColor: 'rgb(var(--a2))' }} stopOpacity=".4" />
+              <stop offset="1" style={{ stopColor: 'rgb(var(--a2))' }} stopOpacity="0" />
             </linearGradient>
           </defs>
           <path d="M0 80 L43 62 L86 70 L129 44 L172 52 L215 26 L258 34 L300 12 L300 100 L0 100Z" fill="url(#sw-g)" />
-          <path d="M0 80 L43 62 L86 70 L129 44 L172 52 L215 26 L258 34 L300 12" fill="none" stroke="#fb923c" strokeWidth="2.5" vectorEffect="non-scaling-stroke" />
+          <path d="M0 80 L43 62 L86 70 L129 44 L172 52 L215 26 L258 34 L300 12" fill="none" style={{ stroke: 'rgb(var(--a2))' }} strokeWidth="2.5" vectorEffect="non-scaling-stroke" />
         </svg>
         <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
           {[
@@ -296,7 +296,7 @@ export default function SoftwarePage() {
               ].map((f, i) => (
                 <Reveal key={f.t} delay={i * 60}>
                   <SpotlightCard className="p-5">
-                    <f.icon className="h-5 w-5 text-orange-300" />
+                    <f.icon className="h-5 w-5 text-a3" />
                     <p className="mt-6 text-sm font-medium">{f.t}</p>
                   </SpotlightCard>
                 </Reveal>

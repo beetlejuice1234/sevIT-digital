@@ -35,7 +35,7 @@ export default function VideoCard({ src, poster, title, tag, className, aspect =
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-wider text-orange-300">{tag}</p>
+          <p className="font-mono text-[10px] uppercase tracking-wider text-a3">{tag}</p>
           <p className="mt-1 font-display text-xl font-bold">{title}</p>
         </div>
         <div className="flex gap-2">

@@ -10,6 +10,9 @@ module.exports = {
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       colors: {
+        a1: "rgb(var(--a1) / <alpha-value>)",
+        a2: "rgb(var(--a2) / <alpha-value>)",
+        a3: "rgb(var(--a3) / <alpha-value>)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

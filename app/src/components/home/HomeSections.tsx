@@ -115,7 +115,7 @@ export function Process() {
         <ol ref={listRef} className="relative space-y-4 pl-10 sm:pl-14">
           <span className="absolute left-[15px] top-2 h-[calc(100%-1rem)] w-px bg-white/10 sm:left-[19px]" aria-hidden />
           <span
-            className="absolute left-[15px] top-2 w-px origin-top bg-gradient-to-b from-red-500 to-orange-400 sm:left-[19px]"
+            className="absolute left-[15px] top-2 w-px origin-top bg-gradient-to-b from-a1 to-a2 sm:left-[19px]"
             style={{ height: `calc((100% - 1rem) * ${progress})` }}
             aria-hidden
           />
@@ -125,7 +125,7 @@ export function Process() {
               <li key={s.title} className="relative">
                 <span
                   className={`absolute -left-10 top-7 flex h-8 w-8 items-center justify-center rounded-full border text-xs font-semibold transition-all duration-500 sm:-left-14 sm:h-10 sm:w-10 ${
-                    active ? 'border-transparent bg-gradient-to-br from-red-500 to-orange-400 text-white shadow-[0_0_24px_rgba(249,115,22,0.5)]' : 'border-white/15 bg-background text-white/40'
+                    active ? 'border-transparent bg-gradient-to-br from-a1 to-a2 text-white shadow-[0_0_24px_rgb(var(--a2)/0.5)]' : 'border-white/15 bg-background text-white/40'
                   }`}
                 >
                   {i + 1}
@@ -133,7 +133,7 @@ export function Process() {
                 <SpotlightCard className="p-6 sm:p-8">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-orange-300/80">{s.sub}</p>
+                      <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-a3/80">{s.sub}</p>
                       <h3 className="mt-2 font-display text-2xl font-bold sm:text-3xl">{s.title}</h3>
                     </div>
                     <s.icon className="h-6 w-6 text-white/30" />
@@ -158,8 +158,8 @@ export function Testimonials() {
         <SectionHeader eyebrow="Client stories" title={<>Kind words from <span className="text-white/40">real clients.</span></>} />
         <div className="grid gap-4 lg:grid-cols-3">
           <Reveal className="lg:row-span-2">
-            <SpotlightCard as="figure" className="flex h-full flex-col bg-gradient-to-br from-orange-500/[0.09] to-transparent p-8 sm:p-10">
-              <Quote className="h-10 w-10 text-orange-400" />
+            <SpotlightCard as="figure" className="flex h-full flex-col bg-gradient-to-br from-a2/[0.09] to-transparent p-8 sm:p-10">
+              <Quote className="h-10 w-10 text-a2" />
               <blockquote className="mt-8 font-display text-2xl font-semibold leading-snug tracking-tight sm:text-3xl">“{lead.quote}”</blockquote>
               <Person name={lead.name} role={lead.role} className="mt-auto pt-10" />
             </SpotlightCard>
@@ -167,7 +167,7 @@ export function Testimonials() {
           {rest.map((t, i) => (
             <Reveal key={t.name} delay={(i + 1) * 80} className={i === 2 ? 'lg:col-span-2' : ''}>
               <SpotlightCard as="figure" className="flex h-full flex-col p-7">
-                <div className="flex gap-0.5 text-orange-400" aria-label="5 out of 5">
+                <div className="flex gap-0.5 text-a2" aria-label="5 out of 5">
                   {Array.from({ length: 5 }).map((_, n) => (
                     <Sparkle key={n} className="h-4 w-4" />
                   ))}
@@ -217,7 +217,7 @@ export function AITeaser() {
       <div className="container-x">
         <Reveal>
           <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b0b0b] p-7 sm:p-12">
-            <div className="pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full bg-orange-500/20 blur-[100px]" />
+            <div className="pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full bg-a2/20 blur-[100px]" />
             <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_1.1fr] [&>*]:min-w-0">
               <div>
                 <p className="eyebrow mb-4">Try it now</p>
@@ -227,7 +227,7 @@ export function AITeaser() {
                 <p className="mt-4 max-w-md text-white/55">Our own AI assistant — the same kind we build for clients. Ask about services, pricing or what’s possible for your business.</p>
               </div>
               <div>
-                <form onSubmit={submit} className="flex items-center gap-2 rounded-full border border-white/15 bg-black/60 p-1.5 pl-5 focus-within:border-orange-400/60">
+                <form onSubmit={submit} className="flex items-center gap-2 rounded-full border border-white/15 bg-black/60 p-1.5 pl-5 focus-within:border-a2/60">
                   <Sparkle className="h-4 w-4 shrink-0" />
                   <input
                     value={q}
@@ -246,7 +246,7 @@ export function AITeaser() {
                       key={p}
                       type="button"
                       onClick={() => go(p)}
-                      className="rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1.5 text-xs text-white/60 transition-colors hover:border-orange-400/40 hover:text-white"
+                      className="rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1.5 text-xs text-white/60 transition-colors hover:border-a2/40 hover:text-white"
                     >
                       {p}
                     </button>

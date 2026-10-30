@@ -66,7 +66,7 @@ export default function CareersPage() {
           {PERKS.map((p, i) => (
             <Reveal key={p.title} delay={i * 70}>
               <SpotlightCard className="h-full p-6">
-                <p.icon className="h-5 w-5 text-orange-300" />
+                <p.icon className="h-5 w-5 text-a3" />
                 <h3 className="mt-6 font-display text-lg font-bold">{p.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-white/55">{p.text}</p>
               </SpotlightCard>
@@ -83,7 +83,7 @@ export default function CareersPage() {
               <Reveal as="li" key={r.title} delay={i * 50} className="border-b border-white/[0.08]">
                 <button type="button" onClick={() => apply(r.title)} className="group grid w-full items-center gap-3 py-7 text-left sm:grid-cols-[1fr_auto_auto] sm:gap-8">
                   <span>
-                    <span className="block font-display text-2xl font-bold transition-colors group-hover:text-orange-200 sm:text-3xl">{r.title}</span>
+                    <span className="block font-display text-2xl font-bold transition-colors group-hover:text-a3 sm:text-3xl">{r.title}</span>
                     <span className="mt-1.5 block max-w-xl text-sm text-white/50">{r.text}</span>
                   </span>
                   <span className="flex gap-2 text-xs">
@@ -115,7 +115,7 @@ export default function CareersPage() {
                       type="button"
                       onClick={() => setRole(r)}
                       aria-pressed={role === r}
-                      className={cn('rounded-full border px-3.5 py-2 text-xs transition-colors', role === r ? 'border-orange-400/70 bg-orange-500/15 text-white' : 'border-white/10 text-white/55 hover:text-white')}
+                      className={cn('rounded-full border px-3.5 py-2 text-xs transition-colors', role === r ? 'border-a2/70 bg-a2/15 text-white' : 'border-white/10 text-white/55 hover:text-white')}
                     >
                       {r}
                     </button>
@@ -128,12 +128,12 @@ export default function CareersPage() {
               ].map((f) => (
                 <label key={f.l} className="block">
                   <span className="mb-2 block text-sm text-white/60">{f.l}</span>
-                  <input required={f.req} autoComplete={f.ac} value={f.v} onChange={(e) => f.s(e.target.value)} className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-base focus:border-orange-400/60 focus:outline-none sm:text-sm" />
+                  <input required={f.req} autoComplete={f.ac} value={f.v} onChange={(e) => f.s(e.target.value)} className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-base focus:border-a2/60 focus:outline-none sm:text-sm" />
                 </label>
               ))}
               <label className="block">
                 <span className="mb-2 block text-sm text-white/60">Why sevIT? (optional)</span>
-                <textarea rows={4} value={note} onChange={(e) => setNote(e.target.value)} className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-base focus:border-orange-400/60 focus:outline-none sm:text-sm" />
+                <textarea rows={4} value={note} onChange={(e) => setNote(e.target.value)} className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-base focus:border-a2/60 focus:outline-none sm:text-sm" />
               </label>
               <button type="submit" className="btn btn-accent w-full !py-4">
                 {opened ? <Check className="h-4 w-4" /> : <Mail className="h-4 w-4" />}

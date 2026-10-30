@@ -1,4 +1,5 @@
-import { useEffect, Suspense, lazy } from 'react';
+import { useEffect, useLayoutEffect, Suspense, lazy } from 'react';
+import { applyTheme, themeFor } from './lib/theme';
 import { BrowserRouter, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
 import Lenis from 'lenis';
 import { getLenis, setLenis } from './lib/lenis';
@@ -50,10 +51,17 @@ function ScrollManager() {
   return null;
 }
 
+/** Sets the page accent colour (CSS variables) for the current route. */
+function ThemeManager() {
+  const { pathname } = useLocation();
+  useLayoutEffect(() => applyTheme(themeFor(pathname)), [pathname]);
+  return null;
+}
+
 function PageLoader() {
   return (
     <div className="flex min-h-screen items-center justify-center" role="status" aria-label="Loading">
-      <span className="h-6 w-6 animate-spin rounded-full border-2 border-orange-400 border-t-transparent" />
+      <span className="h-6 w-6 animate-spin rounded-full border-2 border-a2 border-t-transparent" />
     </div>
   );
 }
@@ -74,6 +82,7 @@ export default function App() {
       <BrowserRouter>
         <div className="grain relative min-h-screen overflow-x-clip bg-background text-foreground">
           <SkipToContent />
+          <ThemeManager />
           <ScrollManager />
           <Navbar />
           <main id="main-content" className="relative">
