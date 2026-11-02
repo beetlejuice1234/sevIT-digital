@@ -16,6 +16,8 @@ export const SITE = {
   email: 'sevit@sevitdigital.com',
   phoneDisplay: '+94 76 110 7081',
   phone: '+94761107081',
+  phone2Display: '+94 77 445 3983',
+  phone2: '+94774453983',
   whatsapp: 'https://wa.me/94761107081',
   instagram: 'https://www.instagram.com/sevitdigital',
   location: 'Sri Lanka',

@@ -86,15 +86,10 @@ function BrandBoard() {
           </Reveal>
           {/* applications */}
           <Reveal className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_30%_30%,rgb(var(--a2)/0.25),#0b0b0b_60%)] p-8 lg:col-span-3">
-            <p className="text-[13px] text-white/40">Business card</p>
-            <div className="mt-8 flex justify-center gap-4 [perspective:900px]">
-              <div className="aspect-[1.75] w-[46%] rounded-xl bg-[#050505] p-4 shadow-2xl ring-1 ring-white/10 [transform:rotateY(14deg)_rotateX(6deg)]">
-                <img src="/images/logo-sevit.webp" alt="" className="h-5 w-auto" />
-                <p className="mt-6 text-[9px] text-white/50 sm:text-[10px]">sevit@sevitdigital.com</p>
-              </div>
-              <div className="flex aspect-[1.75] w-[46%] items-center justify-center rounded-xl bg-gradient-to-br from-a1 to-a2 shadow-2xl [transform:rotateY(-14deg)_rotateX(6deg)]">
-                <Sparkle tone="white" className="h-10 w-10" />
-              </div>
+            <p className="text-[13px] text-white/40">Business card, front and back</p>
+            <div className="mt-6 grid grid-cols-2 gap-3 [perspective:1000px]">
+              <img src="/images/card-front.webp" alt="sevIT business card, front: orange foil SEV IT on black with contact details" loading="lazy" className="w-full rounded-lg shadow-2xl [transform:rotateY(10deg)_rotateX(4deg)]" />
+              <img src="/images/card-back.webp" alt="sevIT business card, back: white sevIT logo on orange" loading="lazy" className="w-full rounded-lg shadow-2xl [transform:rotateY(-10deg)_rotateX(4deg)]" />
             </div>
           </Reveal>
           <Reveal delay={80} className="grid grid-cols-3 gap-2 rounded-[2rem] border border-white/10 bg-[#0b0b0b] p-4 lg:col-span-3">

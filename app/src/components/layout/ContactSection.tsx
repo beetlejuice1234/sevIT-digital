@@ -51,6 +51,7 @@ export default function ContactSection({ defaultService }: { defaultService?: st
               {[
                 { label: 'WhatsApp', value: SITE.phoneDisplay, href: SITE.whatsapp },
                 { label: 'Email', value: SITE.email, href: `mailto:${SITE.email}` },
+                { label: 'Phone', value: SITE.phone2Display, href: `tel:${SITE.phone2}` },
                 { label: 'Instagram', value: '@sevitdigital', href: SITE.instagram },
                 { label: 'Based in', value: 'Sri Lanka, working with clients anywhere' },
               ].map((c) => (

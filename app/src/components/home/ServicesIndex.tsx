@@ -106,7 +106,7 @@ const PREVIEW: Record<string, React.ReactNode> = {
   'ai-solutions': <AIVisual />,
   '3d-rendering': img('/images/renders/sm/saraperf.webp', '50% 30%'),
   branding: img('/images/3dlogo.webp'),
-  advertising: img('/images/video/chocolate.webp'),
+  advertising: img('/images/video/burger-pop.webp'),
   marketing: <GrowthVisual />,
 };
 

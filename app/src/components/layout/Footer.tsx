@@ -40,6 +40,7 @@ export default function Footer() {
             <li><a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
             <li><a href={SITE.instagram} target="_blank" rel="noopener noreferrer">Instagram</a></li>
             <li><a href={`tel:${SITE.phone}`}>{SITE.phoneDisplay}</a></li>
+            <li><a href={`tel:${SITE.phone2}`}>{SITE.phone2Display}</a></li>
             <li className="text-white/40">{time} in Sri Lanka right now</li>
           </FooterCol>
         </div>

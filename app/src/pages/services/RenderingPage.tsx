@@ -112,12 +112,16 @@ function Films() {
     <section className="relative border-t border-white/[0.06] py-24 sm:py-32">
       <div className="container-x">
         <SectionHeader eyebrow="Films" title="We animate them too." intro="CGI ad films for social, web and screens, complete with sound design." />
-        <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
+        <div className="grid items-start gap-4 lg:grid-cols-[1.7fr_1fr]">
           <div className="grid gap-4">
-            <Reveal><VideoCard src="/images/video/bergamood.mp4" poster="/images/video/bergamood.webp" title="Bergamood" tag="Fragrance · Concept film" aspect="aspect-[1280/550]" /></Reveal>
-            <Reveal delay={80}><VideoCard src="/images/video/chocolate.mp4" poster="/images/video/chocolate.webp" title="Choco bar" tag="FMCG · Character ad" /></Reveal>
+            <Reveal><VideoCard src="/images/video/burger.mp4" poster="/images/video/burger.webp" title="Smash burger" tag="Food, cooking film" aspect="aspect-[1470/630]" /></Reveal>
+            <Reveal delay={60}><VideoCard src="/images/video/secrunch.mp4" poster="/images/video/secrunch.webp" title="Secrunch" tag="Snacks, product launch" aspect="aspect-[1470/630]" /></Reveal>
+            <Reveal delay={120}><VideoCard src="/images/video/bergamood.mp4" poster="/images/video/bergamood.webp" title="Bergamood" tag="Fragrance, concept film" aspect="aspect-[1280/550]" /></Reveal>
           </div>
-          <Reveal delay={160}><VideoCard src="/images/video/showreel.mp4" poster="/images/video/showreel.webp" title="Headphones" tag="Tech · Product reveal" aspect="aspect-[600/1024]" className="h-full" /></Reveal>
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
+            <Reveal delay={160}><VideoCard src="/images/video/juice-bunny.mp4" poster="/images/video/juice-bunny.webp" title="Juice Bunny" tag="Drinks, vertical ad" aspect="aspect-[9/16]" /></Reveal>
+            <Reveal delay={200} className="lg:hidden"><VideoCard src="/images/video/fashion.mp4" poster="/images/video/fashion.webp" title="Capra" tag="Fashion, virtual shoot" aspect="aspect-[9/16]" /></Reveal>
+          </div>
         </div>
       </div>
     </section>

@@ -17,7 +17,7 @@ const CUTS: Cut[] = [
   { word: '3D', fill: THEMES['3d-rendering'].a2, image: '/images/renders/sm/saraperf.webp' },
   { word: 'AI', fill: THEMES['ai-solutions'].a2 },
   { word: 'Brands', fill: THEMES.branding.a2, image: '/images/renders/sm/collageperf.webp' },
-  { word: 'Ads', fill: THEMES.advertising.a2, image: '/images/video/chocolate.webp' },
+  { word: 'Ads', fill: THEMES.advertising.a2, image: '/images/video/burger-pop.webp' },
 ];
 const HOLD = 270; // ms per cut
 const KEY = 'sevit-splash-seen';

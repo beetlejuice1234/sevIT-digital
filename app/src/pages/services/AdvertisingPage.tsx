@@ -86,7 +86,7 @@ function FeedPhone({ src, poster, brand, caption }: { src: string; poster: strin
       <div className="flex aspect-[9/19] flex-col bg-black pt-7 text-[11px]">
         <p className="px-3 pb-2 font-display text-base font-bold">Instagram</p>
         <div className="flex items-center gap-2 px-3 py-2"><Avatar /><span><span className="block font-semibold leading-tight">{brand}</span><span className="block text-[9px] text-white/55">Sponsored</span></span><MoreVertical className="ml-auto h-3.5 w-3.5" /></div>
-        <div className="relative aspect-[1280/550] w-full bg-black">
+        <div className="relative aspect-[3/4] w-full bg-black">
           <video ref={ref} src={src} poster={poster} muted loop playsInline preload="none" className="absolute inset-0 h-full w-full object-cover" aria-label={`${brand} feed ad`} />
         </div>
         <div className="flex items-center justify-between bg-a2 px-3 py-2 text-[11px] font-semibold text-black">Shop now <span>›</span></div>
@@ -102,9 +102,9 @@ function FeedPhone({ src, poster, brand, caption }: { src: string; poster: strin
 }
 
 const ADS = {
-  reel: <ReelPhone src="/images/video/showreel.mp4" poster="/images/video/showreel.webp" brand="Sound Studio" caption="Silence everything but the music. Pre-order today." />,
+  reel: <ReelPhone src="/images/video/juice-bunny.mp4" poster="/images/video/juice-bunny.webp" brand="Juice Bunny" caption="Berry Bliss. Squeezed loud, served cold." />,
   youtube: <YouTubePhone src="/images/video/chocolate.mp4" poster="/images/video/chocolate.webp" brand="Choco Bar" title="Crunch you can hear. The new Hazelnut Crunch is here." />,
-  feed: <FeedPhone src="/images/video/bergamood.mp4" poster="/images/video/bergamood.webp" brand="Bergamood" caption="Citrus, smoke and a little mischief." />,
+  feed: <FeedPhone src="/images/video/fashion.mp4" poster="/images/video/fashion.webp" brand="Capra" caption="The summer edit, shot in Paris without ever leaving Sri Lanka." />,
 };
 
 /** Hero: headline across the top, three phones rising out of the bottom edge. */
@@ -120,7 +120,7 @@ function Hero() {
       </div>
       <div className="no-scrollbar relative -mx-5 mt-14 flex snap-x gap-4 overflow-x-auto px-5 pb-4 sm:mx-0 sm:h-[min(56vw,520px)] sm:items-start sm:justify-center sm:gap-8 sm:overflow-hidden sm:px-0 sm:pb-0">
         <div className="ad-rise w-[250px] shrink-0 snap-center sm:w-[30%] sm:max-w-[250px] sm:pt-16" style={{ animationDelay: '.15s' }}>{ADS.youtube}</div>
-        <div className="ad-rise w-[250px] shrink-0 snap-center sm:w-[33%] sm:max-w-[270px]">{ADS.reel}</div>
+        <div className="ad-rise order-first w-[250px] shrink-0 snap-center sm:order-none sm:w-[33%] sm:max-w-[270px]">{ADS.reel}</div>
         <div className="ad-rise w-[250px] shrink-0 snap-center sm:w-[30%] sm:max-w-[250px] sm:pt-16" style={{ animationDelay: '.3s' }}>{ADS.feed}</div>
       </div>
       <p className="mt-3 text-sm text-white/40 sm:hidden">Swipe to see all three formats</p>
@@ -134,9 +134,17 @@ function Films() {
     <section id="work" className="relative scroll-mt-24 py-20 sm:py-28">
       <div className="container-x">
         <SectionHeader eyebrow="Our ads, full size" title="Made in-house, from the first frame to the last." intro="CGI and motion we produce ourselves, so testing a new idea takes days, not a reshoot." />
-        <div className="grid items-start gap-4 lg:grid-cols-2">
-          <Reveal><VideoCard src="/images/video/bergamood.mp4" poster="/images/video/bergamood.webp" title="Bergamood" tag="Fragrance, concept film" aspect="aspect-[1280/550]" /></Reveal>
-          <Reveal delay={80}><VideoCard src="/images/video/chocolate.mp4" poster="/images/video/chocolate.webp" title="Choco Bar" tag="Snack, character ad" aspect="aspect-video" /></Reveal>
+        <div className="grid items-start gap-4 md:grid-cols-2">
+          {[
+            ['burger', 'Smash burger', 'Food, cooking film'],
+            ['burger-pop', 'Burger, pop-art cut', 'Food, animated spot'],
+            ['secrunch', 'Secrunch', 'Snacks, product launch'],
+            ['bergamood', 'Bergamood', 'Fragrance, concept film'],
+          ].map(([v, title, tag], n) => (
+            <Reveal key={v} delay={(n % 2) * 80}>
+              <VideoCard src={`/images/video/${v}.mp4`} poster={`/images/video/${v}.webp`} title={title} tag={tag} aspect="aspect-[1470/630]" />
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>
