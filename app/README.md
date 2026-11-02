@@ -1,73 +1,44 @@
-# React + TypeScript + Vite
+# sevIT Digital — website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Marketing site for [sevitdigital.com](https://sevitdigital.com): a Vite + React 19 + TypeScript + Tailwind single-page app deployed on Vercel.
 
-Currently, two official plugins are available:
+## Run it
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cd app
+npm install
+npm run dev        # http://localhost:3000
+npm run dev:all    # also starts local-server.js so /api/ai and /api/tts work locally (needs .env)
+npm run build      # type-check, build, then scripts/postbuild.mjs
+npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## How it's put together
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Path | What lives there |
+|---|---|
+| `src/lib/site.ts` | Company details (email, WhatsApp, socials), the list of services and testimonials. **Edit copy/contacts here first.** |
+| `src/seo/routes.json` | Title + description for every route. Used by `<Seo>` at runtime *and* by the build script. |
+| `src/seo/schema.ts` | JSON-LD helpers (Organization, Service, FAQ). |
+| `src/components/kit/` | Shared UI: `Reveal`, `SectionHeader`, `SpotlightCard`, `Marquee`, `ButtonLink`, frames, `ShaderBackdrop` (WebGL hero), `VideoCard`. |
+| `src/components/layout/` | Navbar (with services mega menu), Footer, ContactSection (enquiry form → WhatsApp/email), floating WhatsApp button. |
+| `src/components/home/` | Home page sections. |
+| `src/components/service/ServiceLayout.tsx` | Template every service page uses: hero, offerings, FAQ (+FAQ schema), related services, contact. |
+| `src/pages/services/*` | One file per service, each with its own showcase (POS demo, render gallery, sevAI chat, etc.). |
+| `api/` | Vercel functions: `ai.js` (Groq chat for sevAI, needs `GROQ_API_KEY`) and `tts.js` (ElevenLabs voice). |
+| `scripts/postbuild.mjs` | Writes `dist/<route>/index.html` with route-specific meta so link previews and crawlers see the right title/description, and generates `sitemap.xml`. |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Adding a page
+
+1. Add the route to `src/seo/routes.json`.
+2. Add the `<Route>` in `src/App.tsx`.
+3. If it's a service, add it to `SERVICES` in `src/lib/site.ts` (nav, footer, home bento and the contact form pick it up automatically).
+
+### Routing
+
+Clean URLs (`/services/web-design`) via `BrowserRouter`; `vercel.json` rewrites unknown paths to `index.html`. Old `/#/…` links are redirected to the clean path in `src/main.tsx`.
+
+### Media
+
+- Full-size renders live in `public/images/renders/`; 720px versions used in grids are in `public/images/renders/sm/`.
+- Videos are web-optimised MP4s in `public/images/video/` (with `.webp` posters).
